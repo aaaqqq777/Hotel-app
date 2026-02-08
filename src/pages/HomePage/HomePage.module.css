@@ -1,0 +1,6 @@
+.container {
+  padding: 12px;
+  /* 页面背景色，可以放在全局 index.css */
+  background-color: #f5f5f9;
+  min-height: 100vh;
+}

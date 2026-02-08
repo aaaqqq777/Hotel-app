@@ -1,0 +1,23 @@
+.container {
+  /* Card 组件默认样式已经很好，我们主要修改内容 */
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.content {
+  /* 简单模拟一个有背景图的 Banner */
+  padding: 24px 16px;
+  background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+  color: #5f4b32;
+  border-radius: var(--adm-border-radius-lg); /* 使用 antd-mobile 的 CSS 变量 */
+}
+
+.content h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+}
+
+.content p {
+  margin: 0;
+  font-size: 14px;
+}
