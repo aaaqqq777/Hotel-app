@@ -43,8 +43,6 @@ export default function SearchForm() {
   // --- 容器组件的 UI ---
   return (
     <div className={styles.container}>
-      {/* 顶部 Banner (如果需要) */}
-      
       <div className={styles.card}>
         {/* 选项卡 */}
         <Tabs

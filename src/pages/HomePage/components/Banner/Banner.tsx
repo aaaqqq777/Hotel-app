@@ -18,8 +18,10 @@ function Banner() {
       onClick={handleBannerClick}
     >
       <div className={styles.content}>
-        <h3>限时特惠</h3>
-        <p>海景豪华大酒店，仅需 ¥1288 起</p>
+        <h3>酒店广告</h3>
+        <p>点击查看详情</p>
+        <p>需要换图片+跳转到酒店详情页面  </p>
+        
       </div>
     </Card>
     )

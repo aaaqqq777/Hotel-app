@@ -8,8 +8,6 @@ import App from '../App';
 import HomePage from '../pages/HomePage/HomePage';
 import DetailPage from '../pages/DetailPage/DetailPage';
 import HotelListPage from '../pages/HotelListPage/HotelListPage';
-// import OrdersPage from '../pages/OrdersPage'; // 如果还没创建，可以先注释
-// import ProfilePage from '../pages/ProfilePage'; // 如果还没创建，可以先注释
 
 // 【核心】为我们的路由对象定义一个更丰富的 TypeScript 接口
 // 我们在 react-router-dom 的 RouteObject 基础上，增加了 title 和 icon 属性

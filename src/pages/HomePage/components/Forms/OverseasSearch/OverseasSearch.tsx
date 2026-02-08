@@ -62,13 +62,3 @@ export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
     </div>
   );
 }
-
-// function OverseasSearch() {
-//     return (
-//         <div>
-//             <h1>hotel detail </h1>
-//         </div>
-//     )
-// }
-
-// export default OverseasSearch
