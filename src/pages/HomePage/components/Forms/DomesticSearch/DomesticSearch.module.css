@@ -1,0 +1,55 @@
+.container {
+  padding: 16px 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+/* 城市输入和定位按钮容器 */
+.inputGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.inputGroup input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* 定位按钮 */
+.locationBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* 搜索表单中的输入框 */
+.input {
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* 日期选择按钮 */
+.dateBtn {
+  text-align: left;
+  padding: 10px 12px;
+}
+
+/* 筛选按钮 */
+.filterBtn {
+  text-align: left;
+  padding: 10px 12px;
+}
+
+/* 查询按钮容器 */
+.searchBtnContainer {
+  margin-top: 12px;
+}

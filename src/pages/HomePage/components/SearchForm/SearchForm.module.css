@@ -1,0 +1,124 @@
+.container {
+  padding: 12px;
+  background: linear-gradient(135deg, #39fcff 0%, #f2ffff 100%);
+  border-radius: 12px;
+}
+
+.card {
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* 地点输入区域 */
+.locationInput {
+  display: flex;
+  gap: 8px;
+}
+
+.inputWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: white;
+}
+
+.inputWrapper input {
+  flex: 1;
+  border: none;
+  outline: none;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: #999;
+}
+
+.locationBtn {
+  white-space: nowrap;
+}
+
+/* 日期选择按钮 */
+.dateBtn {
+  text-align: left;
+  color: #666;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* 筛选条件 */
+.filterRow {
+  display: flex;
+  gap: 12px;
+}
+
+.filterItem {
+  flex: 1;
+}
+
+.filterBtn {
+  text-align: left;
+  color: #666;
+  height: 40px;
+}
+
+/* 快捷标签 */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 搜索按钮 */
+.searchBtn {
+  margin-top: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.searchBtn:active {
+  transform: scale(0.98);
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .card {
+    padding: 16px;
+  }
+
+  .section {
+    margin-bottom: 16px;
+  }
+
+  .filterRow {
+    gap: 8px;
+  }
+
+  .tags {
+    gap: 6px;
+  }
+}
