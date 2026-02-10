@@ -46,8 +46,8 @@ export default function App() {
   // 2. 从“地图”中动态生成 TabBar 的标签项
   // 我们找到根路径'/'的配置，并遍历它的子路由
   const tabItems = routes.find(r => r.path === '/')?.children
-    ?.filter(child => child.path && child.title && child.icon)
-    .map(child => ({
+    ?.filter((child: any) => child.path && child.title && child.icon)
+    .map((child: any) => ({
       key: child.path as string,
       title: child.title,
       icon: child.icon,

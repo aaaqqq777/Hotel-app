@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+}
+
+.tagsWrapper {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.tag {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tag:hover {
+  opacity: 0.8;
+}

@@ -39,6 +39,12 @@
   padding: 12px;
 }
 
+.hotelGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .hotelCard {
   margin-bottom: 12px;
   border-radius: 8px;
@@ -180,6 +186,18 @@
   min-height: 400px;
   gap: 16px;
   color: #999;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: white;
+  border-radius: 8px;
+  margin: 12px;
+  padding: 20px;
 }
 
 .emptyState p {

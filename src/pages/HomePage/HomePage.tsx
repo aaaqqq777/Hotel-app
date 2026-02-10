@@ -1,5 +1,4 @@
 // import React from 'react'
-import { Button, TabBar } from 'antd-mobile'
 import Banner from '../HomePage/components/Banner/Banner'
 import SearchForm from './components/SearchForm/SearchForm'
 import styles from './HomePage.module.css'

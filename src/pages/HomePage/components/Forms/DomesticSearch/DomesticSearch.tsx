@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, DatePicker, Input, Space } from 'antd-mobile';
+import { Button, Input, Space } from 'antd-mobile';
 import { LocationOutline } from 'antd-mobile-icons';
 import type { SearchData } from '../../../../../hooks/useSearchLogic'; // 导入类型
 import styles from './DomesticSearch.module.css';
@@ -13,7 +13,7 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
   // --- 只管理自己内部的状态 ---
   const [city, setCity] = useState('北京');
   const [keyword, setKeyword] = useState('');
-  const [dates, setDates] = useState<[Date, Date] | null>(null);
+  const [dates] = useState<[Date, Date] | null>(null);
 
   const handleInternalSearch = () => {
     // --- 汇总自己内部的数据 ---
@@ -33,8 +33,8 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
         {/* 城市选择和定位 */}
         <div className={styles.inputGroup}>
           <Input placeholder="选择城市" value={city} onChange={setCity} />
-          <Button fill="none" className={styles.locationBtn}>
-            <LocationOutline /> 我的位置
+          <Button fill="none" className={styles.locationBtn}  onClick={handleInternalSearch}>
+            <LocationOutline />
           </Button>
         </div>
 
