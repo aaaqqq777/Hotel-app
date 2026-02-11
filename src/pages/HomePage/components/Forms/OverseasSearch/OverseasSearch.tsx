@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, DatePicker, Input, Space } from 'antd-mobile';
 import { LocationOutline } from 'antd-mobile-icons';
-import type { SearchData } from '../../../../../hooks/useSearchLogic'; // 导入类型
+import type { SearchData } from '../../../hooks/useSearchLogic'; // 导入类型
 import styles from './OverseasSearch.module.css';
 
 // 定义该组件接收的 Props：一个 onSearch 函数

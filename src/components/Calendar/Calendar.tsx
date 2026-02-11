@@ -48,9 +48,7 @@ export default function CustomCalendar({ onDateSelect }: CustomCalendarProps) {
     // 把选中的日期“通知”给父组件
     onDateSelect(newSelectedDate);
   };
-
-  // --- UI 渲染 ---
-  // 【第 1 步的 HTML 结构】我们用 JSX 来实现
+  
   return (
     <div className={styles.calendar}>
       <div className={styles.header}>
