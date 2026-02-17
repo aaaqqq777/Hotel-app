@@ -17,10 +17,18 @@ export default function FilterBar({ location, checkInDate }: FilterBarProps) {
     // 未来这里可能会打开一个地图模态框
     // onOpenMapModal(); 
   };
-  
+  const handleBackClick = () => {
+    console.log('用户点击了返回按钮');
+    // 未来这里可能会执行路由返回或者其他逻辑
+    // window.history.back();
+    // navigate(-1); 
+  }
   return (
     <div className={styles.container}>
       {/* 使用 Space 组件来自动处理间距 */}
+      <button className={styles.filterButton} onClick={handleBackClick}>
+        返回
+      </button>
       <div className={styles.left}>
         {/* 城市信息 */}
         {location && (

@@ -4,7 +4,7 @@
   border-radius: var(--radius-md);
 }
 
-/* 国家选择和定位按钮容器 */
+/* 城市输入和定位按钮容器 */
 .inputGroup {
   display: flex;
   gap: var(--spacing-sm);
@@ -63,7 +63,7 @@
   box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
 }
 
-.dateselect {
+.timeselect {
   margin-top: var(--spacing-md);
   padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--border-color);
@@ -77,16 +77,8 @@
   align-items: center;
 }
 
-.dateselect:hover {
+.timeselect:hover {
   border-color: var(--primary-color);
-}
-
-.dateText {
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-  width: 100%;
-  color: var(--text-light);
 }
 
 /* 响应式设计 */
@@ -97,7 +89,7 @@
   
   .inputGroup input,
   .input,
-  .dateselect,
+  .timeselect,
   .locationBtn {
     height: 40px;
     padding: calc(var(--spacing-sm) - 2px) var(--spacing-sm);

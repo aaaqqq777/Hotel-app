@@ -6,7 +6,7 @@ import styles from "./PeriodCalendar.module.css";
 interface PeriodCalendarProps {
   startDate: Date | null;
   endDate: Date | null;
-  onDateChange: (dates:{start: Date | null, end: Date | null}) => void;
+  onDateChange: (newDates:{startDate: Date | null, endDate: Date | null}) => void;
 }
 
 
@@ -34,12 +34,12 @@ export default function PeriodCalendar({startDate, endDate, onDateChange}: Perio
     if (!startDate || (startDate && endDate)) {
       // setStartDate(newSelectedDate);
       // setEndDate(null);
-      onDateChange({ start: newSelectedDate, end: null})
+      onDateChange({ startDate: newSelectedDate, endDate: null})
     } else { // 此时必定是 startDate 存在且 endDate 不存在
       if (newSelectedDate < startDate) {
-        onDateChange({ start: newSelectedDate, end: null})
+        onDateChange({ startDate: newSelectedDate, endDate: null})
       } else {
-        onDateChange({ start: startDate, end: newSelectedDate})
+        onDateChange({ startDate: startDate, endDate: newSelectedDate})
       }
     }
   };

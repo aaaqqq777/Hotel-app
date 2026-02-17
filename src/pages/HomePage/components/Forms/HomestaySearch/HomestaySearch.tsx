@@ -2,35 +2,34 @@ import { useState } from 'react';
 import { Button, Input, Space, Popup } from 'antd-mobile';
 import { LocationOutline } from 'antd-mobile-icons';
 import type { SearchData } from '../../../hooks/useSearchLogic'; // 导入类型
-import styles from './OverseasSearch.module.css';
+import styles from './HomestaySearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
 
 // 定义该组件接收的 Props：一个 onSearch 函数
-interface OverseasSearchFormProps {
+interface HomestaySearchFormProps {
   onSearch: (data: Partial<SearchData>) => void;
 }
 
-// 模拟国家数据
-const COUNTRIES = ['泰国', '日本', '韩国', '新加坡', '马来西亚', '美国', '英国', '法国', '德国', '意大利'];
+// 模拟城市数据
+const CITIES = ['上海', '北京', '广州', '深圳', '杭州', '成都', '南京', '重庆'];
 
-// 模拟酒店品牌数据
-const HOTEL_BRANDS = ['不限', '万豪', '希尔顿', '洲际', '凯悦', '雅高', '香格里拉', '温德姆', '喜达屋', '四季'];
+// 模拟民宿标签数据
+const HOMESTAY_TAGS = ['精品民宿', '海景民宿', '山景民宿', '古镇民宿', '乡村民宿', '城市民宿', '亲子', '情侣', '团建', '宠物友好'];
 
-// 模拟酒店星级数据
-const HOTEL_RATINGS = ['不限', '5星', '4星', '3星及以下'];
+// 模拟房型选项
+const ROOM_TYPE_OPTIONS = ['不限', '单间', '套房', '整栋'];
 
-export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
+export default function HomestaySearch({ onSearch }: HomestaySearchFormProps) {
   // --- 只管理自己内部的状态 ---
-  const [country, setCountry] = useState('泰国'); // 默认国家为泰国
+  const [city, setCity] = useState('上海'); // 默认城市为上海
   const [keyword, setKeyword] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [cityVisible, setCityVisible] = useState(false);
   const [calendarVisible, setCalendarVisible] = useState(false);
-  const [countryVisible, setCountryVisible] = useState(false);
-  const [selectedBrand, setSelectedBrand] = useState('不限');
-  const [selectedRating, setSelectedRating] = useState('不限');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [roomType, setRoomType] = useState('不限');
 
   const handleDateChange = (newDates: { startDate: Date | null; endDate: Date | null }) => {
     setStartDate(newDates.startDate);
@@ -62,11 +61,11 @@ export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
   };
 
   const handleLocation = () => {
-    // 模拟定位功能，限制国家名称长度
+    // 模拟定位功能，限制城市名称长度
     const locationName = '当前位置';
-    // 限制国家名称长度为8个字符，防止影响图标显示
+    // 限制城市名称长度为8个字符，防止影响图标显示
     const truncatedName = locationName.length > 8 ? locationName.substring(0, 8) + '...' : locationName;
-    setCountry(truncatedName);
+    setCity(truncatedName);
   };
 
   const handleTagClick = (tag: string) => {
@@ -82,14 +81,13 @@ export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
   const handleInternalSearch = () => {
     // --- 汇总自己内部的数据 ---
     const formData: Partial<SearchData> = {
-      searchType: 'overseas',
-      city: country, // 使用country作为city字段，保持数据结构一致
+      searchType: 'homestay',
+      city,
       keyword,
       dates: startDate && endDate ? [startDate, endDate] : undefined,
-      brand: selectedBrand !== '不限' ? selectedBrand : undefined,
       tags: [
         ...selectedTags,
-        ...(selectedRating !== '不限' ? [selectedRating] : [])
+        ...(roomType !== '不限' ? [roomType] : [])
       ].filter(Boolean)
     };
     // --- 调用上层传递的 onSearch 函数，把数据交出去 ---
@@ -99,17 +97,17 @@ export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
   return (
     <div className={styles.container}>
       <Space direction="vertical" block style={{ '--gap': '16px' }}>
-        {/* 第一行：国家选择 + 检索词输入 + 定位按钮 */}
+        {/* 第一行：城市选择 + 检索词输入 + 定位按钮 */}
         <div className={styles.inputGroup}>
           <Button 
             fill="outline" 
-            onClick={() => setCountryVisible(true)}
+            onClick={() => setCityVisible(true)}
             style={{ width: '100px' }}
           >
-            {country}
+            {city}
           </Button>
           <Input 
-            placeholder="酒店名称/地标/关键词" 
+            placeholder="民宿名称/地标/关键词" 
             value={keyword} 
             onChange={setKeyword}
             style={{ flex: 1 }}
@@ -129,41 +127,41 @@ export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
           {renderDateText()}
         </div>
 
-        {/* 第三行：酒店品牌标签 */}
+        {/* 第三行：民宿标签 */}
         <div>
           <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: 'var(--text-color)' }}>
-            酒店品牌
+            民宿标签
           </div>
           <Space wrap style={{ '--gap': '8px' }}>
-            {HOTEL_BRANDS.map((brand) => (
+            {HOMESTAY_TAGS.map((tag) => (
               <Button
-                key={brand}
-                fill={selectedBrand === brand ? 'solid' : 'outline'}
-                color={selectedBrand === brand ? 'primary' : 'default'}
+                key={tag}
+                fill={selectedTags.includes(tag) ? 'solid' : 'outline'}
+                color={selectedTags.includes(tag) ? 'primary' : 'default'}
                 size="small"
-                onClick={() => setSelectedBrand(brand)}
+                onClick={() => handleTagClick(tag)}
               >
-                {brand}
+                {tag}
               </Button>
             ))}
           </Space>
         </div>
 
-        {/* 第四行：酒店星级选择 */}
+        {/* 第四行：房型选择 */}
         <div>
           <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: 'var(--text-color)' }}>
-            酒店星级
+            房型选择
           </div>
           <Space wrap style={{ '--gap': '8px' }}>
-            {HOTEL_RATINGS.map((rating) => (
+            {ROOM_TYPE_OPTIONS.map((type) => (
               <Button
-                key={rating}
-                fill={selectedRating === rating ? 'solid' : 'outline'}
-                color={selectedRating === rating ? 'primary' : 'default'}
+                key={type}
+                fill={roomType === type ? 'solid' : 'outline'}
+                color={roomType === type ? 'primary' : 'default'}
                 size="small"
-                onClick={() => setSelectedRating(rating)}
+                onClick={() => setRoomType(type)}
               >
-                {rating}
+                {type}
               </Button>
             ))}
           </Space>
@@ -197,31 +195,31 @@ export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
           </div>
         </Popup>
 
-        {/* 国家选择弹窗 */}
+        {/* 城市选择弹窗 */}
         <Popup
-          visible={countryVisible}
-          onMaskClick={() => setCountryVisible(false)}
+          visible={cityVisible}
+          onMaskClick={() => setCityVisible(false)}
           position="bottom"
           bodyStyle={{ borderTopLeftRadius: '16px', borderTopRightRadius: '16px', height: '70%' }}
         >
           <div style={{ padding: '16px' }}>
-            <h3 style={{ textAlign: 'center', margin: '0 0 16px 0' }}>选择国家</h3>
-            <Input placeholder="搜索国家" />
+            <h3 style={{ textAlign: 'center', margin: '0 0 16px 0' }}>选择城市</h3>
+            <Input placeholder="搜索城市" />
             <div style={{ marginTop: '16px' }}>
-              <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>热门国家</div>
+              <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>热门城市</div>
               <Space wrap style={{ '--gap': '8px' }}>
-                {COUNTRIES.map((countryItem) => (
+                {CITIES.map((cityItem) => (
                   <Button 
-                    key={countryItem}
+                    key={cityItem}
                     fill="outline"
                     onClick={() => {
-                      // 限制国家名称长度为8个字符，防止影响图标显示
-                      const truncatedCountry = countryItem.length > 8 ? countryItem.substring(0, 8) + '...' : countryItem;
-                      setCountry(truncatedCountry);
-                      setCountryVisible(false);
+                      // 限制城市名称长度为8个字符，防止影响图标显示
+                      const truncatedCity = cityItem.length > 8 ? cityItem.substring(0, 8) + '...' : cityItem;
+                      setCity(truncatedCity);
+                      setCityVisible(false);
                     }}
                   >
-                    {countryItem}
+                    {cityItem}
                   </Button>
                 ))}
               </Space>
