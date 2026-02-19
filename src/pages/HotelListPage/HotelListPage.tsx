@@ -58,6 +58,7 @@ function HotelListPage() {
   // 处理查看酒店详情
   const handleViewDetail = (hotelId: string) => {
     navigate(`/detailpage?id=${hotelId}`)
+    // navigate(`/detailpage`)
   }
 
   const handleBackToSearch = () => {

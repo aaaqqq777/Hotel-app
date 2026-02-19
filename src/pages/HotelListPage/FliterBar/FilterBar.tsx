@@ -46,7 +46,11 @@ export default function FilterBar({ location, checkInDate }: FilterBarProps) {
           </div>
         )}
       </div>
-
+      <input
+        className={styles.searchInput}
+        type="text"
+        placeholder="搜索酒店"
+      />
       <div className={styles.right}>
         <button className={styles.mapButton} onClick={handleMapClick}>
           <EnvironmentOutline />

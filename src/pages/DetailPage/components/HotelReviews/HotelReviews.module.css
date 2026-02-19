@@ -1,0 +1,197 @@
+.container {
+  padding: 16px;
+  background-color: white;
+  margin-top: 8px;
+  border-radius: 8px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.viewButton {
+  font-size: 14px;
+  color: #1677ff;
+  padding: 0;
+}
+
+.ratingSummary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.ratingMain {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.ratingValue {
+  font-size: 32px;
+  font-weight: 600;
+  color: #ff4d4f;
+}
+
+.ratingLabel {
+  font-size: 16px;
+  color: #666;
+}
+
+.ratingDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ratingItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ratingStar {
+  font-size: 12px;
+  color: #999;
+  width: 40px;
+}
+
+.ratingBar {
+  flex: 1;
+  height: 6px;
+  background-color: #f5f5f5;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ratingBarFill {
+  height: 100%;
+  background-color: #ffd700;
+  border-radius: 3px;
+}
+
+.ratingPercent {
+  font-size: 12px;
+  color: #999;
+  width: 40px;
+  text-align: right;
+}
+
+.reviewList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reviewHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.reviewDate {
+  font-size: 12px;
+  color: #999;
+}
+
+.reviewRating {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 12px;
+  color: #f5f5f5;
+}
+
+.star.active {
+  color: #ffd700;
+}
+
+.reviewContent {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.reviewImages {
+  display: flex;
+  gap: 8px;
+}
+
+.reviewImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 12px 16px;
+  }
+  
+  .header {
+    margin-bottom: 12px;
+  }
+  
+  .title {
+    font-size: 15px;
+  }
+  
+  .ratingSummary {
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .ratingValue {
+    font-size: 24px;
+  }
+  
+  .ratingLabel {
+    font-size: 14px;
+  }
+  
+  .reviewList {
+    gap: 16px;
+  }
+  
+  .reviewItem {
+    gap: 8px;
+  }
+  
+  .reviewContent {
+    font-size: 13px;
+  }
+  
+  .reviewImage {
+    width: 60px;
+    height: 60px;
+  }
+}
