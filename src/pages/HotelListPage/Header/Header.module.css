@@ -1,0 +1,141 @@
+
+.container {
+  padding: 12px 16px;
+  background-color: white;
+  border-bottom: 1px solid #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.backButton {
+  flex-shrink: 0;
+}
+
+/* 新搜索摘要容器 - 核心样式 */
+.newSearchSummary {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 44px;
+}
+
+/* 地点部分 */
+.locationSection {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.locationText {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 分隔线 */
+.divider {
+  width: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 8px 0;
+}
+
+/* 日期部分 */
+.dateSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dateItem {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.2;
+}
+
+/* 搜索框部分 */
+.searchSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  min-width: 0;
+}
+
+/* 搜索图标 */
+.searchIcon {
+  width: 14px;
+  height: 14px;
+  color: #999;
+  flex-shrink: 0;
+}
+
+/* 搜索输入框 */
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: #333;
+  outline: none;
+  min-width: 0;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+/* 搜索输入框 - 兼容旧样式 */
+.searchBox .searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: #333;
+  outline: none;
+}
+
+.searchBox .searchInput::placeholder {
+  color: #999;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mapButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #1890ff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.mapButton:hover {
+  background-color: #f5f5f5;
+  border-color: #d9d9d9;
+}
+
+.mapButton:active {
+  background-color: #efefef;
+}

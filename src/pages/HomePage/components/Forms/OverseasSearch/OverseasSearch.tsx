@@ -6,9 +6,11 @@ import styles from './OverseasSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
 
-// 定义该组件接收的 Props：一个 onSearch 函数
+// 定义该组件接收的 Props
 interface OverseasSearchFormProps {
-  onSearch: (data: Partial<SearchData>) => void;
+  value: Partial<SearchData>;
+  onChange: (data: Partial<SearchData>) => void;
+  onSearch: () => void;
 }
 
 // 模拟国家数据
@@ -20,7 +22,7 @@ const HOTEL_BRANDS = ['不限', '万豪', '希尔顿', '洲际', '凯悦', '雅�
 // 模拟酒店星级数据
 const HOTEL_RATINGS = ['不限', '5星', '4星', '3星及以下'];
 
-export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
+export default function OverseasSearch({ value, onChange, onSearch }: OverseasSearchFormProps) {
   // --- 只管理自己内部的状态 ---
   const [country, setCountry] = useState('泰国'); // 默认国家为泰国
   const [keyword, setKeyword] = useState('');
@@ -92,8 +94,12 @@ export default function OverseasSearch({ onSearch }: OverseasSearchFormProps) {
         ...(selectedRating !== '不限' ? [selectedRating] : [])
       ].filter(Boolean)
     };
-    // --- 调用上层传递的 onSearch 函数，把数据交出去 ---
-    onSearch(formData);
+    
+    // 更新上层状态
+    onChange(formData);
+    
+    // 调用上层传递的 onSearch 函数
+    onSearch();
   };
 
   return (

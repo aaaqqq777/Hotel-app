@@ -1,7 +1,7 @@
 // src/api/hotelsearch/hotelsearch.ts
 import { apiClient } from '../config';
 import type { Hotel, SearchParams, HotelDetail, Review, RoomType, Facility } from '../../types/hotel';
-import { MOCK_HOTEL_IMAGES, MOCK_HOTEL_FACILITIES, MOCK_HOTEL_REVIEWS, MOCK_ROOM_TYPES, MOCK_ROOMS, MOCK_SEARCH_SUGGESTIONS } from '../../data/hotelDetail';
+import { MOCK_HOTEL_IMAGES, MOCK_HOTEL_FACILITIES, MOCK_HOTEL_REVIEWS, MOCK_ROOM_TYPES, MOCK_ROOMS, MOCK_SEARCH_SUGGESTIONS, MOCK_HOTEL_DETAILS } from '../../data/hotelDetail';
 import { MOCK_HOTELS } from '../../data/hotels';
 
 // 获取酒店详情
@@ -11,7 +11,12 @@ export async function getHotelDetail(hotelId: string): Promise<HotelDetail> {
     return response.data;
   } catch (error) {
     console.error('Failed to get hotel detail:', error);
-    // 返回模拟数据
+    // 返回模拟数据，根据酒店ID返回不同的详情
+    const hotelDetail = MOCK_HOTEL_DETAILS[hotelId];
+    if (hotelDetail) {
+      return hotelDetail;
+    }
+    // 如果没有对应ID的酒店详情，返回默认数据
     return {
       id: hotelId,
       name: `豪华酒店 ${hotelId}`,

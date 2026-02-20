@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
-import { DownOutline, UnorderedListOutline } from 'antd-mobile-icons'
+import { DownOutline, FilterOutline, UnorderedListOutline } from 'antd-mobile-icons'
 import styles from './SortBar.module.css'
+import { Popup } from 'antd-mobile'
 
 export type SortType = 'price-asc' | 'price-desc' | 'rating' | 'default'
 
@@ -17,20 +18,22 @@ interface SortBarProps {
 }
 
 const sortOptions = [
-  { label: '默认排序', value: 'default' as SortType },
+  { label: '推荐排序', value: 'default' as SortType },
   { label: '价格低到高', value: 'price-asc' as SortType },
   { label: '价格高到低', value: 'price-desc' as SortType },
+  { label: '评分从高到低', value: 'rating' as SortType },
 ]
 
 const ratingOptions = ['全部', '5星', '4星', '3星及以下']
 const priceRangeOptions = ['全部', '100以下', '100-300', '300-600', '600以上']
 const scoreOptions = ['全部', '4.8分以上', '4.5分以上', '4.0分以上']
+const distanceOptions = ['全部', '1公里内', '3公里内', '5公里内', '10公里内']
 
 export default function SortBar({ 
   currentSort, 
   onSortChange, 
   onFilterClick,
-  selectedPrice = '价格',
+  selectedPrice = '品牌价格',
   onPriceChange,
   selectedRating = '星级',
   onRatingChange,
@@ -38,27 +41,38 @@ export default function SortBar({
   onScoreChange
 }: SortBarProps) {
   const [openMenu, setOpenMenu] = useState<string | null>(null)
+  const [filterVisible, setFilterVisible] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const currentLabel = sortOptions.find(opt => opt.value === currentSort)?.label || '排序'
+  const currentLabel = sortOptions.find(opt => opt.value === currentSort)?.label || '推荐排序'
 
   const handleSortSelect = (value: SortType) => {
     onSortChange(value)
     setOpenMenu(null)
   }
 
-  const handleOptionSelect = (value: string, type: 'price' | 'rating' | 'score') => {
+  const handleOptionSelect = (value: string, type: 'price' | 'rating' | 'score' | 'distance') => {
     if (type === 'price') onPriceChange?.(value)
     if (type === 'rating') onRatingChange?.(value)
     if (type === 'score') onScoreChange?.(value)
     setOpenMenu(null)
   }
 
-  const DropdownButton = ({
-    label,
-    menuKey,
-    options,
-    onSelect,
+  const handleFilterClick = () => {
+    // 只打开筛选面板，不执行其他操作
+    setFilterVisible(true)
+    // 移除对onFilterClick的调用，避免可能的冲突
+  };
+
+  const handleFilterClose = () => {
+    setFilterVisible(false)
+  }
+
+  const DropdownButton = ({ 
+    label, 
+    menuKey, 
+    options, 
+    onSelect, 
   }: {
     label: string
     menuKey: string
@@ -93,31 +107,7 @@ export default function SortBar({
   return (
     <div className={styles.container} ref={containerRef}>
       <div className={styles.buttonGroup}>
-        {/* 价格 */}
-        <DropdownButton
-          label={selectedPrice}
-          menuKey="price"
-          options={priceRangeOptions}
-          onSelect={(value) => handleOptionSelect(value, 'price')}
-        />
-
-        {/* 星级 */}
-        <DropdownButton
-          label={selectedRating}
-          menuKey="rating"
-          options={ratingOptions}
-          onSelect={(value) => handleOptionSelect(value, 'rating')}
-        />
-
-        {/* 评分
-        <DropdownButton
-          label={selectedScore}
-          menuKey="score"
-          options={scoreOptions}
-          onSelect={(value) => handleOptionSelect(value, 'score')}
-        /> */}
-
-        {/* 排序 */}
+        {/* 推荐排序 */}
         <div className={styles.dropdownWrapper}>
           <button
             className={styles.dropdownBtn}
@@ -141,13 +131,155 @@ export default function SortBar({
             </div>
           )}
         </div>
-      
 
-      {/* 高级筛选按钮 */}
-      <button className={styles.buttonGroup} onClick={onFilterClick} title="筛选">
-        <UnorderedListOutline />
-      </button>
+        {/* 品牌价格 */}
+        <DropdownButton
+          label={selectedPrice}
+          menuKey="price"
+          options={priceRangeOptions}
+          onSelect={(value) => handleOptionSelect(value, 'price')}
+        />
+
+        {/* 位置距离 */}
+        <DropdownButton
+          label="位置距离"
+          menuKey="distance"
+          options={distanceOptions}
+          onSelect={(value) => handleOptionSelect(value, 'distance')}
+        />
+
+        {/* 筛选 */}
+        <button 
+          className={styles.dropdownBtn}
+          onClick={handleFilterClick}
+          title="筛选"
+        >
+          <span className={styles.btnText}>筛选</span>
+          <DownOutline className={styles.downIcon} />
+        </button>
+
       </div>
+
+      {/* 筛选面板 */}
+      <Popup
+        visible={filterVisible}
+        onMaskClick={handleFilterClose}
+        position="bottom"
+        bodyStyle={{ 
+          borderTopLeftRadius: '16px', 
+          borderTopRightRadius: '16px', 
+          height: '70%'
+        }}
+      >
+        <div style={{ padding: '16px' }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            marginBottom: '16px'
+          }}>
+            <h3 style={{ margin: 0 }}>筛选条件</h3>
+            <button 
+              onClick={handleFilterClose}
+              style={{ 
+                background: 'none', 
+                border: 'none', 
+                fontSize: '16px', 
+                cursor: 'pointer'
+              }}
+            >
+              关闭
+            </button>
+          </div>
+
+          {/* 星级筛选 */}
+          <div style={{ marginBottom: '20px' }}>
+            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>酒店星级</h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              {ratingOptions.map((rating) => (
+                <button
+                  key={rating}
+                  style={{
+                    padding: '6px 12px',
+                    border: '1px solid #e8e8e8',
+                    borderRadius: '4px',
+                    background: selectedRating === rating ? '#1890ff' : 'white',
+                    color: selectedRating === rating ? 'white' : '#333',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => onRatingChange?.(rating)}
+                >
+                  {rating}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 价格范围筛选 */}
+          <div style={{ marginBottom: '20px' }}>
+            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>价格范围</h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              {priceRangeOptions.map((price) => (
+                <button
+                  key={price}
+                  style={{
+                    padding: '6px 12px',
+                    border: '1px solid #e8e8e8',
+                    borderRadius: '4px',
+                    background: selectedPrice === price ? '#1890ff' : 'white',
+                    color: selectedPrice === price ? 'white' : '#333',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => onPriceChange?.(price)}
+                >
+                  {price}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 评分筛选 */}
+          <div style={{ marginBottom: '20px' }}>
+            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>用户评分</h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              {scoreOptions.map((score) => (
+                <button
+                  key={score}
+                  style={{
+                    padding: '6px 12px',
+                    border: '1px solid #e8e8e8',
+                    borderRadius: '4px',
+                    background: selectedScore === score ? '#1890ff' : 'white',
+                    color: selectedScore === score ? 'white' : '#333',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => onScoreChange?.(score)}
+                >
+                  {score}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 确认按钮 */}
+          <button
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: '#1890ff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+            onClick={handleFilterClose}
+          >
+            确定
+          </button>
+        </div>
+      </Popup>
     </div>
   )
 }

@@ -5,10 +5,19 @@ import type { SearchData } from './useSearchLogic';
 export function useSearchParams() {
   const [params, setParams] = useState<Partial<SearchData>>({
     searchType: 'domestic',
+    city: '上海', // 为domestic类型设置默认城市
   });
 
   const updateParams = (partial: Partial<SearchData>) => {
-    setParams(prev => ({ ...prev, ...partial }));
+    // 使用函数式更新，确保获取最新状态
+    setParams(prev => {
+      const newParams = { ...prev, ...partial };
+      // 确保domestic类型始终有城市值
+      if (newParams.searchType === 'domestic' && !newParams.city) {
+        newParams.city = '上海';
+      }
+      return newParams;
+    });
   };
 
   return {

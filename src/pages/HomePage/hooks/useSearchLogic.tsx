@@ -20,14 +20,20 @@ export function useSearchLogic() {
   const handleFinalSearch = (data: Partial<SearchData>) => {
     console.log('采集到的最终搜索信息:', data);
 
-    // 1. 数据校验
+    // 1. 数据校验和默认值处理
+    // 确保domestic类型始终有城市值
     if (data.searchType === 'domestic' && !data.city) {
-      Toast.show('请选择城市');
-      return;
+      data.city = '上海';
+      console.log('使用默认城市: 上海');
     }
+        // 修改 useSearchLogic.tsx 中的校验逻辑
     if (data.searchType !== 'hourly' && !data.dates) {
-      Toast.show('请选择入住日期');
-      return;
+      // 设置默认日期：今天入住，明天离店
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+      data.dates = [today, tomorrow];
+      console.log('使用默认日期范围:', data.dates);
     }
 
     // 2. 将数据对象转换为 URL 查询字符串
@@ -46,7 +52,7 @@ export function useSearchLogic() {
 
     // 3. 执行跳转
     Toast.show({ content: '正在查询...', icon: 'loading' });
-    navigate(`/list?${params.toString()}`);
+    navigate(`/Hotellist?${params.toString()}`);
   };
 
   // 返回这个核心函数

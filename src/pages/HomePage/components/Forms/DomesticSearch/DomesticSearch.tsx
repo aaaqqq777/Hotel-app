@@ -6,9 +6,11 @@ import styles from './DomesticSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
 
-// 定义该组件接收的 Props：一个 onSearch 函数
+// 定义该组件接收的 Props
 interface DomesticSearchFormProps {
-  onSearch: (data: Partial<SearchData>) => void;
+  value: Partial<SearchData>;
+  onChange: (data: Partial<SearchData>) => void;
+  onSearch: () => void;
 }
 
 // 模拟城市常用标签数据
@@ -30,9 +32,10 @@ const HOTEL_BRANDS = ['不限', '万豪', '希尔顿', '洲际', '凯悦', '雅�
 // 模拟酒店星级数据
 const HOTEL_RATINGS = ['不限', '5星', '4星', '3星及以下'];
 
-export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
+export default function DomesticSearch({ value, onChange, onSearch }: DomesticSearchFormProps) {
   // --- 只管理自己内部的状态 ---
-  const [city, setCity] = useState('上海'); // 默认城市为上海
+  // 使用value.city作为初始值，如果没有则使用上海
+  const [city, setCity] = useState(value.city || '上海');
   const [keyword, setKeyword] = useState('');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -41,7 +44,14 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
   const [selectedBrand, setSelectedBrand] = useState('不限');
   const [selectedRating, setSelectedRating] = useState('不限');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [cityTags, setCityTags] = useState<string[]>(CITY_TAGS['上海'] || []); // 默认显示上海的标签
+  const [cityTags, setCityTags] = useState<string[]>(CITY_TAGS[city] || CITY_TAGS['上海']);
+
+  // 当外部value变化时，更新内部状态
+  useEffect(() => {
+    if (value.city && value.city !== city) {
+      setCity(value.city);
+    }
+  }, [value.city]);
 
   // 当城市变化时，更新城市标签
   useEffect(() => {
@@ -101,7 +111,7 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
     // --- 汇总自己内部的数据 ---
     const formData: Partial<SearchData> = {
       searchType: 'domestic',
-      city,
+      city: city || '上海', // 确保城市值存在
       keyword,
       dates: startDate && endDate ? [startDate, endDate] : undefined,
       brand: selectedBrand !== '不限' ? selectedBrand : undefined,
@@ -110,8 +120,14 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
         ...(selectedRating !== '不限' ? [selectedRating] : [])
       ].filter(Boolean)
     };
-    // --- 调用上层传递的 onSearch 函数，把数据交出去 ---
-    onSearch(formData);
+    
+    // 更新上层状态
+    onChange(formData);
+    
+    // 使用setTimeout确保状态更新后再调用搜索
+    setTimeout(() => {
+      onSearch();
+    }, 0);
   };
 
   return (
@@ -152,45 +168,49 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
           <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: 'var(--text-color)' }}>
             热门地标
           </div>
-          <Space wrap style={{ '--gap': '8px' }}>
-            {cityTags.map((tag) => (
-              <Button
-                key={tag}
-                fill={selectedTags.includes(tag) ? 'solid' : 'outline'}
-                color={selectedTags.includes(tag) ? 'primary' : 'default'}
-                size="small"
-                onClick={() => handleTagClick(tag)}
-              >
-                {tag}
-              </Button>
-            ))}
-          </Space>
+          <div className={styles.tagContainer}>
+            <div className={styles.tagScroll}>
+              {cityTags.map((tag) => (
+                <Button
+                  key={tag}
+                  fill={selectedTags.includes(tag) ? 'solid' : 'outline'}
+                  color={selectedTags.includes(tag) ? 'primary' : 'default'}
+                  size="small"
+                  onClick={() => handleTagClick(tag)}
+                  style={{ marginRight: '8px', whiteSpace: 'nowrap', flexShrink: 0 }}
+                >
+                  {tag}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* 第四行：酒店品牌和星级选择 */}
         <div>
-          <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: 'var(--text-color)' }}>
-            酒店筛选
-          </div>
+
           
           {/* 酒店品牌 */}
           <div style={{ marginBottom: '12px' }}>
             <div style={{ marginBottom: '8px', fontSize: '13px', color: 'var(--text-light)' }}>
               酒店品牌
             </div>
-            <Space wrap style={{ '--gap': '8px' }}>
-              {HOTEL_BRANDS.map((brand) => (
-                <Button
-                  key={brand}
-                  fill={selectedBrand === brand ? 'solid' : 'outline'}
-                  color={selectedBrand === brand ? 'primary' : 'default'}
-                  size="small"
-                  onClick={() => setSelectedBrand(brand)}
-                >
-                  {brand}
-                </Button>
-              ))}
-            </Space>
+            <div className={styles.tagContainer}>
+              <div className={styles.tagScroll}>
+                {HOTEL_BRANDS.map((brand) => (
+                  <Button
+                    key={brand}
+                    fill={selectedBrand === brand ? 'solid' : 'outline'}
+                    color={selectedBrand === brand ? 'primary' : 'default'}
+                    size="small"
+                    onClick={() => setSelectedBrand(brand)}
+                    style={{ marginRight: '8px', whiteSpace: 'nowrap', flexShrink: 0 }}
+                  >
+                    {brand}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </div>
           
           {/* 酒店星级 */}
@@ -198,19 +218,22 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
             <div style={{ marginBottom: '8px', fontSize: '13px', color: 'var(--text-light)' }}>
               酒店星级
             </div>
-            <Space wrap style={{ '--gap': '8px' }}>
-              {HOTEL_RATINGS.map((rating) => (
-                <Button
-                  key={rating}
-                  fill={selectedRating === rating ? 'solid' : 'outline'}
-                  color={selectedRating === rating ? 'primary' : 'default'}
-                  size="small"
-                  onClick={() => setSelectedRating(rating)}
-                >
-                  {rating}
-                </Button>
-              ))}
-            </Space>
+            <div className={styles.tagContainer}>
+              <div className={styles.tagScroll}>
+                {HOTEL_RATINGS.map((rating) => (
+                  <Button
+                    key={rating}
+                    fill={selectedRating === rating ? 'solid' : 'outline'}
+                    color={selectedRating === rating ? 'primary' : 'default'}
+                    size="small"
+                    onClick={() => setSelectedRating(rating)}
+                    style={{ marginRight: '8px', whiteSpace: 'nowrap', flexShrink: 0 }}
+                  >
+                    {rating}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -277,4 +300,3 @@ export default function DomesticSearch({ onSearch }: DomesticSearchFormProps) {
     </div>
   );
 }
-

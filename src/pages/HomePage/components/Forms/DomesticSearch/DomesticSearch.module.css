@@ -53,3 +53,32 @@
   align-items: center;
   width: 100%;
 }
+
+/* 标签容器 */
+.tagContainer {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+/* 标签滚动容器 */
+.tagScroll {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  /* 隐藏滚动条但保留滚动功能 */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 标签按钮样式 */
+.tagScroll .adm-button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 隐藏滚动条 */
+.tagScroll::-webkit-scrollbar {
+  display: none;
+}

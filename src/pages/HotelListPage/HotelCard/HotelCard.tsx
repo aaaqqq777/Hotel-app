@@ -19,64 +19,74 @@ const tagLabels: Record<string, string> = {
 }
 
 export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
+  // 计算折扣价格（模拟）
+  const discountPrice = Math.floor(hotel.price * 0.85);
+  
+  // 模拟评价数量
+  const reviewCount = Math.floor(Math.random() * 5000) + 100;
+  
+  // 模拟评分（4.0-4.9之间）
+  const rating = (4 + Math.random() * 0.9).toFixed(1);
+  
+  // 模拟评分等级
+  const ratingLevel = Number(rating) >= 4.5 ? '很棒' : Number(rating) >= 4.0 ? '不错' : '一般';
+
   return (
-    <Card className={styles.card}>
-      {/* 酒店图片 */}
-      <img src={hotel.image} alt={hotel.name} className={styles.image} />
+    <Card className={styles.card} onClick={() => onViewDetail(hotel.id)}>
+      <div className={styles.container}>
+        {/* 左边：酒店图片 */}
+        <div className={styles.imageContainer}>
+          <img src={hotel.image} alt={hotel.name} className={styles.image} />
+        </div>
 
-      {/* 酒店信息 */}
-      <div className={styles.content}>
-        {/* 标题和星级 */}
-        <div className={styles.header}>
+        {/* 右边：酒店信息 */}
+        <div className={styles.content}>
+          {/* 酒店名称 */}
           <h3 className={styles.name}>{hotel.name}</h3>
-          <div className={styles.rating}>
-            {Array.from({ length: hotel.starLevel }).map((_, i) => (
-              <StarFill key={i} className={styles.star} />
-            ))}
-            <span className={styles.ratingText}>({hotel.starLevel}星)</span>
+          
+          {/* 评分和评价数量 */}
+          <div className={styles.ratingContainer}>
+            <Tag color="primary" className={styles.ratingTag}>
+              {rating} {ratingLevel}
+            </Tag>
+            <span className={styles.reviewCount}>{reviewCount}条评价</span>
           </div>
-        </div>
-
-        {/* 位置 */}
-        <div className={styles.location}>
-          <EnvironmentOutline className={styles.icon} />
-          <span>{hotel.location}</span>
-        </div>
-
-        {/* 描述 */}
-        <p className={styles.description}>{hotel.description}</p>
-
-        {/* 标签 */}
-        {hotel.tags.length > 0 && (
-          <div className={styles.tags}>
-            {hotel.tags.slice(0, 3).map((tag) => (
-              <Tag key={tag} color="primary" className={styles.tag}>
-                {tagLabels[tag] || tag}
-              </Tag>
-            ))}
-            {hotel.tags.length > 3 && (
-              <Tag color="default" className={styles.tag}>
-                +{hotel.tags.length - 3}
-              </Tag>
-            )}
+          
+          {/* 位置信息 */}
+          <div className={styles.location}>
+            <EnvironmentOutline className={styles.icon} />
+            <span>{hotel.location}</span>
           </div>
-        )}
-
-        {/* 底部：价格和按钮 */}
-        <div className={styles.footer}>
-          <div className={styles.price}>
-            <span className={styles.currency}>¥</span>
-            <span className={styles.amount}>{hotel.price}</span>
-            <span className={styles.unit}>/晚</span>
+          
+          {/* 标签 */}
+          {hotel.tags.length > 0 && (
+            <div className={styles.tags}>
+              {hotel.tags.slice(0, 3).map((tag) => (
+                <Tag key={tag} color="default" className={styles.tag}>
+                  {tagLabels[tag] || tag}
+                </Tag>
+              ))}
+              {hotel.tags.length > 3 && (
+                <Tag color="default" className={styles.tag}>
+                  +{hotel.tags.length - 3}
+                </Tag>
+              )}
+            </div>
+          )}
+          
+          {/* 价格信息 */}
+          <div className={styles.priceContainer}>
+            <div className={styles.price}>
+              <span className={styles.currency}>¥</span>
+              <span className={styles.discountAmount}>{discountPrice}</span>
+              <span className={styles.originalPrice}>¥{hotel.price}</span>
+              <span className={styles.unit}>起</span>
+            </div>
+            <div className={styles.discountInfo}>
+              <span className={styles.discountBadge}>立减券</span>
+              <span className={styles.discountText}>2项优惠{Math.floor(hotel.price - discountPrice)}</span>
+            </div>
           </div>
-          <Button
-            size="small"
-            color="primary"
-            onClick={() => onViewDetail(hotel.id)}
-            className={styles.btn}
-          >
-            查看详情
-          </Button>
         </div>
       </div>
     </Card>
