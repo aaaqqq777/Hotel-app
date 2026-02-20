@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Button, Empty } from 'antd-mobile'
 import styles from './HotelListPage.module.css'
@@ -21,6 +21,18 @@ function HotelListPage() {
   const [selectedPrice, setSelectedPrice] = useState('价格')
   const [selectedRating, setSelectedRating] = useState('星级')
   const [selectedScore, setSelectedScore] = useState('评分')
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  // 滚动事件监听
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      setIsScrolled(scrollTop > 100) // 滚动超过100px时显示仅选中标签
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // 获取搜索参数
   const location = searchParams.get('city') || searchParams.get('location') || ''
@@ -174,16 +186,15 @@ function HotelListPage() {
         )}
       </div>
 
-      {/* 非固定显示未选中的标签 */}
-      {selectedTags.length === 0 && (
-        <div className={styles.tagsContainer}>
-          <QuickTagsBar
-            tags={QUICK_TAGS}
-            selectedTags={selectedTags}
-            onTagClick={handleTagClick}
-          />
-        </div>
-      )}
+      {/* 根据滚动状态显示标签：回到顶部时显示所有标签，滑动时只显示选中标签 */}
+      <div className={styles.tagsContainer}>
+        <QuickTagsBar
+          tags={QUICK_TAGS}
+          selectedTags={selectedTags}
+          onTagClick={handleTagClick}
+          showOnlySelected={isScrolled}
+        />
+      </div>
 
       {/* 酒店列表 */}
       <div className={styles.hotelList}>

@@ -1,7 +1,7 @@
 /* src/components/CustomCalendar/Calendar.module.css */
 
 .calendar {
-  width: 350px;
+  flex: 1;
   border: 1px solid #eee;
   border-radius: 8px;
   padding: 16px;

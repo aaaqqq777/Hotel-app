@@ -1,5 +1,5 @@
-import { Card, Tag, Button } from 'antd-mobile'
-import { StarFill, EnvironmentOutline } from 'antd-mobile-icons'
+import { Card, Tag } from 'antd-mobile'
+import { StarFill, EnvironmentOutline, VideoOutline } from 'antd-mobile-icons'
 import styles from './HotelCard.module.css'
 import type { Hotel } from '../../../data/types'
 
@@ -16,6 +16,8 @@ const tagLabels: Record<string, string> = {
   wifi: 'WiFi免费',
   breakfast: '有早餐',
   pool: '游泳池',
+  laundry: '自助洗衣',
+  points: '2.5倍积分',
 }
 
 export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
@@ -31,55 +33,71 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
   // 模拟评分等级
   const ratingLevel = Number(rating) >= 4.5 ? '很棒' : Number(rating) >= 4.0 ? '不错' : '一般';
 
+  // 模拟酒店类型
+  const hotelType = '舒适型';
+
+  // 模拟位置信息
+  const locationInfo = '浦江镇地区 | 近上海新国际博览中心B';
+
+  // 模拟酒店描述
+  const hotelDescription = '新品全季-近东方体育中心、世博、迪士尼';
+
   return (
     <Card className={styles.card} onClick={() => onViewDetail(hotel.id)}>
       <div className={styles.container}>
         {/* 左边：酒店图片 */}
         <div className={styles.imageContainer}>
           <img src={hotel.image} alt={hotel.name} className={styles.image} />
+          {/* 视频图标 */}
+          <div className={styles.videoIcon}>
+            <VideoOutline />
+          </div>
         </div>
 
         {/* 右边：酒店信息 */}
         <div className={styles.content}>
-          {/* 酒店名称 */}
-          <h3 className={styles.name}>{hotel.name}</h3>
+          {/* 酒店名称和类型 */}
+          <div className={styles.nameContainer}>
+            <h3 className={styles.name}>{hotel.name}</h3>
+            <span className={styles.hotelType}>{hotelType}</span>
+          </div>
           
           {/* 评分和评价数量 */}
           <div className={styles.ratingContainer}>
-            <Tag color="primary" className={styles.ratingTag}>
-              {rating} {ratingLevel}
-            </Tag>
+            <span className={styles.ratingScore}>{rating}</span>
+            <span className={styles.ratingLevel}>{ratingLevel}</span>
             <span className={styles.reviewCount}>{reviewCount}条评价</span>
           </div>
           
           {/* 位置信息 */}
           <div className={styles.location}>
-            <EnvironmentOutline className={styles.icon} />
-            <span>{hotel.location}</span>
+            <span>{locationInfo}</span>
           </div>
           
           {/* 标签 */}
-          {hotel.tags.length > 0 && (
-            <div className={styles.tags}>
-              {hotel.tags.slice(0, 3).map((tag) => (
-                <Tag key={tag} color="default" className={styles.tag}>
-                  {tagLabels[tag] || tag}
-                </Tag>
-              ))}
-              {hotel.tags.length > 3 && (
-                <Tag color="default" className={styles.tag}>
-                  +{hotel.tags.length - 3}
-                </Tag>
-              )}
-            </div>
-          )}
+          <div className={styles.tags}>
+            <Tag color="gold" className={styles.tag}>
+              2.5倍积分
+            </Tag>
+            <Tag color="default" className={styles.tag}>
+              免费停车
+            </Tag>
+            <Tag color="default" className={styles.tag}>
+              自助洗衣
+            </Tag>
+          </div>
           
+          {/* 酒店描述链接 */}
+          <div className={styles.description}>
+            <a href="#" className={styles.descriptionLink}>{hotelDescription}</a>
+          </div>
+
           {/* 价格信息 */}
           <div className={styles.priceContainer}>
             <div className={styles.price}>
+              <span className={styles.originalPrice}>¥{hotel.price}</span>
               <span className={styles.currency}>¥</span>
               <span className={styles.discountAmount}>{discountPrice}</span>
-              <span className={styles.originalPrice}>¥{hotel.price}</span>
               <span className={styles.unit}>起</span>
             </div>
             <div className={styles.discountInfo}>

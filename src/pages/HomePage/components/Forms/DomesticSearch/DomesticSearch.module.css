@@ -4,6 +4,138 @@
   border-radius: 8px;
 }
 
+/* 隐藏按钮边界线 */
+.adm-button {
+  --adm-button-border-width: 0;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* 调整输入框样式 */
+.adm-input {
+  --adm-input-border-width: 0;
+  border: none !important;
+  background: #fff;
+  border-radius: 4px;
+}
+
+/* 调整日期选择和筛选按钮样式 */
+.dateselect,
+.filterButton {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  min-height: 60px;
+}
+
+/* 鼠标悬停效果 */
+.dateselect:hover,
+.filterButton:hover {
+  background: #f5f5f5;
+}
+
+/* 日期选择容器 */
+.dateselect {
+  flex: 3;
+  padding: 10px 12px;
+  white-space: nowrap;
+  /* overflow: hidden; */
+}
+
+/* 筛选按钮 */
+.filterButton {
+  padding: 10px 12px;
+  white-space: nowrap;
+  /* min-width: 80px; */
+  text-align: center;
+  flex: 1;
+  max-width: 150px;
+}
+
+/* 日期文本容器 */
+.dateText {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* 日期标签 */
+.dateLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #999;
+  white-space: nowrap;
+}
+
+/* 日期值 */
+.dateValue {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* 日期值内部容器 */
+.dateValue span {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 开始日期 */
+.startDate {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 结束日期 */
+.endDate {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+/* 晚数信息 */
+.nightsInfo {
+  font-size: 14px;
+  color: #999;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+/* 日期选择和筛选按钮容器 */
+.dateFilterRow {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  margin-top: 12px;
+  width: 100%;
+  /* overflow: hidden; */
+}
+
+/* 搜索按钮样式 */
+.searchButton {
+  margin-top: 16px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
 /* 城市输入和定位按钮容器 */
 .inputGroup {
   display: flex;
@@ -27,6 +159,78 @@
   padding: 8px 12px;
   font-size: 14px;
   white-space: nowrap;
+  width: 44px;
+}
+
+/* 城市按钮 */
+.cityButton {
+  width: 80px;
+}
+
+/* 搜索输入框 */
+.searchInput {
+  flex: 1;
+}
+
+/* 垂直空间 */
+.verticalSpace {
+  --gap: 16px;
+}
+
+/* 水平空间 */
+.horizontalSpace {
+  --gap: 8px;
+}
+
+/* 日历选择弹窗 */
+.calendarPopup {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+/* 城市选择弹窗 */
+.cityPopup {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  height: 70%;
+}
+
+/* 筛选标签弹窗 */
+.filterPopup {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  height: 80%;
+}
+
+/* 弹窗内容 */
+.popupContent {
+  padding: 16px;
+}
+
+/* 弹窗标题 */
+.popupTitle {
+  text-align: center;
+  margin: 0 0 16px 0;
+}
+
+/* 弹窗中的部分容器 */
+.sectionContainer {
+  margin-bottom: 16px;
+}
+
+/* 弹窗中的部分标题 */
+.sectionTitle {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color, #333);
+}
+
+/* 弹窗中的部分副标题 */
+.sectionSubtitle {
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--text-light, #999);
 }
 
 /* 搜索表单中的输入框 */
@@ -37,28 +241,11 @@
   font-size: 14px;
 }
 
-.dateselect {
-  margin-top: 12px;
-  padding: 10px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  background: #fff;
-}
-
-.dateText {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
 /* 标签容器 */
 .tagContainer {
   width: 100%;
   overflow: hidden;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 /* 标签滚动容器 */
@@ -66,19 +253,96 @@
   display: flex;
   align-items: center;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding: 8px 0;
+  flex-wrap: nowrap;
+  gap: 8px;
   /* 隐藏滚动条但保留滚动功能 */
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-/* 标签按钮样式 */
-.tagScroll .adm-button {
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
 /* 隐藏滚动条 */
 .tagScroll::-webkit-scrollbar {
   display: none;
+}
+
+/* 标签按钮样式 - 重写所有可能的样式 */
+.tagScroll .adm-button {
+  /* 基础样式 */
+  background: #f0f0f0 !important;
+  color: #666 !important;
+  border-radius: 16px !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  text-align: center !important;
+  
+  /* 确保文本水平显示 */
+  white-space: nowrap !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  
+  /* 尺寸和布局 */
+  min-width: 60px !important;
+  max-width: 140px !important;
+  height: auto !important;
+  padding: 8px 16px !important;
+  margin: 0 !important;
+  
+  /* Flex 布局设置 */
+  display: inline-flex !important;
+  flex-shrink: 0 !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  
+  /* 文本溢出处理 */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  
+  /* 过渡效果 */
+  transition: all 0.2s ease !important;
+}
+
+/* 选中的标签按钮样式 */
+.tagScroll .adm-button--primary {
+  background: #1890ff !important;
+  color: #fff !important;
+}
+
+/* 标签按钮悬停效果 */
+.tagScroll .adm-button:hover {
+  background: #e0e0e0 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 选中的标签按钮悬停效果 */
+.tagScroll .adm-button--primary:hover {
+  background: #40a9ff !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 标签按钮内部文本 */
+.tagScroll .adm-button span {
+  /* 确保文本水平显示 */
+  white-space: nowrap !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  
+  /* 文本溢出处理 */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  
+  /* 布局 */
+  display: inline-block !important;
+  max-width: 100% !important;
+  line-height: 1.4 !important;
+  text-align: center !important;
+}
+
+/* 确保 Ant Design Mobile 按钮的内部容器不影响布局 */
+.tagScroll .adm-button-content {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
 }

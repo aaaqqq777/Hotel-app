@@ -4,11 +4,7 @@ import styles from './DetailPage.module.css';
 import Header from './components/Header/Header';
 import ImageSection from './components/ImageSection/ImageSection';
 import HotelDetails from './components/HotelDetails/HotelDetails';
-import HotelFacilities from './components/HotelFacilities/HotelFacilities';
-import HotelReviews from './components/HotelReviews/HotelReviews';
-import HotelLocation from './components/HotelLocation/HotelLocation';
 import DateSelection from './components/DateSelection/DateSelection';
-import RoomSelection from './components/RoomSelection/RoomSelection';
 import ServiceTags from './components/ServiceTags/ServiceTags';
 import RoomList from './components/RoomList/RoomList';
 import BottomBar from './components/BottomBar/BottomBar';
@@ -123,32 +119,8 @@ function DetailPage() {
           tags={currentHotelDetail.tags} 
         />
 
-        {/* 酒店设施 */}
-        <HotelFacilities facilities={currentHotelFacilities} />
-
-        {/* 酒店评价 */}
-        <HotelReviews 
-          rating={currentHotelDetail.rating} 
-          reviewCount={currentHotelDetail.reviewCount || 0} 
-          reviews={currentHotelReviews} 
-        />
-
-        {/* 酒店位置 */}
-        <HotelLocation 
-          address={currentHotelDetail.address} 
-          distance={currentHotelDetail.distance || ''} 
-          mapUrl={currentHotelDetail.mapUrl} 
-        />
-
         {/* 日期选择 */}
         <DateSelection checkInDate={checkInDate} checkOutDate={checkOutDate} />
-
-        {/* 房型选择 */}
-        <RoomSelection 
-          roomTypes={currentHotelRoomTypes} 
-          selectedRoomId={selectedRoomId} 
-          onRoomSelect={handleRoomSelect} 
-        />
 
         {/* 服务标签 */}
         <ServiceTags 

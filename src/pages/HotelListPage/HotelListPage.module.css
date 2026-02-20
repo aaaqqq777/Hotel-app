@@ -18,7 +18,7 @@
 .selectedTagsContainer {
   background: white;
   border-bottom: 1px solid #f5f5f5;
-  /* height: 44px; */
+  height: 52px;
 }
 
 /* 标签容器样式（非固定，仅显示未选中标签） */
@@ -27,7 +27,7 @@
   padding: 0;
   margin-bottom: 12px;
   border-bottom: 1px solid #f5f5f5;
-  /* height: 44px; */
+  height: 52px;
 }
 
 /* 搜索信息样式（已不再使用，保留兼容） */
