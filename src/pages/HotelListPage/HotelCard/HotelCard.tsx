@@ -89,7 +89,7 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
           
           {/* 酒店描述链接 */}
           <div className={styles.description}>
-            <a href="#" className={styles.descriptionLink}>{hotelDescription}</a>
+            <span className={styles.descriptionLink}>{hotelDescription}</span>
           </div>
 
           {/* 价格信息 */}

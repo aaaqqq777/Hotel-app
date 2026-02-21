@@ -1,7 +1,7 @@
 .container {
   padding: 12px 16px;
   background: #fff;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px;
   height: 52px;
   box-sizing: border-box;
 }
@@ -45,9 +45,47 @@
   flex-shrink: 0;
   white-space: nowrap;
   height: 28px;
+  color: #020003;
   line-height: 28px;
   padding: 0 12px;
   border-radius: 14px;
+  border-color: #141414;
+}
+
+/* 未选中标签透明背景 */
+:global(.adm-tag.adm-tag-default) {
+  background: transparent ;
+  border: 1px solid #e0e0e0 ;
+  color: #f1e1e1 ;
+}
+
+/* 选中标签自定义颜色 */
+:global(.adm-tag) {
+  --adm-color-primary: #3779DC ;
+}
+
+:global(.adm-tag.adm-tag-fill) {
+  background: #3779DC ;
+  border-color: #3779DC ;
+  color: #fff ;
+}
+
+/* 未选中标签透明背景 */
+:global(.adm-tag.adm-tag-default) {
+  background: transparent ;
+  border: 1px solid #e0e0e0 ;
+  color: #f0e8e8 ;
+}
+
+/* 选中标签自定义颜色 */
+:global(.adm-tag) {
+  --adm-color-primary: #3779DC ;
+}
+
+:global(.adm-tag.adm-tag-fill) {
+  background: #3779DC ;
+  border-color: #3779DC ;
+  color: #fff ;
 }
 
 .tag:hover {

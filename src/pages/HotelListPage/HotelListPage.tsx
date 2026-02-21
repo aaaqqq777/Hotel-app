@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { Button, Empty } from 'antd-mobile'
 import styles from './HotelListPage.module.css'
@@ -9,11 +9,12 @@ import type { SortType } from './SortBar/SortBar'
 import HotelCard from './HotelCard/HotelCard'
 import type { Hotel } from '../../data/types'
 import { QUICK_TAGS } from '../../data/hotels'
-import { getProcessedHotels } from '../../services/hotelService'
+import { searchHotelList, type HotelListResponse, type HotelListParams } from '../../api/hotelsearch/hotelsearch'
 
 function HotelListPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const observerRef = useRef<IntersectionObserver | null>(null)
 
   // 状态管理：排序和快捷标签筛选
   const [sortType, setSortType] = useState<SortType>('default')
@@ -23,11 +24,19 @@ function HotelListPage() {
   const [selectedScore, setSelectedScore] = useState('评分')
   const [isScrolled, setIsScrolled] = useState(false)
 
+  // 分页相关状态
+  const [hotels, setHotels] = useState<Hotel[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [pageSize] = useState(5)
+
   // 滚动事件监听
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 100) // 滚动超过100px时显示仅选中标签
+      setIsScrolled(scrollTop > 100)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -65,31 +74,119 @@ function HotelListPage() {
   const allSelectedTags = useMemo(() => {
     let searchTags: string[] = [];
     try {
-      // 尝试解析JSON格式的标签参数
       searchTags = JSON.parse(tagsStr);
-      // 确保解析结果是数组
       if (!Array.isArray(searchTags)) {
         searchTags = [];
       }
     } catch (error) {
-      // 如果解析失败，尝试使用逗号分隔的方式
       searchTags = tagsStr ? tagsStr.split(',').filter(Boolean) : [];
     }
     return [...new Set([...searchTags, ...selectedTags])]
   }, [tagsStr, selectedTags])
 
-  // 使用 useMemo 优化：依赖参数变化时重新计算处理后的酒店列表
-  const processedHotels = useMemo(() => {
-    const filterParams = {
-      keyword,
-      starLevel: selectedRating === '全部' ? '' : selectedRating,
-      priceRange: selectedPrice === '全部' ? '' : selectedPrice,
-      tags: allSelectedTags,
-    }
-    return getProcessedHotels(filterParams, sortType)
-  }, [keyword, selectedRating, selectedPrice, allSelectedTags, sortType])
+  // 过滤参数
+  const filterParams = useMemo(() => ({
+    keyword,
+    starLevel: selectedRating === '全部' ? '' : selectedRating,
+    priceRange: selectedPrice === '全部' ? '' : selectedPrice,
+    tags: allSelectedTags,
+  }), [keyword, selectedRating, selectedPrice, allSelectedTags])
 
-  // 处理快捷标签点击
+  // 重置并加载第一页数据
+  const loadFirstPage = useCallback(async () => {
+    setIsLoading(true)
+    setIsInitialLoading(true)
+    try {
+      const apiParams: HotelListParams = {
+        city: location || '上海',
+        keyword: keyword || undefined,
+        star: selectedRating !== '星级' ? selectedRating.replace(/\D/g, '') : undefined,
+        sort: sortType === 'default' ? undefined : sortType,
+        page: '1',
+        limit: pageSize.toString(),
+      }
+      
+      const response: HotelListResponse = await searchHotelList(apiParams)
+      
+      const hotelList: Hotel[] = response.data.list.map(item => ({
+        id: item._id,
+        name: item.name_cn,
+        imageUrl: item.cover_image,
+        price: item.min_price,
+        rating: item.score,
+        location: item.location?.address || item.location?.district || '',
+        starLevel: item.star_rating,
+        reviewCount: 100,
+        distance: '距离市中心3公里',
+        mapUrl: ''
+      }))
+      
+      setHotels(hotelList)
+      setCurrentPage(parseInt(apiParams.page || '1'))
+      setHasMore(response.data.list.length + (parseInt(apiParams.page || '1') - 1) * parseInt(apiParams.limit || '10') < response.data.total)
+    } catch (error) {
+      console.error('Failed to load hotels:', error)
+    } finally {
+      setIsLoading(false)
+      setIsInitialLoading(false)
+    }
+  }, [location, keyword, sortType, pageSize, selectedRating])
+
+  // 加载更多数据
+  const loadMoreHotels = useCallback(async () => {
+    if (isLoading || !hasMore) return
+    setIsLoading(true)
+    try {
+      const apiParams: HotelListParams = {
+        city: location || '上海',
+        keyword: keyword || undefined,
+        star: selectedRating !== '星级' ? selectedRating.replace(/\D/g, '') : undefined,
+        sort: sortType === 'default' ? undefined : sortType,
+        page: (currentPage + 1).toString(),
+        limit: pageSize.toString(),
+      }
+      
+      const response: HotelListResponse = await searchHotelList(apiParams)
+      
+      const hotelList: Hotel[] = response.data.list.map(item => ({
+        id: item._id,
+        name: item.name_cn,
+        imageUrl: item.cover_image,
+        price: item.min_price,
+        rating: item.score,
+        location: item.location?.address || item.location?.district || '',
+        starLevel: item.star_rating,
+        reviewCount: 100,
+        distance: '距离市中心3公里',
+        mapUrl: ''
+      }))
+      
+      setHotels(prev => [...prev, ...hotelList])
+      setCurrentPage(parseInt(apiParams.page || '1'))
+      setHasMore(response.data.list.length + (parseInt(apiParams.page || '1') - 1) * parseInt(apiParams.limit || '10') < response.data.total)
+    } catch (error) {
+      console.error('Failed to load more hotels:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [isLoading, hasMore, location, keyword, sortType, currentPage, pageSize, selectedRating])
+
+  // 滚动监听回调 - 移到 loadMoreHotels 之后定义
+  const lastHotelRef = useCallback((node: HTMLDivElement | null) => {
+    if (isLoading) return
+    if (observerRef.current) observerRef.current.disconnect()
+    observerRef.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore) {
+        loadMoreHotels()
+      }
+    })
+    if (node) observerRef.current.observe(node)
+  }, [isLoading, hasMore, loadMoreHotels])
+
+  // 当过滤条件或排序变化时，重新加载第一页
+  useEffect(() => {
+    loadFirstPage()
+  }, [loadFirstPage])
 
   // 处理快捷标签点击
   const handleTagClick = (tagValue: string) => {
@@ -103,7 +200,6 @@ function HotelListPage() {
   // 处理查看酒店详情
   const handleViewDetail = (hotelId: string) => {
     navigate(`/detailpage?id=${hotelId}`)
-    // navigate(`/detailpage`)
   }
 
   const handleBackToSearch = () => {
@@ -111,7 +207,6 @@ function HotelListPage() {
   }
 
   const handleOpenFilter = () => {
-    // 移除导航代码，因为SortBar组件已经内置了筛选面板
     console.log('打开筛选面板');
   };
 
@@ -119,17 +214,14 @@ function HotelListPage() {
   const handleDateChange = (startDate: Date, endDate: Date) => {
     console.log('用户选择了新的日期:', startDate, endDate);
     
-    // 重新构造搜索参数
     const params = new URLSearchParams();
     if (location) params.set('city', location);
     if (keyword) params.set('keyword', keyword);
     if (tagsStr) params.set('tags', tagsStr);
     
-    // 将新选择的日期转换为JSON字符串
     const dates = [startDate.toISOString(), endDate.toISOString()];
     params.set('dates', JSON.stringify(dates));
     
-    // 重新导航到当前页面，带上新的日期参数
     navigate(`/Hotellist?${params.toString()}`);
   };
 
@@ -137,14 +229,12 @@ function HotelListPage() {
   const handleCityChange = (city: string) => {
     console.log('用户选择了新的城市:', city);
     
-    // 重新构造搜索参数
     const params = new URLSearchParams();
     params.set('city', city);
     if (keyword) params.set('keyword', keyword);
     if (tagsStr) params.set('tags', tagsStr);
     if (datesStr) params.set('dates', datesStr);
     
-    // 重新导航到当前页面，带上新的城市参数
     navigate(`/Hotellist?${params.toString()}`);
   }
 
@@ -198,21 +288,44 @@ function HotelListPage() {
 
       {/* 酒店列表 */}
       <div className={styles.hotelList}>
-          {processedHotels.length > 0 ? (
-          <div className={styles.hotelGrid}>
-              {processedHotels.map((hotel: Hotel) => (
-              <HotelCard
+        {isInitialLoading ? (
+          <div className={styles.loadingContainer}>
+            <div className={styles.spinner}></div>
+            <div className={styles.loadingText}>正在加载酒店...</div>
+          </div>
+        ) : hotels.length > 0 ? (
+          <>
+            <div className={styles.hotelGrid}>
+              {hotels.map((hotel: Hotel, index) => (
+                <div
                   key={hotel.id}
-                  hotel={hotel}
-                  onViewDetail={handleViewDetail}
-              />
+                  ref={index === hotels.length - 1 ? lastHotelRef : null}
+                >
+                  <HotelCard
+                    hotel={hotel}
+                    onViewDetail={handleViewDetail}
+                  />
+                </div>
               ))}
-          </div>
-          ) : (
+            </div>
+            {/* 加载更多状态 */}
+            <div className={styles.loadMoreContainer}>
+              {isLoading && (
+                <div className={styles.loadingMore}>
+                  <div className={styles.spinnerSmall}></div>
+                  <span className={styles.loadingMoreText}>加载中...</span>
+                </div>
+              )}
+              {!hasMore && !isLoading && (
+                <div className={styles.noMoreText}>没有更多酒店了</div>
+              )}
+            </div>
+          </>
+        ) : (
           <div className={styles.emptyState}>
-              <Empty description="没有找到匹配的酒店" />
+            <Empty description="没有找到匹配的酒店" />
           </div>
-          )}
+        )}
       </div>
     </div>
   )

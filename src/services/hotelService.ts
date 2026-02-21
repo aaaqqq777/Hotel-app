@@ -7,6 +7,17 @@ import type { Hotel, HotelFilterParams, SortType } from '../data/types'
 import { MOCK_HOTELS } from '../data/hotels'
 
 /**
+ * 分页响应数据结构
+ */
+export interface PaginatedResponse<T> {
+  data: T[]
+  page: number
+  pageSize: number
+  total: number
+  hasMore: boolean
+}
+
+/**
  * 获取所有酒店数据
  * 便于后期替换为 API 调用
  */
@@ -111,4 +122,37 @@ export function getProcessedHotels(
   const filtered = filterHotels(hotels, filterParams)
   const sorted = sortHotels(filtered, sortType)
   return sorted
+}
+
+/**
+ * 获取分页酒店数据 - 模拟后端API
+ * @param filterParams 过滤参数
+ * @param sortType 排序方式
+ * @param page 当前页码
+ * @param pageSize 每页数量
+ * @returns 分页响应数据
+ */
+export async function getPaginatedHotels(
+  filterParams: HotelFilterParams,
+  sortType: SortType = 'default',
+  page: number = 1,
+  pageSize: number = 5
+): Promise<PaginatedResponse<Hotel>> {
+  // 模拟网络延迟
+  await new Promise(resolve => setTimeout(resolve, 800))
+
+  const allHotels = getProcessedHotels(filterParams, sortType)
+  const total = allHotels.length
+  const startIndex = (page - 1) * pageSize
+  const endIndex = startIndex + pageSize
+  const data = allHotels.slice(startIndex, endIndex)
+  const hasMore = endIndex < total
+
+  return {
+    data,
+    page,
+    pageSize,
+    total,
+    hasMore,
+  }
 }

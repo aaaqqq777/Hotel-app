@@ -29,13 +29,13 @@ export default function QuickTagsBar({
 
   return (
     <div className={styles.container}>
-      {/* 选中的标签 */}
-      {selectedTagObjects.length > 0 && (
+      {/* 选中的标签（仅在showOnlySelected模式下显示） */}
+      {showOnlySelected && selectedTagObjects.length > 0 && (
         <div className={styles.selectedTagsWrapper}>
           {selectedTagObjects.map((tag) => (
             <Tag
               key={tag.value}
-              color="primary"
+              color="#ffffff"
               onClick={() => {
                 console.log('Selected tag clicked:', tag.value);
                 onTagClick(tag.value);
@@ -54,7 +54,7 @@ export default function QuickTagsBar({
           {unselectedTagObjects.map((tag) => (
             <Tag
               key={tag.value}
-              color="default"
+              color="#ffffffff"
               onClick={() => {
                 console.log('Unselected tag clicked:', tag.value);
                 onTagClick(tag.value);

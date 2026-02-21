@@ -39,9 +39,6 @@ export default function DateSelection({ checkInDate, checkOutDate }: DateSelecti
   return (
     <div className={styles.container}>
       <div className={styles.dateSelector} onClick={() => setCalendarVisible(true)}>
-        <div className={styles.dateHeader}>
-          <span className={styles.lowPriceBadge}>看低价</span>
-        </div>
         <div className={styles.dateInfo}>
           <div className={styles.dateRow}>
             <div className={styles.dateRange}>

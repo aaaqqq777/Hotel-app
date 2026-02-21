@@ -146,7 +146,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
         {/* 第一行：城市选择 + 检索词输入 + 定位按钮 */}
         <div className={styles.inputGroup}>
           <Button 
-            fill="outline" 
+            fill="none" 
             onClick={() => setCityVisible(true)}
             className={styles.cityButton}
           >
@@ -157,6 +157,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
             value={keyword} 
             onChange={setKeyword}
             className={styles.searchInput}
+            clearable
           />
           <Button 
             fill="none" 

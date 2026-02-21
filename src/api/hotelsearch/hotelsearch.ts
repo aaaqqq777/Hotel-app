@@ -4,6 +4,114 @@ import type { Hotel, SearchParams, HotelDetail, Review, RoomType, Facility } fro
 import { MOCK_HOTEL_IMAGES, MOCK_HOTEL_FACILITIES, MOCK_HOTEL_REVIEWS, MOCK_ROOM_TYPES, MOCK_ROOMS, MOCK_SEARCH_SUGGESTIONS, MOCK_HOTEL_DETAILS } from '../../data/hotelDetail';
 import { MOCK_HOTELS } from '../../data/hotels';
 
+// 后端接口请求参数
+export interface HotelListParams {
+  keyword?: string;
+  city: string;
+  star?: string;
+  sort?: string;
+  lng?: string;
+  lat?: string;
+  page?: string;
+  limit?: string;
+}
+
+// 后端接口响应数据结构
+export interface HotelListResponse {
+  code: number;
+  data: {
+    total: number;
+    list: Array<{
+      _id: string;
+      name_cn: string;
+      star_rating: number;
+      score: number;
+      cover_image: string;
+      min_price: number;
+      location: {
+        address?: string;
+        city?: string;
+        district?: string;
+        [key: string]: any;
+      };
+    }>;
+  };
+}
+
+// 搜索酒店列表 (使用后端接口 GET /hotels)
+export async function searchHotelList(params: HotelListParams): Promise<HotelListResponse> {
+  try {
+    const response = await apiClient.get('/hotels', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to search hotel list:', error);
+    
+    // ========== 模拟数据处理 ==========
+    const page = parseInt(params.page || '1');
+    const limit = parseInt(params.limit || '10');
+    
+    // 根据参数过滤
+    let filteredHotels = [...MOCK_HOTELS];
+    
+    if (params.keyword) {
+      const keyword = params.keyword.toLowerCase();
+      filteredHotels = filteredHotels.filter(hotel => 
+        hotel.name.toLowerCase().includes(keyword) ||
+        hotel.location.toLowerCase().includes(keyword)
+      );
+    }
+    
+    if (params.star) {
+      const star = parseInt(params.star);
+      filteredHotels = filteredHotels.filter(hotel => hotel.starLevel === star);
+    }
+    
+    // 排序
+    if (params.sort) {
+      switch (params.sort) {
+        case 'price-asc':
+          filteredHotels.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-desc':
+          filteredHotels.sort((a, b) => b.price - a.price);
+          break;
+        case 'rating':
+          filteredHotels.sort((a, b) => b.starLevel - a.starLevel);
+          break;
+      }
+    }
+    
+    // 分页
+    const total = filteredHotels.length;
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const pageData = filteredHotels.slice(startIndex, endIndex);
+    
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // 转换为后端返回格式
+    return {
+      code: 200,
+      data: {
+        total,
+        list: pageData.map(hotel => ({
+          _id: hotel.id,
+          name_cn: hotel.name,
+          star_rating: hotel.starLevel,
+          score: 4.5,
+          cover_image: hotel.image,
+          min_price: hotel.price,
+          location: {
+            address: hotel.location,
+            city: params.city || '上海',
+            district: ''
+          }
+        }))
+      }
+    };
+  }
+}
+
 // 获取酒店详情
 export async function getHotelDetail(hotelId: string): Promise<HotelDetail> {
   try {
@@ -107,17 +215,20 @@ export async function searchHotels(params: SearchParams): Promise<Hotel[]> {
     return response.data;
   } catch (error) {
     console.error('Failed to search hotels:', error);
-    // 返回模拟数据，将MOCK_HOTELS转换为Hotel类型
+    // 返回模拟数据，匹配后端返回结构
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // 转换为后端返回格式并映射为Hotel类型
     return MOCK_HOTELS.map(hotel => ({
       id: hotel.id,
       name: hotel.name,
       imageUrl: hotel.image,
       price: hotel.price,
-      rating: 4.5, // 为了示例，添加默认评分
+      rating: 4.5,
       location: hotel.location,
       starLevel: hotel.starLevel,
-      reviewCount: 100, // 为了示例，添加默认评价数
-      distance: '距离市中心3公里', // 为了示例，添加默认距离
+      reviewCount: 100,
+      distance: '距离市中心3公里',
       mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view&image_size=landscape_16_9'
     }));
   }
