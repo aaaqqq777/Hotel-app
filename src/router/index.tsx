@@ -49,8 +49,7 @@ export const routes: AppRouteObject[] = [
       {
         path: '/',
         element: <HomePage />,
-        title: '首页',
-        icon: <AppOutline />,
+       
       },
     ],
   },

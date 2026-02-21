@@ -7,14 +7,14 @@
 /* 隐藏按钮边界线 */
 .adm-button {
   --adm-button-border-width: 0;
-  border: none !important;
-  background: transparent !important;
+  border: none ;
+  background: transparent ;
 }
 
 /* 调整输入框样式 */
 .adm-input {
   --adm-input-border-width: 0;
-  border: none !important;
+  border: none ;
   background: #fff;
   border-radius: 4px;
 }
@@ -245,104 +245,21 @@
 .tagContainer {
   width: 100%;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
-
 /* 标签滚动容器 */
 .tagScroll {
   display: flex;
-  align-items: center;
   overflow-x: auto;
-  padding: 8px 0;
   flex-wrap: nowrap;
   gap: 8px;
-  /* 隐藏滚动条但保留滚动功能 */
   -ms-overflow-style: none;
   scrollbar-width: none;
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
 }
 
 /* 隐藏滚动条 */
 .tagScroll::-webkit-scrollbar {
   display: none;
-}
-
-/* 标签按钮样式 - 重写所有可能的样式 */
-.tagScroll .adm-button {
-  /* 基础样式 */
-  background: #f0f0f0 !important;
-  color: #666 !important;
-  border-radius: 16px !important;
-  font-size: 13px !important;
-  line-height: 1.4 !important;
-  text-align: center !important;
-  
-  /* 确保文本水平显示 */
-  white-space: nowrap !important;
-  writing-mode: horizontal-tb !important;
-  text-orientation: mixed !important;
-  
-  /* 尺寸和布局 */
-  min-width: 60px !important;
-  max-width: 140px !important;
-  height: auto !important;
-  padding: 8px 16px !important;
-  margin: 0 !important;
-  
-  /* Flex 布局设置 */
-  display: inline-flex !important;
-  flex-shrink: 0 !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  
-  /* 文本溢出处理 */
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  
-  /* 过渡效果 */
-  transition: all 0.2s ease !important;
-}
-
-/* 选中的标签按钮样式 */
-.tagScroll .adm-button--primary {
-  background: #1890ff !important;
-  color: #fff !important;
-}
-
-/* 标签按钮悬停效果 */
-.tagScroll .adm-button:hover {
-  background: #e0e0e0 !important;
-  transform: translateY(-1px) !important;
-}
-
-/* 选中的标签按钮悬停效果 */
-.tagScroll .adm-button--primary:hover {
-  background: #40a9ff !important;
-  transform: translateY(-1px) !important;
-}
-
-/* 标签按钮内部文本 */
-.tagScroll .adm-button span {
-  /* 确保文本水平显示 */
-  white-space: nowrap !important;
-  writing-mode: horizontal-tb !important;
-  text-orientation: mixed !important;
-  
-  /* 文本溢出处理 */
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  
-  /* 布局 */
-  display: inline-block !important;
-  max-width: 100% !important;
-  line-height: 1.4 !important;
-  text-align: center !important;
-}
-
-/* 确保 Ant Design Mobile 按钮的内部容器不影响布局 */
-.tagScroll .adm-button-content {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
 }
