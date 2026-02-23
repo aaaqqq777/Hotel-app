@@ -56,7 +56,7 @@ export default function DateSelection({ checkInDate, checkOutDate }: DateSelecti
               )}
             </div>
             <div className={styles.roomTypeSelector}>
-              <Button 
+              {/* <Button 
                 size="small" 
                 fill="solid" 
                 color="primary" 
@@ -71,7 +71,7 @@ export default function DateSelection({ checkInDate, checkOutDate }: DateSelecti
                 className={styles.roomTypeButton}
               >
                 钟点房
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

@@ -11,6 +11,14 @@ export interface Hotel {
   image: string
   tags: string[]
   description: string
+  rating: number
+  reviewCount: number
+  hotelType: string
+  locationInfo: string
+  hasVideo: boolean
+  discountPrice: number
+  discountAmount: number
+  discountTag: string
 }
 
 export interface QuickTag {

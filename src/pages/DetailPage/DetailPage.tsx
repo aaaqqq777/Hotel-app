@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import styles from './DetailPage.module.css';
 import Header from './components/Header/Header';
@@ -25,6 +25,11 @@ function DetailPage() {
   const [checkInDate] = useState('2026-02-20');
   const [checkOutDate] = useState('2026-02-21');
   const [selectedRoomId, setSelectedRoomId] = useState('1');
+  const [showBottomBar, setShowBottomBar] = useState(true);
+
+  // Refs
+  const lastScrollTopRef = useRef(0);
+  const roomListRef = useRef<HTMLDivElement>(null);
 
   // 获取酒店ID
   const hotelId = searchParams.get('id') || '1'; // 默认酒店ID为1
@@ -61,10 +66,28 @@ function DetailPage() {
     console.log('Selected service tag:', tagId);
   };
 
+  // 滚动监听
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      if (scrollTop > lastScrollTopRef.current && scrollTop > 100) {
+        setShowBottomBar(false);
+      } else {
+        setShowBottomBar(true);
+      }
+      
+      lastScrollTopRef.current = scrollTop;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // 处理查看房型
-  const handleViewRooms = () => {
-    console.log('View all rooms');
-  };
+  const handleViewRooms = useCallback(() => {
+    roomListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   // 处理联系酒店
   const handleContactHotel = () => {
@@ -129,10 +152,12 @@ function DetailPage() {
         />
 
         {/* 房型列表 */}
-        <RoomList 
-          rooms={currentHotelRoomTypes} 
-          onRoomSelect={handleRoomSelect} 
-        />
+        <div ref={roomListRef}>
+          <RoomList 
+            rooms={currentHotelRoomTypes} 
+            onRoomSelect={handleRoomSelect} 
+          />
+        </div>
       </div>
 
       {/* 底部导航栏 */}
@@ -140,6 +165,7 @@ function DetailPage() {
         minPrice={currentHotelDetail.minPrice || 0} 
         onViewRooms={handleViewRooms} 
         onContactHotel={handleContactHotel} 
+        visible={showBottomBar}
       />
     </div>
   );

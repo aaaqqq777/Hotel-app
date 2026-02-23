@@ -15,6 +15,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+1',
     tags: ['luxury', 'parking', 'pool', 'breakfast'],
     description: '五星级豪华酒店，拥有800间客房，靠近海滨，提供一流的服务',
+    rating: 4.8,
+    reviewCount: 2560,
+    hotelType: '豪华型',
+    locationInfo: '海滨地区 | 近海景广场',
+    hasVideo: true,
+    discountPrice: 1095,
+    discountAmount: 193,
+    discountTag: '立减券'
   },
   {
     id: '2',
@@ -25,6 +33,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+2',
     tags: ['wifi', 'breakfast'],
     description: '四星级商务酒店，位于中心商务区，交通便利',
+    rating: 4.3,
+    reviewCount: 1280,
+    hotelType: '商务型',
+    locationInfo: '商务区 | 近地铁站',
+    hasVideo: false,
+    discountPrice: 383,
+    discountAmount: 67,
+    discountTag: '早鸟价'
   },
   {
     id: '3',
@@ -35,6 +51,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+3',
     tags: ['family', 'pool', 'parking'],
     description: '专为家庭设计的亲子酒店，有儿童娱乐设施',
+    rating: 4.6,
+    reviewCount: 890,
+    hotelType: '亲子型',
+    locationInfo: '亲子区 | 近儿童乐园',
+    hasVideo: true,
+    discountPrice: 493,
+    discountAmount: 87,
+    discountTag: '家庭套餐'
   },
   {
     id: '4',
@@ -45,6 +69,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+4',
     tags: ['wifi'],
     description: '经济实惠的快捷酒店，距离地铁站步行5分钟',
+    rating: 4.0,
+    reviewCount: 3200,
+    hotelType: '经济型',
+    locationInfo: '地铁口 | 步行5分钟',
+    hasVideo: false,
+    discountPrice: 153,
+    discountAmount: 27,
+    discountTag: '新客专享'
   },
   {
     id: '5',
@@ -55,6 +87,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+5',
     tags: ['luxury', 'pool', 'breakfast'],
     description: '天然温泉酒店，享受山景和温泉体验',
+    rating: 4.7,
+    reviewCount: 1560,
+    hotelType: '度假型',
+    locationInfo: '山区 | 近温泉景区',
+    hasVideo: true,
+    discountPrice: 782,
+    discountAmount: 138,
+    discountTag: '温泉套餐'
   },
   {
     id: '6',
@@ -65,6 +105,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+6',
     tags: ['wifi', 'breakfast', 'parking'],
     description: '位于古城中心的文化主题酒店，体验历史韵味',
+    rating: 4.4,
+    reviewCount: 980,
+    hotelType: '文化型',
+    locationInfo: '古城内 | 近景点',
+    hasVideo: false,
+    discountPrice: 578,
+    discountAmount: 102,
+    discountTag: '文化体验'
   },
   {
     id: '7',
@@ -75,6 +123,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+7',
     tags: ['luxury', 'pool', 'beach', 'breakfast'],
     description: '豪华滨海度假酒店，私人沙滩，无敌海景',
+    rating: 4.9,
+    reviewCount: 3200,
+    hotelType: '豪华型',
+    locationInfo: '海滨度假区 | 私人沙滩',
+    hasVideo: true,
+    discountPrice: 1343,
+    discountAmount: 237,
+    discountTag: '海景房'
   },
   {
     id: '8',
@@ -85,6 +141,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+8',
     tags: ['wifi', 'breakfast'],
     description: '位于市中心的精品酒店，设计时尚，交通便利',
+    rating: 4.2,
+    reviewCount: 760,
+    hotelType: '精品型',
+    locationInfo: '市中心 | 近商圈',
+    hasVideo: false,
+    discountPrice: 442,
+    discountAmount: 78,
+    discountTag: '周末特惠'
   },
   {
     id: '9',
@@ -95,6 +159,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+9',
     tags: ['nature', 'pool', 'breakfast'],
     description: '隐藏在森林中的木屋酒店，亲近自然，环境幽静',
+    rating: 4.8,
+    reviewCount: 1120,
+    hotelType: '度假型',
+    locationInfo: '森林区 | 近自然保护区',
+    hasVideo: true,
+    discountPrice: 748,
+    discountAmount: 132,
+    discountTag: '自然套餐'
   },
   {
     id: '10',
@@ -105,6 +177,14 @@ export const MOCK_HOTELS: Hotel[] = [
     image: 'https://via.placeholder.com/300x200?text=Hotel+10',
     tags: ['wifi', 'parking', 'airport'],
     description: '机场附近的快捷酒店，免费接送机服务，经济实惠',
+    rating: 4.1,
+    reviewCount: 2100,
+    hotelType: '经济型',
+    locationInfo: '机场周边 | 免费接送',
+    hasVideo: false,
+    discountPrice: 238,
+    discountAmount: 42,
+    discountTag: '转机专享'
   },
 ]
 

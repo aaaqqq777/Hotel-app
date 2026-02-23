@@ -141,18 +141,28 @@ function HotelListPage() {
       
       const response: HotelListResponse = await searchHotelList(apiParams)
       
-      const hotelList: Hotel[] = response.data.list.map(item => ({
-        id: item._id,
-        name: item.name_cn,
-        imageUrl: item.cover_image,
-        price: item.min_price,
-        rating: item.score,
-        location: item.location?.address || item.location?.district || '',
-        starLevel: item.star_rating,
-        reviewCount: 100,
-        distance: '距离市中心3公里',
-        mapUrl: ''
-      }))
+      const hotelList: Hotel[] = response.data.list.map(item => {
+        const basePrice = item.min_price
+        const discountPrice = Math.floor(basePrice * 0.85)
+        return {
+          id: item._id,
+          name: item.name_cn,
+          image: item.cover_image,
+          price: basePrice,
+          rating: item.score,
+          location: item.location?.address || item.location?.district || '',
+          starLevel: item.star_rating,
+          tags: [],
+          description: `${item.name_cn}，提供优质住宿体验`,
+          reviewCount: Math.floor(Math.random() * 3000) + 100,
+          hotelType: item.star_rating >= 5 ? '豪华型' : item.star_rating >= 4 ? '舒适型' : '经济型',
+          locationInfo: `${item.location?.district || '市区'} | 近商圈`,
+          hasVideo: Math.random() > 0.5,
+          discountPrice,
+          discountAmount: basePrice - discountPrice,
+          discountTag: '立减券'
+        }
+      })
       
       setHotels(hotelList)
       setCurrentPage(parseInt(apiParams.page || '1'))
@@ -185,18 +195,28 @@ function HotelListPage() {
       
       const response: HotelListResponse = await searchHotelList(apiParams)
       
-      const hotelList: Hotel[] = response.data.list.map(item => ({
-        id: item._id,
-        name: item.name_cn,
-        imageUrl: item.cover_image,
-        price: item.min_price,
-        rating: item.score,
-        location: item.location?.address || item.location?.district || '',
-        starLevel: item.star_rating,
-        reviewCount: 100,
-        distance: '距离市中心3公里',
-        mapUrl: ''
-      }))
+      const hotelList: Hotel[] = response.data.list.map(item => {
+        const basePrice = item.min_price
+        const discountPrice = Math.floor(basePrice * 0.85)
+        return {
+          id: item._id,
+          name: item.name_cn,
+          image: item.cover_image,
+          price: basePrice,
+          rating: item.score,
+          location: item.location?.address || item.location?.district || '',
+          starLevel: item.star_rating,
+          tags: [],
+          description: `${item.name_cn}，提供优质住宿体验`,
+          reviewCount: Math.floor(Math.random() * 3000) + 100,
+          hotelType: item.star_rating >= 5 ? '豪华型' : item.star_rating >= 4 ? '舒适型' : '经济型',
+          locationInfo: `${item.location?.district || '市区'} | 近商圈`,
+          hasVideo: Math.random() > 0.5,
+          discountPrice,
+          discountAmount: basePrice - discountPrice,
+          discountTag: '立减券'
+        }
+      })
       
       setHotels(prev => [...prev, ...hotelList])
       setCurrentPage(parseInt(apiParams.page || '1'))

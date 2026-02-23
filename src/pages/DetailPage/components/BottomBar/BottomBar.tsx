@@ -6,11 +6,12 @@ interface BottomBarProps {
   minPrice: number;
   onViewRooms: () => void;
   onContactHotel: () => void;
+  visible?: boolean;
 }
 
-export default function BottomBar({ minPrice, onViewRooms, onContactHotel }: BottomBarProps) {
+export default function BottomBar({ minPrice, onViewRooms, onContactHotel, visible = true }: BottomBarProps) {
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${visible ? styles.visible : styles.hidden}`}>
       <div className={styles.left}>
         <Button 
           className={styles.contactButton}
