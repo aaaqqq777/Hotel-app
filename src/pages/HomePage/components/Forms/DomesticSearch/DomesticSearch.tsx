@@ -189,10 +189,12 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
         <div className={styles.roomGuestRow}>
           <div className={styles.roomGuestButton} onClick={() => setRoomGuestVisible(true)}>
             <span className={styles.roomGuestLabel}>房间</span>
-            <span className={styles.roomGuestValue}>{roomCount}间</span>
+            <span className={styles.roomGuestValue}>{roomCount}</span>
+             <span className={styles.roomGuestLabel}>间</span>
             <span className={styles.roomGuestDivider}>/</span>
             <span className={styles.roomGuestLabel}>人数</span>
-            <span className={styles.roomGuestValue}>{guestCount}人</span>
+            <span className={styles.roomGuestValue}>{guestCount}</span>
+            <span className={styles.roomGuestLabel}>人</span>
           </div>
         </div>
 

@@ -187,7 +187,12 @@
 
 /* 城市按钮 */
 .cityButton {
-  width: 80px;
+  min-width: 60px;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* 搜索输入框 */
@@ -338,20 +343,20 @@
 
 /* 房间数/人数标签 */
 .roomGuestLabel {
-  font-size: 14px;
+  font-size: 16px;
   color: #999;
 }
 
 /* 房间数/人数值 */
 .roomGuestValue {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   color: #333;
 }
 
 /* 分隔符 */
 .roomGuestDivider {
-  font-size: 14px;
+  font-size: 16px;
   color: #999;
   margin: 0 4px;
 }
