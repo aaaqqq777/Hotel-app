@@ -25,7 +25,7 @@ const sortOptions = [
 ]
 
 const ratingOptions = ['全部', '5星', '4星', '3星及以下']
-const priceRangeOptions = ['全部', '100以下', '100-300', '300-600', '600以上']
+const priceRangeOptions = ['全部', '200以下', '200-500', '500以上']
 const scoreOptions = ['全部', '4.8分以上', '4.5分以上', '4.0分以上']
 const distanceOptions = ['全部', '1公里内', '3公里内', '5公里内', '10公里内']
 
@@ -43,6 +43,9 @@ export default function SortBar({
   const [openMenu, setOpenMenu] = useState<string | null>(null)
   const [filterVisible, setFilterVisible] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const [customPriceMin, setCustomPriceMin] = useState<string>('')
+  const [customPriceMax, setCustomPriceMax] = useState<string>('')
+  const [showCustomPriceInput, setShowCustomPriceInput] = useState(false)
 
   const currentLabel = sortOptions.find(opt => opt.value === currentSort)?.label || '推荐排序'
 
@@ -52,9 +55,22 @@ export default function SortBar({
   }
 
   const handleOptionSelect = (value: string, type: 'price' | 'rating' | 'score' | 'distance') => {
-    if (type === 'price') onPriceChange?.(value)
+    if (type === 'price') {
+      onPriceChange?.(value)
+    }
     if (type === 'rating') onRatingChange?.(value)
     if (type === 'score') onScoreChange?.(value)
+    setOpenMenu(null)
+  }
+
+  const handleCustomPriceApply = () => {
+    const min = customPriceMin ? parseInt(customPriceMin) : 0
+    const max = customPriceMax ? parseInt(customPriceMax) : 99999
+    if (min > max) {
+      return
+    }
+    const customPriceStr = `${min}-${max}`
+    onPriceChange?.(customPriceStr)
     setOpenMenu(null)
   }
 
@@ -133,12 +149,55 @@ export default function SortBar({
         </div>
 
         {/* 品牌价格 */}
-        <DropdownButton
-          label={selectedPrice}
-          menuKey="price"
-          options={priceRangeOptions}
-          onSelect={(value) => handleOptionSelect(value, 'price')}
-        />
+        <div className={styles.dropdownWrapper}>
+          <button
+            className={styles.dropdownBtn}
+            onClick={() => setOpenMenu(openMenu === 'price' ? null : 'price')}
+          >
+            <span className={styles.btnText}>{selectedPrice}</span>
+            <DownOutline className={styles.downIcon} />
+          </button>
+
+          {openMenu === 'price' && (
+            <div className={styles.dropdown}>
+              {priceRangeOptions.map((opt) => (
+                <div
+                  key={opt}
+                  className={styles.dropdownItem}
+                  onClick={() => handleOptionSelect(opt, 'price')}
+                >
+                  {opt}
+                </div>
+              ))}
+              
+              <div className={styles.customPriceInput}>
+                <div className={styles.customPriceRow}>
+                  <input
+                    type="number"
+                    placeholder="最低价"
+                    value={customPriceMin}
+                    onChange={(e) => setCustomPriceMin(e.target.value)}
+                    className={styles.customPriceInputField}
+                  />
+                  <span className={styles.customPriceSeparator}>-</span>
+                  <input
+                    type="number"
+                    placeholder="最高价"
+                    value={customPriceMax}
+                    onChange={(e) => setCustomPriceMax(e.target.value)}
+                    className={styles.customPriceInputField}
+                  />
+                </div>
+                <button 
+                  className={styles.customPriceApply}
+                  onClick={handleCustomPriceApply}
+                >
+                  确定
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* 位置距离 */}
         <DropdownButton
@@ -218,7 +277,7 @@ export default function SortBar({
           {/* 价格范围筛选 */}
           <div style={{ marginBottom: '20px' }}>
             <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>价格范围</h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
               {priceRangeOptions.map((price) => (
                 <button
                   key={price}
@@ -235,6 +294,67 @@ export default function SortBar({
                   {price}
                 </button>
               ))}
+            </div>
+            
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '10px',
+              padding: '12px',
+              background: '#f5f5f5',
+              borderRadius: '4px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  type="number"
+                  placeholder="最低价"
+                  value={customPriceMin}
+                  onChange={(e) => setCustomPriceMin(e.target.value)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: '4px',
+                    fontSize: '14px'
+                  }}
+                />
+                <span style={{ color: '#999' }}>-</span>
+                <input
+                  type="number"
+                  placeholder="最高价"
+                  value={customPriceMax}
+                  onChange={(e) => setCustomPriceMax(e.target.value)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 12px',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: '4px',
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
+              <button
+                style={{
+                  padding: '8px 16px',
+                  background: '#1890ff',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px'
+                }}
+                onClick={() => {
+                  const min = customPriceMin ? parseInt(customPriceMin) : 0
+                  const max = customPriceMax ? parseInt(customPriceMax) : 99999
+                  if (min > max) {
+                    return
+                  }
+                  const customPriceStr = `${min}-${max}`
+                  onPriceChange?.(customPriceStr)
+                }}
+              >
+                确定
+              </button>
             </div>
           </div>
 

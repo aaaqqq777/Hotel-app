@@ -202,10 +202,6 @@ function HotelListPage() {
     navigate(`/detailpage?id=${hotelId}`)
   }
 
-  const handleBackToSearch = () => {
-    navigate('/')
-  }
-
   const handleOpenFilter = () => {
     console.log('打开筛选面板');
   };

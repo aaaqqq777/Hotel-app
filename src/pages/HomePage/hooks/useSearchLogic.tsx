@@ -11,6 +11,8 @@ export interface SearchData {
   brand?: string;
   priceRange?: [number, number];
   tags?: string[];
+  roomCount?: number;
+  guestCount?: number;
 }
 
 export function useSearchLogic() {
@@ -35,6 +37,10 @@ export function useSearchLogic() {
       data.dates = [today, tomorrow];
       console.log('使用默认日期范围:', data.dates);
     }
+
+    // 确保房间数和人数有默认值
+    if (!data.roomCount) data.roomCount = 1;
+    if (!data.guestCount) data.guestCount = 1;
 
     // 2. 将数据对象转换为 URL 查询字符串
     const params = new URLSearchParams();

@@ -1,41 +1,24 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Card } from 'antd-mobile'
 import { useNavigate } from 'react-router-dom'
 import styles from './Banner.module.css'
-
-// 广告数据接口
-interface BannerData {
-  id: string
-  imageUrl: string
-  title: string
-  description: string
-  hotelId: string
-}
+import { fetchBannerList, type BannerData } from '../../../../api/advertisement/advertisement'
 
 function Banner() {
   const navigate = useNavigate()
-  const [bannerData, setBannerData] = useState<BannerData | null>(null)
+  const [bannerList, setBannerList] = useState<BannerData[]>([])
   const [loading, setLoading] = useState(true)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const timerRef = useRef<number | null>(null);
 
-  // 模拟从后台请求广告数据
+  // 获取广告数据
   useEffect(() => {
-    const fetchBannerData = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true)
-        // 模拟API请求延迟
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        // 模拟后台返回的广告数据
-        const mockData: BannerData = {
-          id: '1',
-          imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20with%20modern%20architecture&image_size=landscape_16_9',
-          title: '豪华酒店特惠',
-          description: '限时享受8折优惠，预订即送早餐',
-          hotelId: '1'
-        }
-        
-        setBannerData(mockData)
+        const data = await fetchBannerList()
+        setBannerList(data)
       } catch (error) {
         console.error('Failed to fetch banner data:', error)
       } finally {
@@ -43,17 +26,58 @@ function Banner() {
       }
     }
 
-    fetchBannerData()
+    fetchData()
   }, [])
 
-  const handleBannerClick = () => {
-    if (bannerData) {
-      // 跳转到酒店详情页
-      navigate(`/detailpage?id=${bannerData.hotelId}`)
+  // 自动轮播
+  useEffect(() => {
+    if (bannerList.length <= 1) {
+      return
+    }
+
+    // 启动自动轮播
+    startAutoPlay()
+
+    return () => {
+      stopAutoPlay()
+    }
+  }, [bannerList])
+
+  const startAutoPlay = () => {
+    stopAutoPlay()
+    timerRef.current = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % bannerList.length)
+    }, 3000)
+  }
+
+  const stopAutoPlay = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
     }
   }
 
-  if (loading || !bannerData) {
+  const handleBannerClick = (banner: BannerData) => {
+    navigate(`/detailpage?id=${banner.hotelId}`)
+  }
+
+  const handleIndicatorClick = (index: number) => {
+    setCurrentIndex(index)
+  }
+
+  const handleMouseEnter = () => {
+    if (bannerList.length > 1) {
+      stopAutoPlay()
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (bannerList.length > 1) {
+      startAutoPlay()
+    }
+  }
+
+  if (loading) {
     return (
       <Card className={styles.container}>
         <div className={styles.content}>
@@ -63,25 +87,73 @@ function Banner() {
     )
   }
 
+  if (!bannerList.length) {
+    return null
+  }
+
+  // 如果只有一个广告，静止显示
+  if (bannerList.length === 1) {
+    const banner = bannerList[0]
+    return (
+      <Card
+        className={styles.container}
+        onClick={() => handleBannerClick(banner)}
+      >
+        <div 
+          className={styles.content}
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${banner.imageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          <h3>{banner.title}</h3>
+          <p>{banner.description}</p>
+        </div>
+      </Card>
+    )
+  }
+
+  // 多个广告，轮播显示
   return (
     <Card
       className={styles.container}
-      onClick={handleBannerClick}
     >
-      <div 
-        className={styles.content}
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${bannerData.imageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        <h3>{bannerData.title}</h3>
-        <p>{bannerData.description}</p>
+      {/* 轮播内容 */}
+      <div className={styles.carouselWrapper}>
+        {bannerList.map((banner, index) => (
+          <div
+            key={banner.id}
+            className={`${styles.slide} ${index === currentIndex ? styles.active : ''}`}
+            onClick={() => handleBannerClick(banner)}
+          >
+            <div 
+              className={styles.content}
+              style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${banner.imageUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            >
+              <h3>{banner.title}</h3>
+              <p>{banner.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 指示器 */}
+      <div className={styles.indicators}>
+        {bannerList.map((_, index) => (
+          <div
+            key={index}
+            className={`${styles.indicator} ${index === currentIndex ? styles.active : ''}`}
+            onClick={() => handleIndicatorClick(index)}
+          />
+        ))}
       </div>
     </Card>
   )
 }
 
 export default Banner
-

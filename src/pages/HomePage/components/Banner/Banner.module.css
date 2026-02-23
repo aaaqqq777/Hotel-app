@@ -1,25 +1,84 @@
 .container {
-  /* Card 组件默认样式已经很好，我们主要修改内容 */
   margin-bottom: 0%;
   cursor: pointer;
   height: 300px;
+  overflow: hidden;
+  position: relative;
 }
 
+/* 轮播容器 */
+.carouselWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 幻灯片 */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* 激活的幻灯片 */
+.slide.active {
+  opacity: 1;
+}
+
+/* 内容区域 */
 .content {
-  /* 简单模拟一个有背景图的 Banner */
   height: 300px;
   padding: 24px 16px;
-  background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
-  color: #5f4b32;
-  border-radius: var(--adm-border-radius-lg); /* 使用 antd-mobile 的 CSS 变量 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: white;
+  border-radius: var(--adm-border-radius-lg);
+  background-size: cover;
+  background-position: center;
 }
 
 .content h3 {
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
   font-size: 20px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .content p {
   margin: 0;
   font-size: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 指示器容器 */
+.indicators {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+/* 指示器 */
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* 激活的指示器 */
+.indicator.active {
+  width: 24px;
+  border-radius: 4px;
+  background-color: white;
 }

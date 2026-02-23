@@ -49,6 +49,9 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [cityTags, setCityTags] = useState<string[]>(CITY_TAGS[city] || CITY_TAGS['上海']);
   const [filterVisible, setFilterVisible] = useState(false);
+  const [roomGuestVisible, setRoomGuestVisible] = useState(false);
+  const [roomCount, setRoomCount] = useState(value.roomCount || 1);
+  const [guestCount, setGuestCount] = useState(value.guestCount || 1);
 
   // 当外部value变化时，更新内部状态
   useEffect(() => {
@@ -128,7 +131,9 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
       tags: [
         ...selectedTags,
         ...(selectedRating !== '不限' ? [selectedRating] : [])
-      ].filter(Boolean)
+      ].filter(Boolean),
+      roomCount,
+      guestCount
     };
     
     // 更新上层状态
@@ -177,6 +182,17 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
             {selectedBrand !== '不限' && selectedPrice !== '不限' ? `${selectedBrand}/${selectedPrice}` : 
              selectedBrand !== '不限' ? selectedBrand : 
              selectedPrice !== '不限' ? selectedPrice : '品牌/价格'}
+          </div>
+        </div>
+
+        {/* 第三行：房间数/人数选择 */}
+        <div className={styles.roomGuestRow}>
+          <div className={styles.roomGuestButton} onClick={() => setRoomGuestVisible(true)}>
+            <span className={styles.roomGuestLabel}>房间</span>
+            <span className={styles.roomGuestValue}>{roomCount}间</span>
+            <span className={styles.roomGuestDivider}>/</span>
+            <span className={styles.roomGuestLabel}>人数</span>
+            <span className={styles.roomGuestValue}>{guestCount}人</span>
           </div>
         </div>
 
@@ -353,6 +369,77 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
               block 
               size="large" 
               onClick={() => setFilterVisible(false)}
+            >
+              确定
+            </Button>
+          </div>
+        </Popup>
+
+        {/* 房间数/人数选择弹窗 */}
+        <Popup
+          visible={roomGuestVisible}
+          onMaskClick={() => setRoomGuestVisible(false)}
+          position="bottom"
+          className={styles.roomGuestPopup}
+        >
+          <div className={styles.popupContent}>
+            <h3 className={styles.popupTitle}>房间与人数</h3>
+            
+            {/* 房间数 */}
+            <div className={styles.roomGuestSection}>
+              <div className={styles.roomGuestTitle}>房间数</div>
+              <div className={styles.numberStepper}>
+                <Button 
+                  fill="none"
+                  size="small"
+                  onClick={() => setRoomCount(prev => Math.max(1, prev - 1))}
+                  disabled={roomCount <= 1}
+                >
+                  -
+                </Button>
+                <span className={styles.numberValue}>{roomCount}</span>
+                <Button 
+                  fill="none"
+                  size="small"
+                  onClick={() => setRoomCount(prev => Math.min(10, prev + 1))}
+                  disabled={roomCount >= 10}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
+            
+            {/* 人数 */}
+            <div className={styles.roomGuestSection}>
+              <div className={styles.roomGuestTitle}>出行人数</div>
+              <div className={styles.numberStepper}>
+                <Button 
+                  fill="none"
+                  size="small"
+                  onClick={() => setGuestCount(prev => Math.max(1, prev - 1))}
+                  disabled={guestCount <= 1}
+                >
+                  -
+                </Button>
+                <span className={styles.numberValue}>{guestCount}</span>
+                <Button 
+                  fill="none"
+                  size="small"
+                  onClick={() => setGuestCount(prev => Math.min(20, prev + 1))}
+                  disabled={guestCount >= 20}
+                >
+                  +
+                </Button>
+              </div>
+            </div>
+            
+            {/* 确定按钮 */}
+            <Button 
+              color="primary" 
+              block 
+              size="large" 
+              onClick={() => setRoomGuestVisible(false)}
+              style={{ marginTop: 24 }}
             >
               确定
             </Button>
