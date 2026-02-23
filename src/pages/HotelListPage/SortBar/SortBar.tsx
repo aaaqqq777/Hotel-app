@@ -33,7 +33,7 @@ export default function SortBar({
   currentSort, 
   onSortChange, 
   onFilterClick,
-  selectedPrice = '品牌价格',
+  selectedPrice = '价格',
   onPriceChange,
   selectedRating = '星级',
   onRatingChange,
@@ -46,11 +46,17 @@ export default function SortBar({
   const [customPriceMin, setCustomPriceMin] = useState<string>('')
   const [customPriceMax, setCustomPriceMax] = useState<string>('')
   const [showCustomPriceInput, setShowCustomPriceInput] = useState(false)
+  
+  const [tempRating, setTempRating] = useState<string>(selectedRating)
+  const [tempPrice, setTempPrice] = useState<string>(selectedPrice)
+  const [tempScore, setTempScore] = useState<string>(selectedScore)
+  const [tempCustomPriceMin, setTempCustomPriceMin] = useState<string>('')
+  const [tempCustomPriceMax, setTempCustomPriceMax] = useState<string>('')
 
   const currentLabel = sortOptions.find(opt => opt.value === currentSort)?.label || '推荐排序'
 
   const getPriceDisplayLabel = (price: string) => {
-    if (!price || price === '品牌价格') return '品牌价格'
+    if (!price || price === '价格') return '价格'
     if (priceRangeOptions.includes(price)) return price
     
     const match = price.match(/^(\d+)-(\d+)$/)
@@ -69,7 +75,7 @@ export default function SortBar({
       }
     }
     
-    return '自定义'
+    return '价格'
   }
 
   const handleSortSelect = (value: SortType) => {
@@ -99,12 +105,32 @@ export default function SortBar({
   }
 
   const handleFilterClick = () => {
-    // 只打开筛选面板，不执行其他操作
+    setTempRating(selectedRating)
+    setTempPrice(selectedPrice)
+    setTempScore(selectedScore)
+    setTempCustomPriceMin('')
+    setTempCustomPriceMax('')
     setFilterVisible(true)
-    // 移除对onFilterClick的调用，避免可能的冲突
   };
 
   const handleFilterClose = () => {
+    setFilterVisible(false)
+  }
+
+  const handleFilterConfirm = () => {
+    let finalPrice = tempPrice
+    
+    if (tempCustomPriceMin || tempCustomPriceMax) {
+      const min = tempCustomPriceMin ? parseInt(tempCustomPriceMin) : 0
+      const max = tempCustomPriceMax ? parseInt(tempCustomPriceMax) : 99999
+      if (min <= max) {
+        finalPrice = `${min}-${max}`
+      }
+    }
+    
+    onRatingChange?.(tempRating)
+    onPriceChange?.(finalPrice)
+    onScoreChange?.(tempScore)
     setFilterVisible(false)
   }
 
@@ -223,6 +249,56 @@ export default function SortBar({
           )}
         </div>
 
+        {/* 星级筛选
+        <div className={styles.dropdownWrapper}>
+          <button
+            className={styles.dropdownBtn}
+            onClick={() => setOpenMenu(openMenu === 'rating' ? null : 'rating')}
+          >
+            <span className={styles.btnText}>{selectedRating}</span>
+            <DownOutline className={styles.downIcon} />
+          </button>
+
+          {openMenu === 'rating' && (
+            <div className={styles.dropdown}>
+              {ratingOptions.map((opt) => (
+                <div
+                  key={opt}
+                  className={styles.dropdownItem}
+                  onClick={() => handleOptionSelect(opt, 'rating')}
+                >
+                  {opt}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 评分筛选 
+        <div className={styles.dropdownWrapper}>
+          <button
+            className={styles.dropdownBtn}
+            onClick={() => setOpenMenu(openMenu === 'score' ? null : 'score')}
+          >
+            <span className={styles.btnText}>{selectedScore}</span>
+            <DownOutline className={styles.downIcon} />
+          </button>
+
+          {openMenu === 'score' && (
+            <div className={styles.dropdown}>
+              {scoreOptions.map((opt) => (
+                <div
+                  key={opt}
+                  className={styles.dropdownItem}
+                  onClick={() => handleOptionSelect(opt, 'score')}
+                >
+                  {opt}
+                </div>
+              ))}
+            </div>
+          )}
+        </div> */}
+
         {/* 位置距离 */}
         <DropdownButton
           label="位置距离"
@@ -272,8 +348,8 @@ export default function SortBar({
               {ratingOptions.map((rating) => (
                 <button
                   key={rating}
-                  className={selectedRating === rating ? styles.filterOptionBtnActive : styles.filterOptionBtn}
-                  onClick={() => onRatingChange?.(rating)}
+                  className={tempRating === rating ? styles.filterOptionBtnActive : styles.filterOptionBtn}
+                  onClick={() => setTempRating(rating)}
                 >
                   {rating}
                 </button>
@@ -288,8 +364,12 @@ export default function SortBar({
               {priceRangeOptions.map((price) => (
                 <button
                   key={price}
-                  className={selectedPrice === price ? styles.filterOptionBtnActive : styles.filterOptionBtn}
-                  onClick={() => onPriceChange?.(price)}
+                  className={tempPrice === price && !(tempCustomPriceMin || tempCustomPriceMax) ? styles.filterOptionBtnActive : styles.filterOptionBtn}
+                  onClick={() => {
+                    setTempPrice(price)
+                    setTempCustomPriceMin('')
+                    setTempCustomPriceMax('')
+                  }}
                 >
                   {price}
                 </button>
@@ -301,25 +381,19 @@ export default function SortBar({
                 <input
                   type="number"
                   placeholder="最低价"
-                  value={customPriceMin}
-                  onChange={(e) => setCustomPriceMin(e.target.value)}
+                  value={tempCustomPriceMin}
+                  onChange={(e) => setTempCustomPriceMin(e.target.value)}
                   className={styles.filterPanelCustomPriceInput}
                 />
                 <span className={styles.filterPanelCustomPriceSeparator}>-</span>
                 <input
                   type="number"
                   placeholder="最高价"
-                  value={customPriceMax}
-                  onChange={(e) => setCustomPriceMax(e.target.value)}
+                  value={tempCustomPriceMax}
+                  onChange={(e) => setTempCustomPriceMax(e.target.value)}
                   className={styles.filterPanelCustomPriceInput}
                 />
               </div>
-              <button
-                className={styles.filterPanelCustomPriceApply}
-                onClick={handleCustomPriceApply}
-              >
-                确定
-              </button>
             </div>
           </div>
 
@@ -330,8 +404,8 @@ export default function SortBar({
               {scoreOptions.map((score) => (
                 <button
                   key={score}
-                  className={selectedScore === score ? styles.filterOptionBtnActive : styles.filterOptionBtn}
-                  onClick={() => onScoreChange?.(score)}
+                  className={tempScore === score ? styles.filterOptionBtnActive : styles.filterOptionBtn}
+                  onClick={() => setTempScore(score)}
                 >
                   {score}
                 </button>
@@ -342,7 +416,7 @@ export default function SortBar({
           {/* 确认按钮 */}
           <button
             className={styles.filterPanelConfirmBtn}
-            onClick={handleFilterClose}
+            onClick={handleFilterConfirm}
           >
             确定
           </button>
