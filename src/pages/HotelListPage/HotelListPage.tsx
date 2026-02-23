@@ -92,16 +92,49 @@ function HotelListPage() {
     tags: allSelectedTags,
   }), [keyword, selectedRating, selectedPrice, allSelectedTags])
 
+  // 解析价格范围
+  const parsePriceRange = (priceStr: string) => {
+    if (!priceStr || priceStr === '价格' || priceStr === '全部') {
+      return { minPrice: undefined, maxPrice: undefined }
+    }
+    
+    if (priceStr === '200以下') {
+      return { minPrice: undefined, maxPrice: '200' }
+    }
+    if (priceStr === '200-500') {
+      return { minPrice: '200', maxPrice: '500' }
+    }
+    if (priceStr === '500以上') {
+      return { minPrice: '500', maxPrice: undefined }
+    }
+    
+    const match = priceStr.match(/^(\d+)-(\d+)$/)
+    if (match) {
+      const min = parseInt(match[1])
+      const max = parseInt(match[2])
+      return {
+        minPrice: min === 0 ? undefined : match[1],
+        maxPrice: max === 99999 ? undefined : match[2]
+      }
+    }
+    
+    return { minPrice: undefined, maxPrice: undefined }
+  }
+
   // 重置并加载第一页数据
   const loadFirstPage = useCallback(async () => {
     setIsLoading(true)
     setIsInitialLoading(true)
     try {
+      const { minPrice, maxPrice } = parsePriceRange(selectedPrice)
+      
       const apiParams: HotelListParams = {
         city: location || '上海',
         keyword: keyword || undefined,
         star: selectedRating !== '星级' ? selectedRating.replace(/\D/g, '') : undefined,
         sort: sortType === 'default' ? undefined : sortType,
+        minPrice,
+        maxPrice,
         page: '1',
         limit: pageSize.toString(),
       }
@@ -130,18 +163,22 @@ function HotelListPage() {
       setIsLoading(false)
       setIsInitialLoading(false)
     }
-  }, [location, keyword, sortType, pageSize, selectedRating])
+  }, [location, keyword, sortType, pageSize, selectedRating, selectedPrice])
 
   // 加载更多数据
   const loadMoreHotels = useCallback(async () => {
     if (isLoading || !hasMore) return
     setIsLoading(true)
     try {
+      const { minPrice, maxPrice } = parsePriceRange(selectedPrice)
+      
       const apiParams: HotelListParams = {
         city: location || '上海',
         keyword: keyword || undefined,
         star: selectedRating !== '星级' ? selectedRating.replace(/\D/g, '') : undefined,
         sort: sortType === 'default' ? undefined : sortType,
+        minPrice,
+        maxPrice,
         page: (currentPage + 1).toString(),
         limit: pageSize.toString(),
       }
@@ -169,7 +206,7 @@ function HotelListPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [isLoading, hasMore, location, keyword, sortType, currentPage, pageSize, selectedRating])
+  }, [isLoading, hasMore, location, keyword, sortType, currentPage, pageSize, selectedRating, selectedPrice])
 
   // 滚动监听回调 - 移到 loadMoreHotels 之后定义
   const lastHotelRef = useCallback((node: HTMLDivElement | null) => {

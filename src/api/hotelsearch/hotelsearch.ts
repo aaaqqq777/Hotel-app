@@ -14,6 +14,8 @@ export interface HotelListParams {
   lat?: string;
   page?: string;
   limit?: string;
+  minPrice?: string;
+  maxPrice?: string;
 }
 
 // 后端接口响应数据结构
@@ -64,6 +66,15 @@ export async function searchHotelList(params: HotelListParams): Promise<HotelLis
     if (params.star) {
       const star = parseInt(params.star);
       filteredHotels = filteredHotels.filter(hotel => hotel.starLevel === star);
+    }
+    
+    // 价格筛选
+    if (params.minPrice || params.maxPrice) {
+      const minPrice = params.minPrice ? parseInt(params.minPrice) : 0;
+      const maxPrice = params.maxPrice ? parseInt(params.maxPrice) : Infinity;
+      filteredHotels = filteredHotels.filter(hotel => 
+        hotel.price >= minPrice && hotel.price <= maxPrice
+      );
     }
     
     // 排序

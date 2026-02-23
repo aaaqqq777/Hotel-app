@@ -49,6 +49,29 @@ export default function SortBar({
 
   const currentLabel = sortOptions.find(opt => opt.value === currentSort)?.label || '推荐排序'
 
+  const getPriceDisplayLabel = (price: string) => {
+    if (!price || price === '品牌价格') return '品牌价格'
+    if (priceRangeOptions.includes(price)) return price
+    
+    const match = price.match(/^(\d+)-(\d+)$/)
+    if (match) {
+      const min = parseInt(match[1])
+      const max = parseInt(match[2])
+      
+      if (min === 0 && max === 99999) {
+        return '全部'
+      } else if (min === 0) {
+        return `${max}以下`
+      } else if (max === 99999) {
+        return `${min}以上`
+      } else {
+        return `${min}-${max}`
+      }
+    }
+    
+    return '自定义'
+  }
+
   const handleSortSelect = (value: SortType) => {
     onSortChange(value)
     setOpenMenu(null)
@@ -72,6 +95,7 @@ export default function SortBar({
     const customPriceStr = `${min}-${max}`
     onPriceChange?.(customPriceStr)
     setOpenMenu(null)
+    setFilterVisible(false)
   }
 
   const handleFilterClick = () => {
@@ -154,7 +178,7 @@ export default function SortBar({
             className={styles.dropdownBtn}
             onClick={() => setOpenMenu(openMenu === 'price' ? null : 'price')}
           >
-            <span className={styles.btnText}>{selectedPrice}</span>
+            <span className={styles.btnText}>{getPriceDisplayLabel(selectedPrice)}</span>
             <DownOutline className={styles.downIcon} />
           </button>
 
@@ -230,42 +254,25 @@ export default function SortBar({
           height: '70%'
         }}
       >
-        <div style={{ padding: '16px' }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            marginBottom: '16px'
-          }}>
-            <h3 style={{ margin: 0 }}>筛选条件</h3>
+        <div className={styles.filterPanelContent}>
+          <div className={styles.filterPanelHeader}>
+            <h3 className={styles.filterPanelTitle}>筛选条件</h3>
             <button 
               onClick={handleFilterClose}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                fontSize: '16px', 
-                cursor: 'pointer'
-              }}
+              className={styles.filterPanelCloseBtn}
             >
               关闭
             </button>
           </div>
 
           {/* 星级筛选 */}
-          <div style={{ marginBottom: '20px' }}>
-            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>酒店星级</h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          <div className={styles.filterSection}>
+            <h4 className={styles.filterSectionTitle}>酒店星级</h4>
+            <div className={styles.filterOptions}>
               {ratingOptions.map((rating) => (
                 <button
                   key={rating}
-                  style={{
-                    padding: '6px 12px',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '4px',
-                    background: selectedRating === rating ? '#1890ff' : 'white',
-                    color: selectedRating === rating ? 'white' : '#333',
-                    cursor: 'pointer'
-                  }}
+                  className={selectedRating === rating ? styles.filterOptionBtnActive : styles.filterOptionBtn}
                   onClick={() => onRatingChange?.(rating)}
                 >
                   {rating}
@@ -275,20 +282,13 @@ export default function SortBar({
           </div>
 
           {/* 价格范围筛选 */}
-          <div style={{ marginBottom: '20px' }}>
-            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>价格范围</h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
+          <div className={styles.filterSection}>
+            <h4 className={styles.filterSectionTitle}>价格范围</h4>
+            <div className={styles.filterOptionsWithMargin}>
               {priceRangeOptions.map((price) => (
                 <button
                   key={price}
-                  style={{
-                    padding: '6px 12px',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '4px',
-                    background: selectedPrice === price ? '#1890ff' : 'white',
-                    color: selectedPrice === price ? 'white' : '#333',
-                    cursor: 'pointer'
-                  }}
+                  className={selectedPrice === price ? styles.filterOptionBtnActive : styles.filterOptionBtn}
                   onClick={() => onPriceChange?.(price)}
                 >
                   {price}
@@ -296,62 +296,27 @@ export default function SortBar({
               ))}
             </div>
             
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              gap: '10px',
-              padding: '12px',
-              background: '#f5f5f5',
-              borderRadius: '4px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className={styles.filterPanelCustomPrice}>
+              <div className={styles.filterPanelCustomPriceRow}>
                 <input
                   type="number"
                   placeholder="最低价"
                   value={customPriceMin}
                   onChange={(e) => setCustomPriceMin(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '8px 12px',
-                    border: '1px solid #d9d9d9',
-                    borderRadius: '4px',
-                    fontSize: '14px'
-                  }}
+                  className={styles.filterPanelCustomPriceInput}
                 />
-                <span style={{ color: '#999' }}>-</span>
+                <span className={styles.filterPanelCustomPriceSeparator}>-</span>
                 <input
                   type="number"
                   placeholder="最高价"
                   value={customPriceMax}
                   onChange={(e) => setCustomPriceMax(e.target.value)}
-                  style={{
-                    flex: 1,
-                    padding: '8px 12px',
-                    border: '1px solid #d9d9d9',
-                    borderRadius: '4px',
-                    fontSize: '14px'
-                  }}
+                  className={styles.filterPanelCustomPriceInput}
                 />
               </div>
               <button
-                style={{
-                  padding: '8px 16px',
-                  background: '#1890ff',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-                onClick={() => {
-                  const min = customPriceMin ? parseInt(customPriceMin) : 0
-                  const max = customPriceMax ? parseInt(customPriceMax) : 99999
-                  if (min > max) {
-                    return
-                  }
-                  const customPriceStr = `${min}-${max}`
-                  onPriceChange?.(customPriceStr)
-                }}
+                className={styles.filterPanelCustomPriceApply}
+                onClick={handleCustomPriceApply}
               >
                 确定
               </button>
@@ -359,20 +324,13 @@ export default function SortBar({
           </div>
 
           {/* 评分筛选 */}
-          <div style={{ marginBottom: '20px' }}>
-            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>用户评分</h4>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          <div className={styles.filterSection}>
+            <h4 className={styles.filterSectionTitle}>用户评分</h4>
+            <div className={styles.filterOptions}>
               {scoreOptions.map((score) => (
                 <button
                   key={score}
-                  style={{
-                    padding: '6px 12px',
-                    border: '1px solid #e8e8e8',
-                    borderRadius: '4px',
-                    background: selectedScore === score ? '#1890ff' : 'white',
-                    color: selectedScore === score ? 'white' : '#333',
-                    cursor: 'pointer'
-                  }}
+                  className={selectedScore === score ? styles.filterOptionBtnActive : styles.filterOptionBtn}
                   onClick={() => onScoreChange?.(score)}
                 >
                   {score}
@@ -383,17 +341,7 @@ export default function SortBar({
 
           {/* 确认按钮 */}
           <button
-            style={{
-              width: '100%',
-              padding: '12px',
-              background: '#1890ff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer'
-            }}
+            className={styles.filterPanelConfirmBtn}
             onClick={handleFilterClose}
           >
             确定
