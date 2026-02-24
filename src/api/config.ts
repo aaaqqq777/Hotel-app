@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API基础URL
-export const API_BASE_URL = 'https://api.your-app.com/v1';
+export const API_BASE_URL = '/api'; // 使用相对路径代理到本地后端
 
 // 创建axios实例
 export const apiClient = axios.create({

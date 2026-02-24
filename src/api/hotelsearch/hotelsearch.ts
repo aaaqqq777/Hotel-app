@@ -1,5 +1,5 @@
 // src/api/hotelsearch/hotelsearch.ts
-import { apiClient } from '../config';
+import { apiClient } from '../config'; // 这个现在应该使用 /api 前缀并被代理到后端
 import type { Hotel, SearchParams, HotelDetail, Review, RoomType, Facility } from '../../types/hotel';
 import { MOCK_HOTEL_IMAGES, MOCK_HOTEL_FACILITIES, MOCK_HOTEL_REVIEWS, MOCK_SEARCH_SUGGESTIONS, MOCK_HOTEL_DETAILS, MOCK_ROOMS_BY_HOTEL } from '../../data/hotelDetail';
 import { MOCK_HOTELS } from '../../data/hotels';
@@ -16,6 +16,8 @@ export interface HotelListParams {
   limit?: string;
   minPrice?: string;
   maxPrice?: string;
+  roomCount?: string | number;
+  guestCount?: string | number;
 }
 
 // 后端接口响应数据结构
@@ -40,10 +42,10 @@ export interface HotelListResponse {
   };
 }
 
-// 搜索酒店列表 (使用后端接口 GET /hotels)
+// 搜索酒店列表 (使用后端接口 GET /api/hotels)
 export async function searchHotelList(params: HotelListParams): Promise<HotelListResponse> {
   try {
-    const response = await apiClient.get('/hotels', { params });
+    const response = await apiClient.get('/api/hotels', { params });
     return response.data;
   } catch (error) {
     console.error('Failed to search hotel list:', error);
@@ -126,7 +128,7 @@ export async function searchHotelList(params: HotelListParams): Promise<HotelLis
 // 获取酒店详情
 export async function getHotelDetail(hotelId: string): Promise<HotelDetail> {
   try {
-    const response = await apiClient.get(`/hotels/${hotelId}`);
+    const response = await apiClient.get(`/api/hotels/${hotelId}`);
     return response.data;
   } catch (error) {
     console.error('Failed to get hotel detail:', error);
@@ -170,7 +172,7 @@ export async function getHotelDetail(hotelId: string): Promise<HotelDetail> {
 // 获取酒店评价
 export async function getHotelReviews(hotelId: string, page = 1, pageSize = 10): Promise<Review[]> {
   try {
-    const response = await apiClient.get(`/hotels/${hotelId}/reviews`, {
+    const response = await apiClient.get(`/api/hotels/${hotelId}/reviews`, {
       params: { page, pageSize }
     });
     return response.data;
@@ -184,7 +186,7 @@ export async function getHotelReviews(hotelId: string, page = 1, pageSize = 10):
 // 获取酒店房型
 export async function getHotelRoomTypes(hotelId: string): Promise<RoomType[]> {
   try {
-    const response = await apiClient.get(`/hotels/${hotelId}/room-types`);
+    const response = await apiClient.get(`/api/hotels/${hotelId}/room-types`);
     return response.data;
   } catch (error) {
     console.error('Failed to get hotel room types:', error);
@@ -196,7 +198,7 @@ export async function getHotelRoomTypes(hotelId: string): Promise<RoomType[]> {
 // 获取酒店设施
 export async function getHotelFacilities(hotelId: string): Promise<Facility[]> {
   try {
-    const response = await apiClient.get(`/hotels/${hotelId}/facilities`);
+    const response = await apiClient.get(`/api/hotels/${hotelId}/facilities`);
     return response.data;
   } catch (error) {
     console.error('Failed to get hotel facilities:', error);
@@ -208,7 +210,7 @@ export async function getHotelFacilities(hotelId: string): Promise<Facility[]> {
 // 获取搜索建议
 export async function getSearchSuggestions(keyword: string): Promise<string[]> {
   try {
-    const response = await apiClient.get('/hotels/suggestions', {
+    const response = await apiClient.get('/api/hotels/suggestions', {
       params: { keyword }
     });
     return response.data;
@@ -222,7 +224,7 @@ export async function getSearchSuggestions(keyword: string): Promise<string[]> {
 // 搜索酒店
 export async function searchHotels(params: SearchParams): Promise<Hotel[]> {
   try {
-    const response = await apiClient.get('/hotels/search', { params });
+    const response = await apiClient.get('/api/hotels/search', { params });
     return response.data;
   } catch (error) {
     console.error('Failed to search hotels:', error);

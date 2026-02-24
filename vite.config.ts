@@ -6,6 +6,19 @@ import { defineConfig as defineTestConfig, mergeConfig } from 'vitest/config'
 export default mergeConfig(
   defineConfig({
     plugins: [react()],
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3000', // 假设后端运行在3000端口
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        '/hotels': {
+          target: 'http://localhost:3000', // 代理酒店相关API
+          changeOrigin: true,
+        },
+      },
+    },
   }),
   defineTestConfig({
     test: {

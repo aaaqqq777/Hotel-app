@@ -6,15 +6,29 @@ import styles from './Header.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import PeriodCalendar from '../../../components/PeriodCalendar/PeriodCalendar';
+import RoomSelector from '../RoomSelector/RoomSelector';
 
 interface HeaderProps {
   location?: string
   checkInDate?: string
+  roomCount?: number
+  guestCount?: number
   onDateChange?: (startDate: Date, endDate: Date) => void
   onCityChange?: (city: string) => void
+  onRoomCountChange?: (count: number) => void
+  onGuestCountChange?: (count: number) => void
 }
 
-export default function Header({ location, checkInDate, onDateChange, onCityChange }: HeaderProps) {
+export default function Header({ 
+  location, 
+  checkInDate, 
+  roomCount = 1, 
+  guestCount = 1, 
+  onDateChange, 
+  onCityChange,
+  onRoomCountChange,
+  onGuestCountChange
+}: HeaderProps) {
   const navigate = useNavigate();
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [cityVisible, setCityVisible] = useState(false);
@@ -117,6 +131,17 @@ export default function Header({ location, checkInDate, onDateChange, onCityChan
 
         {/* 分隔线 */}
         {(checkInDate || location) && <div className={styles.divider} />}
+
+        {/* 房间选择部分 */}
+        <RoomSelector 
+          roomCount={roomCount} 
+          guestCount={guestCount} 
+          onRoomCountChange={onRoomCountChange || (() => {})} 
+          onGuestCountChange={onGuestCountChange || (() => {})} 
+        />
+
+        {/* 分隔线 */}
+        <div className={styles.divider} />
 
         {/* 搜索框部分 */}
         <div className={styles.searchSection}>

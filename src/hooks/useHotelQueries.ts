@@ -72,32 +72,89 @@ export function useSearchHotels(params: SearchParams) {
 export function useHotelList(params: HotelListParams) {
   return useQuery({
     queryKey: queryKeys.hotelList(params),
-    queryFn: () => searchHotelList(params),
-    staleTime: 5 * 60 * 1000, // 5分钟
-    cacheTime: 10 * 60 * 1000, // 10分钟
+    queryFn: async () => {
+      const response = await searchHotelList(params);
+      
+      // 确保响应数据结构正确
+      if (!response.data) {
+        return {
+          code: response.code || 200,
+          data: {
+            total: 0,
+            list: []
+          }
+        };
+      }
+      
+      // 过滤掉无效的酒店数据
+      const validHotels = response.data.list?.filter((hotel: any) => 
+        hotel && hotel._id
+      ) || [];
+      
+      return {
+        ...response,
+        data: {
+          ...response.data,
+          list: validHotels
+        }
+      };
+    },
+    staleTime: 2 * 60 * 1000, // 2分钟
+    cacheTime: 5 * 60 * 1000, // 5分钟
   });
 }
 
 export function useInfiniteHotelList(params: HotelListParams) {
   return useInfiniteQuery({
     queryKey: ['hotels', 'infinite-list', params],
-    queryFn: ({ pageParam = 1 }) => {
-      return searchHotelList({
-        ...params,
-        page: pageParam.toString(),
-        limit: params.limit || '10',
-      });
+    queryFn: async ({ pageParam = 1 }) => {
+      try {
+        const response = await searchHotelList({
+          ...params,
+          page: pageParam.toString(),
+          limit: params.limit || '10',
+        });
+        
+        // 确保响应数据结构正确
+        if (!response.data) {
+          return {
+            code: response.code || 200,
+            data: {
+              total: 0,
+              list: []
+            }
+          };
+        }
+        
+        // 过滤掉无效的酒店数据
+        const validHotels = response.data.list?.filter((hotel: any) => 
+          hotel && hotel._id
+        ) || [];
+        
+        return {
+          ...response,
+          data: {
+            ...response.data,
+            list: validHotels
+          }
+        };
+      } catch (error) {
+        console.error('获取分页酒店列表失败:', error);
+        // 抛出错误让React Query能够正确处理错误状态
+        throw error;
+      }
     },
     getNextPageParam: (lastPage, allPages) => {
       const currentPage = allPages.length;
-      const total = lastPage.data.total;
+      const total = lastPage.data?.total || 0;
       const limit = parseInt(params.limit || '10');
       const totalPages = Math.ceil(total / limit);
       
       return currentPage < totalPages ? currentPage + 1 : undefined;
     },
-    staleTime: 5 * 60 * 1000, // 5分钟
-    cacheTime: 10 * 60 * 1000, // 10分钟
+    staleTime: 2 * 60 * 1000, // 2分钟
+    cacheTime: 5 * 60 * 1000, // 5分钟
+    retry: 1, // 失败时重试1次
   });
 }
 
