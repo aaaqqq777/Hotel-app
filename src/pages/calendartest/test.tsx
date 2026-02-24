@@ -7,9 +7,9 @@ export default function Test() {
   // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [start, setStartDate] = useState<Date | null>(null);
   const [end, setEndDate] = useState<Date | null>(null);
-  const handleDateSelectedFromCalendar = (dates:{start: Date | null, end: Date | null}) => {
-    setStartDate(dates.start);
-    setEndDate(dates.end);
+  const handleDateSelectedFromCalendar = (startDate: Date | null, endDate: Date | null) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
     // 这里你可以进一步处理，比如关闭一个弹窗等
   };
   const nights = (start && end) 

@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { DownOutline, FilterOutline, UnorderedListOutline } from 'antd-mobile-icons'
+import { useState } from 'react'
+import { DownOutline } from 'antd-mobile-icons'
 import styles from './SortBar.module.css'
 import { Popup } from 'antd-mobile'
 
@@ -32,7 +32,6 @@ const distanceOptions = ['全部', '1公里内', '3公里内', '5公里内', '10
 export default function SortBar({ 
   currentSort, 
   onSortChange, 
-  onFilterClick,
   selectedPrice = '价格',
   onPriceChange,
   selectedRating = '星级',
@@ -42,10 +41,8 @@ export default function SortBar({
 }: SortBarProps) {
   const [openMenu, setOpenMenu] = useState<string | null>(null)
   const [filterVisible, setFilterVisible] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
   const [customPriceMin, setCustomPriceMin] = useState<string>('')
   const [customPriceMax, setCustomPriceMax] = useState<string>('')
-  const [showCustomPriceInput, setShowCustomPriceInput] = useState(false)
   
   const [tempRating, setTempRating] = useState<string>(selectedRating)
   const [tempPrice, setTempPrice] = useState<string>(selectedPrice)
@@ -171,7 +168,7 @@ export default function SortBar({
   )
 
   return (
-    <div className={styles.container} ref={containerRef}>
+    <div className={styles.container}>
       <div className={styles.buttonGroup}>
         {/* 推荐排序 */}
         <div className={styles.dropdownWrapper}>

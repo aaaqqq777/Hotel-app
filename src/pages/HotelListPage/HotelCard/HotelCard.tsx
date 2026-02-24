@@ -20,7 +20,7 @@ const tagLabels: Record<string, string> = {
 }
 
 export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
-  const ratingLevel = hotel.rating >= 4.5 ? '很棒' : hotel.rating >= 4.0 ? '不错' : '一般'
+  const ratingLevel = !hotel.rating ? '暂无评分' : hotel.rating >= 4.5 ? '很棒' : hotel.rating >= 4.0 ? '不错' : '一般'
 
   const displayTags = hotel.tags.slice(0, 3).map(tag => tagLabels[tag] || tag)
 
@@ -43,9 +43,9 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
           </div>
           
           <div className={styles.ratingContainer}>
-            <span className={styles.ratingScore}>{hotel.rating.toFixed(1)}</span>
+            <span className={styles.ratingScore}>{hotel.rating ? hotel.rating.toFixed(1) : '暂无评分'}</span>
             <span className={styles.ratingLevel}>{ratingLevel}</span>
-            <span className={styles.reviewCount}>{hotel.reviewCount}条评价</span>
+            <span className={styles.reviewCount}>{hotel.reviewCount || 0}条评价</span>
           </div>
           
           <div className={styles.location}>

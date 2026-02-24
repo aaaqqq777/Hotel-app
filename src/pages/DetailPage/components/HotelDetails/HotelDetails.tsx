@@ -20,22 +20,12 @@ interface HotelDetailsProps {
 
 export default function HotelDetails({ 
   hotelName, 
-  starRating, 
   rating, 
   reviewCount, 
   address, 
-  distance, 
-  tags 
+  distance,
+  tags
 }: HotelDetailsProps) {
-  // 使用传入的标签或默认标签
-  const hotelTags = tags || [
-    { icon: '🏢', text: '2020年开业' },
-    { icon: '🎨', text: '新中式风' },
-    { icon: '🅿️', text: '免费停车' },
-    { icon: '🌊', text: '一线江景' },
-    { icon: '🍵', text: '江景下午茶' },
-  ];
-
   // 酒店类型
   const hotelType = '舒适型';
   // 开业时间

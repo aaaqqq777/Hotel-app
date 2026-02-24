@@ -1,5 +1,5 @@
 // import React from 'react'
-import Banner from '../HomePage/components/Banner/Banner'
+import Banner from './components/Banner/Banner'
 import SearchForm from './components/SearchForm/SearchForm'
 import styles from './HomePage.module.css'
 

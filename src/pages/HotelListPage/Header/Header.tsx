@@ -1,22 +1,20 @@
 
 import { Button, Popup, Input } from 'antd-mobile';
-import { EnvironmentOutline, CalendarOutline, LeftOutline, SearchOutline } from 'antd-mobile-icons';
+import { EnvironmentOutline, LeftOutline, SearchOutline } from 'antd-mobile-icons';
 import styles from './Header.module.css';
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import PeriodCalendar from '../../../components/PeriodCalendar/PeriodCalendar';
-import { differenceInCalendarDays } from 'date-fns';
 
 interface HeaderProps {
   location?: string
   checkInDate?: string
-  onOpenFilter?: () => void
   onDateChange?: (startDate: Date, endDate: Date) => void
   onCityChange?: (city: string) => void
 }
 
-export default function Header({ location, checkInDate, onOpenFilter, onDateChange, onCityChange }: HeaderProps) {
+export default function Header({ location, checkInDate, onDateChange, onCityChange }: HeaderProps) {
   const navigate = useNavigate();
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [cityVisible, setCityVisible] = useState(false);
@@ -36,14 +34,7 @@ export default function Header({ location, checkInDate, onOpenFilter, onDateChan
     navigate(-1); 
   };
   
-  const handleSearchClick = (e: React.MouseEvent) => {
-    // 防止事件冒泡，当点击日期时不触发整个搜索摘要的点击事件
-    if (!e.target.closest('.dateItem')) {
-      console.log('用户点击了搜索摘要');
-      // 导航回搜索页
-      // navigate('/');
-    }
-  };
+
   
   const handleDateClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // 防止事件冒泡
@@ -65,16 +56,15 @@ export default function Header({ location, checkInDate, onOpenFilter, onDateChan
     }
   };
   
-  const handleDateChange = (newDates: { startDate: Date | null; endDate: Date | null }) => {
-    setStartDate(newDates.startDate);
-    setEndDate(newDates.endDate);
-    
-    // 当用户选择完结束日期后，自动关闭弹窗并通知父组件
-    if (newDates.startDate && newDates.endDate) {
+  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    console.log('Selected dates:', { startDate, endDate });
+    if (endDate) {
       setCalendarVisible(false);
-      if (onDateChange) {
-        onDateChange(newDates.startDate, newDates.endDate);
-      }
+    }
+    if (onDateChange) {
+      onDateChange(startDate || new Date(), endDate || new Date());
     }
   };
   

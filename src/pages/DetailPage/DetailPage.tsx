@@ -10,9 +10,7 @@ import RoomList from './components/RoomList/RoomList';
 import BottomBar from './components/BottomBar/BottomBar';
 import {
   useHotelDetail,
-  useHotelReviews,
-  useHotelRoomTypes,
-  useHotelFacilities
+  useHotelRoomTypes
 } from '../../hooks/useHotelQueries';
 import { MOCK_SERVICES } from '../../data/hotelDetail';
 
@@ -23,7 +21,7 @@ function DetailPage() {
   // 状态管理
   const [checkInDate] = useState('2026-02-20');
   const [checkOutDate] = useState('2026-02-21');
-  const [selectedRoomId, setSelectedRoomId] = useState('1');
+
   const [showBottomBar, setShowBottomBar] = useState(true);
 
   // Refs
@@ -34,17 +32,12 @@ function DetailPage() {
   const hotelId = searchParams.get('id') || '1'; // 默认酒店ID为1
 
   // 使用API获取酒店数据
-  const { data: hotelDetail, isLoading: detailLoading, error: detailError } = useHotelDetail(hotelId);
+  const { data: hotelDetail } = useHotelDetail(hotelId);
 
-  const { data: hotelReviews } = useHotelReviews(hotelId);
-
-  const { data: hotelRoomTypes } = useHotelRoomTypes(hotelId, true);
-
-  const { data: hotelFacilities } = useHotelFacilities(hotelId);
+  const { data: hotelRoomTypes } = useHotelRoomTypes(hotelId);
 
   // 处理房型选择
   const handleRoomSelect = (roomId: string) => {
-    setSelectedRoomId(roomId);
     console.log('Selected room:', roomId);
   };
 
@@ -99,9 +92,7 @@ function DetailPage() {
 
   // 使用默认数据或真实数据
   const currentHotelDetail = hotelDetail || defaultHotelDetail;
-  const currentHotelReviews = hotelReviews || [];
-  const currentHotelRoomTypes = hotelRoomTypes || [];
-  const currentHotelFacilities = hotelFacilities || [];
+
 
   // 服务标签（这里可以从API获取，目前使用默认值）
   const serviceTags = MOCK_SERVICES;
@@ -141,7 +132,7 @@ function DetailPage() {
         {/* 房型列表 */}
         <div ref={roomListRef}>
           <RoomList 
-            rooms={currentHotelRoomTypes} 
+            rooms={hotelRoomTypes || []} 
             onRoomSelect={handleRoomSelect} 
           />
         </div>

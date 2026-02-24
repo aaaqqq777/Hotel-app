@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Input, Space, Popup } from 'antd-mobile';
-import { LocationOutline, DownOutline, RightOutline } from 'antd-mobile-icons';
+import { LocationOutline, RightOutline } from 'antd-mobile-icons';
 import type { SearchData } from '../../../hooks/useSearchLogic';
 import styles from './OverseasSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
@@ -82,10 +82,11 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
     setSelectedTags([]);
   }, [city]);
 
-  const handleDateChange = (newDates: { startDate: Date | null; endDate: Date | null }) => {
-    setStartDate(newDates.startDate);
-    setEndDate(newDates.endDate);
-    if (newDates.endDate) {
+  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    console.log('Selected dates:', { startDate, endDate });
+    if (endDate) {
       setCalendarVisible(false);
     }
   };
@@ -137,7 +138,7 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
     const formData: Partial<SearchData> = {
       searchType: 'overseas',
       city: city || '曼谷',
-      country: country || '泰国',
+      // country: country || '泰国',
       keyword,
       dates: startDate && endDate ? [startDate, endDate] : undefined,
       brand: selectedBrand !== '不限' ? selectedBrand : undefined,

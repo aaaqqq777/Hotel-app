@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Input, Space, Popup } from 'antd-mobile';
-import { LocationOutline, DownOutline, RightOutline } from 'antd-mobile-icons';
+import { LocationOutline, RightOutline } from 'antd-mobile-icons';
 import type { SearchData } from '../../../hooks/useSearchLogic'; // 导入类型
 import styles from './DomesticSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
@@ -67,11 +67,11 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
     setSelectedTags([]);
   }, [city]);
 
-  const handleDateChange = (newDates: { startDate: Date | null; endDate: Date | null }) => {
-    setStartDate(newDates.startDate);
-    setEndDate(newDates.endDate);
-    // 关键：当用户选择完结束日期后，自动关闭弹窗
-    if (newDates.endDate) {
+  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    console.log('Selected dates:', { startDate, endDate });
+    if (endDate) {
       setCalendarVisible(false);
     }
   };
@@ -139,10 +139,8 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
     // 更新上层状态
     onChange(formData);
     
-    // 使用setTimeout确保状态更新后再调用搜索
-    setTimeout(() => {
-      onSearch();
-    }, 0);
+    // 直接调用搜索函数（因为现在是异步的）
+    onSearch();
   };
 
   return (

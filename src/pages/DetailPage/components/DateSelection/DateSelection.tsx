@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { RightOutline } from 'antd-mobile-icons';
-import { Popup, Button } from 'antd-mobile';
+import { Popup } from 'antd-mobile';
 import PeriodCalendar from '../../../../components/PeriodCalendar/PeriodCalendar';
 import styles from './DateSelection.module.css';
 
@@ -28,10 +27,11 @@ export default function DateSelection({ checkInDate, checkOutDate }: DateSelecti
   };
 
   // 处理日期变化
-  const handleDateChange = (newDates: { startDate: Date | null; endDate: Date | null }) => {
-    setStartDate(newDates.startDate);
-    setEndDate(newDates.endDate);
-    if (newDates.endDate) {
+  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    console.log('Selected dates:', { startDate, endDate });
+    if (endDate) {
       setCalendarVisible(false);
     }
   };

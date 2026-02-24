@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { Button, Empty } from 'antd-mobile'
+import { ErrorBlock } from 'antd-mobile'
 import styles from './HotelListPage.module.css'
 import Header from './Header/Header'
 import QuickTagsBar from './QuickTagsBar/QuickTagsBar'
@@ -69,7 +69,7 @@ function HotelListPage() {
   const datesStr = searchParams.get('dates') || ''
 
   // 构建API参数
-  const buildApiParams = (): HotelListParams => {
+  const buildApiParams = useCallback((): HotelListParams => {
     const { minPrice, maxPrice } = parsePriceRange(selectedPrice)
     
     return {
@@ -82,36 +82,13 @@ function HotelListPage() {
       page: '1',
       limit: '5',
     }
-  }
+  }, [location, keyword, selectedPrice, selectedRating, sortType])
 
   // 使用无限查询获取酒店列表
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, refetch } = useInfiniteHotelList(buildApiParams())
   
   // 将分页数据扁平化为单一数组
-  const hotels = data?.pages?.flatMap((page: any) => 
-    page.data.list.map((item: any) => {
-      const basePrice = item.min_price
-      const discountPrice = Math.floor(basePrice * 0.85)
-      return {
-        id: item._id,
-        name: item.name_cn,
-        image: item.cover_image,
-        price: basePrice,
-        rating: item.score,
-        location: item.location?.address || item.location?.district || '',
-        starLevel: item.star_rating,
-        tags: [],
-        description: `${item.name_cn}，提供优质住宿体验`,
-        reviewCount: Math.floor(Math.random() * 3000) + 100,
-        hotelType: item.star_rating >= 5 ? '豪华型' : item.star_rating >= 4 ? '舒适型' : '经济型',
-        locationInfo: `${item.location?.district || '市区'} | 近商圈`,
-        hasVideo: Math.random() > 0.5,
-        discountPrice,
-        discountAmount: basePrice - discountPrice,
-        discountTag: '立减券'
-      }
-    })
-  ) || []
+  const hotels = data?.pages?.flatMap(page => page.list) || []
 
   // 滚动事件监听
   useEffect(() => {
@@ -145,27 +122,9 @@ function HotelListPage() {
     return '';
   }, [datesStr]);
 
-  // 合并搜索参数中的标签和用户选中的快捷标签
-  const allSelectedTags = useMemo(() => {
-    let searchTags: string[] = [];
-    try {
-      searchTags = JSON.parse(tagsStr);
-      if (!Array.isArray(searchTags)) {
-        searchTags = [];
-      }
-    } catch (error) {
-      searchTags = tagsStr ? tagsStr.split(',').filter(Boolean) : [];
-    }
-    return [...new Set([...searchTags, ...selectedTags])]
-  }, [tagsStr, selectedTags])
 
-  // 过滤参数
-  const filterParams = useMemo(() => ({
-    keyword,
-    starLevel: selectedRating === '全部' ? '' : selectedRating,
-    priceRange: selectedPrice === '全部' ? '' : selectedPrice,
-    tags: allSelectedTags,
-  }), [keyword, selectedRating, selectedPrice, allSelectedTags])
+
+
 
   // 滚动监听回调 - 检测是否到达底部，加载更多数据
   const lastHotelRef = useCallback((node: HTMLDivElement | null) => {
@@ -186,7 +145,7 @@ function HotelListPage() {
     }
   }, [isFetchingNextPage, hasNextPage, fetchNextPage])
 
-  // 当筛选条件变化时，更新URL参数
+  // 当筛选条件变化时，更新URL参数并重新获取数据
   useEffect(() => {
     const params = new URLSearchParams();
     if (location) params.set('city', location);
@@ -204,12 +163,10 @@ function HotelListPage() {
     if (currentUrl !== newUrl) {
       navigate(`/Hotellist${newUrl}`, { replace: true }); // 使用 replace 避免历史记录堆积
     }
-  }, [location, keyword, datesStr, selectedTags, sortType, selectedPrice, selectedRating, selectedScore, navigate]);
-
-  // 当过滤条件或排序变化时，重新获取数据
-  useEffect(() => {
+    
+    // 同时重新获取数据
     refetch()
-  }, [location, keyword, sortType, selectedRating, selectedPrice, selectedScore, selectedTags, refetch])
+  }, [location, keyword, datesStr, selectedTags, sortType, selectedPrice, selectedRating, selectedScore, navigate, refetch])
 
   // 处理快捷标签点击
   const handleTagClick = (tagValue: string) => {
@@ -262,7 +219,6 @@ function HotelListPage() {
         <Header 
           location={location}
           checkInDate={formattedDateRange}
-          onOpenFilter={handleOpenFilter}
           onDateChange={handleDateChange}
           onCityChange={handleCityChange}
         />
@@ -340,7 +296,7 @@ function HotelListPage() {
           </>
         ) : (
           <div className={styles.emptyState}>
-            <Empty description="没有找到匹配的酒店" />
+            <ErrorBlock description="没有找到匹配的酒店" />
           </div>
         )}
       </div>

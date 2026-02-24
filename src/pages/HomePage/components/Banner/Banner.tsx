@@ -103,7 +103,11 @@ function Banner() {
       className={styles.container}
     >
       {/* 轮播内容 */}
-      <div className={styles.carouselWrapper}>
+      <div 
+        className={styles.carouselWrapper}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {bannerList.map((banner: BannerData, index: number) => (
           <div
             key={banner.id}
