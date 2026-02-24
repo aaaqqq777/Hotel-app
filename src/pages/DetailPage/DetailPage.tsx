@@ -8,13 +8,12 @@ import DateSelection from './components/DateSelection/DateSelection';
 import ServiceTags from './components/ServiceTags/ServiceTags';
 import RoomList from './components/RoomList/RoomList';
 import BottomBar from './components/BottomBar/BottomBar';
-import { useApiWithParams } from '../../hooks/useApi';
 import {
-  getHotelDetail,
-  getHotelReviews,
-  getHotelRoomTypes,
-  getHotelFacilities
-} from '../../api/hotelsearch/hotelsearch';
+  useHotelDetail,
+  useHotelReviews,
+  useHotelRoomTypes,
+  useHotelFacilities
+} from '../../hooks/useHotelQueries';
 import { MOCK_SERVICES } from '../../data/hotelDetail';
 
 function DetailPage() {
@@ -35,25 +34,13 @@ function DetailPage() {
   const hotelId = searchParams.get('id') || '1'; // 默认酒店ID为1
 
   // 使用API获取酒店数据
-  const { data: hotelDetail, loading: detailLoading, error: detailError } = useApiWithParams(
-    getHotelDetail,
-    [hotelId]
-  );
+  const { data: hotelDetail, isLoading: detailLoading, error: detailError } = useHotelDetail(hotelId);
 
-  const { data: hotelReviews } = useApiWithParams(
-    getHotelReviews,
-    [hotelId]
-  );
+  const { data: hotelReviews } = useHotelReviews(hotelId);
 
-  const { data: hotelRoomTypes } = useApiWithParams(
-    getHotelRoomTypes,
-    [hotelId]
-  );
+  const { data: hotelRoomTypes } = useHotelRoomTypes(hotelId, true);
 
-  const { data: hotelFacilities } = useApiWithParams(
-    getHotelFacilities,
-    [hotelId]
-  );
+  const { data: hotelFacilities } = useHotelFacilities(hotelId);
 
   // 处理房型选择
   const handleRoomSelect = (roomId: string) => {

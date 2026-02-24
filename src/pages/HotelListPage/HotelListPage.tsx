@@ -9,28 +9,109 @@ import type { SortType } from './SortBar/SortBar'
 import HotelCard from './HotelCard/HotelCard'
 import type { Hotel } from '../../data/types'
 import { QUICK_TAGS } from '../../data/hotels'
-import { searchHotelList, type HotelListResponse, type HotelListParams } from '../../api/hotelsearch/hotelsearch'
+import { useInfiniteHotelList, type HotelListParams } from '../../hooks/useHotelQueries'
 
 function HotelListPage() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const observerRef = useRef<IntersectionObserver | null>(null)
 
   // 状态管理：排序和快捷标签筛选
-  const [sortType, setSortType] = useState<SortType>('default')
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [selectedPrice, setSelectedPrice] = useState('价格')
-  const [selectedRating, setSelectedRating] = useState('星级')
-  const [selectedScore, setSelectedScore] = useState('评分')
+  const [sortType, setSortType] = useState<SortType>(() => {
+    const param = searchParams.get('sort') || 'default'
+    return param as SortType
+  })
+  const [selectedTags, setSelectedTags] = useState<string[]>(() => {
+    const tagsParam = searchParams.get('tags') || '[]'
+    try {
+      return JSON.parse(tagsParam)
+    } catch {
+      return tagsParam.split(',').filter(Boolean)
+    }
+  })
+  const [selectedPrice, setSelectedPrice] = useState(() => searchParams.get('price') || '价格')
+  const [selectedRating, setSelectedRating] = useState(() => searchParams.get('rating') || '星级')
+  const [selectedScore, setSelectedScore] = useState(() => searchParams.get('score') || '评分')
   const [isScrolled, setIsScrolled] = useState(false)
 
-  // 分页相关状态
-  const [hotels, setHotels] = useState<Hotel[]>([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isInitialLoading, setIsInitialLoading] = useState(true)
-  const [pageSize] = useState(5)
+  // 解析价格范围
+  const parsePriceRange = (priceStr: string) => {
+    if (!priceStr || priceStr === '价格' || priceStr === '全部') {
+      return { minPrice: undefined, maxPrice: undefined }
+    }
+    
+    if (priceStr === '200以下') {
+      return { minPrice: undefined, maxPrice: '200' }
+    }
+    if (priceStr === '200-500') {
+      return { minPrice: '200', maxPrice: '500' }
+    }
+    if (priceStr === '500以上') {
+      return { minPrice: '500', maxPrice: undefined }
+    }
+    
+    const match = priceStr.match(/^(\d+)-(\d+)$/)
+    if (match) {
+      const min = parseInt(match[1])
+      const max = parseInt(match[2])
+      return {
+        minPrice: min === 0 ? undefined : match[1],
+        maxPrice: max === 99999 ? undefined : match[2]
+      }
+    }
+    
+    return { minPrice: undefined, maxPrice: undefined }
+  }
+
+  // 获取搜索参数
+  const location = searchParams.get('city') || searchParams.get('location') || ''
+  const keyword = searchParams.get('keyword') || ''
+  const tagsStr = searchParams.get('tags') || ''
+  const datesStr = searchParams.get('dates') || ''
+
+  // 构建API参数
+  const buildApiParams = (): HotelListParams => {
+    const { minPrice, maxPrice } = parsePriceRange(selectedPrice)
+    
+    return {
+      city: location || '上海',
+      keyword: keyword || undefined,
+      star: selectedRating !== '星级' ? selectedRating.replace(/\D/g, '') : undefined,
+      sort: sortType === 'default' ? undefined : sortType,
+      minPrice,
+      maxPrice,
+      page: '1',
+      limit: '5',
+    }
+  }
+
+  // 使用无限查询获取酒店列表
+  const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage, refetch } = useInfiniteHotelList(buildApiParams())
+  
+  // 将分页数据扁平化为单一数组
+  const hotels = data?.pages?.flatMap((page: any) => 
+    page.data.list.map((item: any) => {
+      const basePrice = item.min_price
+      const discountPrice = Math.floor(basePrice * 0.85)
+      return {
+        id: item._id,
+        name: item.name_cn,
+        image: item.cover_image,
+        price: basePrice,
+        rating: item.score,
+        location: item.location?.address || item.location?.district || '',
+        starLevel: item.star_rating,
+        tags: [],
+        description: `${item.name_cn}，提供优质住宿体验`,
+        reviewCount: Math.floor(Math.random() * 3000) + 100,
+        hotelType: item.star_rating >= 5 ? '豪华型' : item.star_rating >= 4 ? '舒适型' : '经济型',
+        locationInfo: `${item.location?.district || '市区'} | 近商圈`,
+        hasVideo: Math.random() > 0.5,
+        discountPrice,
+        discountAmount: basePrice - discountPrice,
+        discountTag: '立减券'
+      }
+    })
+  ) || []
 
   // 滚动事件监听
   useEffect(() => {
@@ -42,12 +123,6 @@ function HotelListPage() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  // 获取搜索参数
-  const location = searchParams.get('city') || searchParams.get('location') || ''
-  const keyword = searchParams.get('keyword') || ''
-  const tagsStr = searchParams.get('tags') || ''
-  const datesStr = searchParams.get('dates') || ''
 
   // 解析日期参数
   const formattedDateRange = useMemo(() => {
@@ -92,158 +167,49 @@ function HotelListPage() {
     tags: allSelectedTags,
   }), [keyword, selectedRating, selectedPrice, allSelectedTags])
 
-  // 解析价格范围
-  const parsePriceRange = (priceStr: string) => {
-    if (!priceStr || priceStr === '价格' || priceStr === '全部') {
-      return { minPrice: undefined, maxPrice: undefined }
-    }
-    
-    if (priceStr === '200以下') {
-      return { minPrice: undefined, maxPrice: '200' }
-    }
-    if (priceStr === '200-500') {
-      return { minPrice: '200', maxPrice: '500' }
-    }
-    if (priceStr === '500以上') {
-      return { minPrice: '500', maxPrice: undefined }
-    }
-    
-    const match = priceStr.match(/^(\d+)-(\d+)$/)
-    if (match) {
-      const min = parseInt(match[1])
-      const max = parseInt(match[2])
-      return {
-        minPrice: min === 0 ? undefined : match[1],
-        maxPrice: max === 99999 ? undefined : match[2]
-      }
-    }
-    
-    return { minPrice: undefined, maxPrice: undefined }
-  }
-
-  // 重置并加载第一页数据
-  const loadFirstPage = useCallback(async () => {
-    setIsLoading(true)
-    setIsInitialLoading(true)
-    try {
-      const { minPrice, maxPrice } = parsePriceRange(selectedPrice)
-      
-      const apiParams: HotelListParams = {
-        city: location || '上海',
-        keyword: keyword || undefined,
-        star: selectedRating !== '星级' ? selectedRating.replace(/\D/g, '') : undefined,
-        sort: sortType === 'default' ? undefined : sortType,
-        minPrice,
-        maxPrice,
-        page: '1',
-        limit: pageSize.toString(),
-      }
-      
-      const response: HotelListResponse = await searchHotelList(apiParams)
-      
-      const hotelList: Hotel[] = response.data.list.map(item => {
-        const basePrice = item.min_price
-        const discountPrice = Math.floor(basePrice * 0.85)
-        return {
-          id: item._id,
-          name: item.name_cn,
-          image: item.cover_image,
-          price: basePrice,
-          rating: item.score,
-          location: item.location?.address || item.location?.district || '',
-          starLevel: item.star_rating,
-          tags: [],
-          description: `${item.name_cn}，提供优质住宿体验`,
-          reviewCount: Math.floor(Math.random() * 3000) + 100,
-          hotelType: item.star_rating >= 5 ? '豪华型' : item.star_rating >= 4 ? '舒适型' : '经济型',
-          locationInfo: `${item.location?.district || '市区'} | 近商圈`,
-          hasVideo: Math.random() > 0.5,
-          discountPrice,
-          discountAmount: basePrice - discountPrice,
-          discountTag: '立减券'
-        }
-      })
-      
-      setHotels(hotelList)
-      setCurrentPage(parseInt(apiParams.page || '1'))
-      setHasMore(response.data.list.length + (parseInt(apiParams.page || '1') - 1) * parseInt(apiParams.limit || '10') < response.data.total)
-    } catch (error) {
-      console.error('Failed to load hotels:', error)
-    } finally {
-      setIsLoading(false)
-      setIsInitialLoading(false)
-    }
-  }, [location, keyword, sortType, pageSize, selectedRating, selectedPrice])
-
-  // 加载更多数据
-  const loadMoreHotels = useCallback(async () => {
-    if (isLoading || !hasMore) return
-    setIsLoading(true)
-    try {
-      const { minPrice, maxPrice } = parsePriceRange(selectedPrice)
-      
-      const apiParams: HotelListParams = {
-        city: location || '上海',
-        keyword: keyword || undefined,
-        star: selectedRating !== '星级' ? selectedRating.replace(/\D/g, '') : undefined,
-        sort: sortType === 'default' ? undefined : sortType,
-        minPrice,
-        maxPrice,
-        page: (currentPage + 1).toString(),
-        limit: pageSize.toString(),
-      }
-      
-      const response: HotelListResponse = await searchHotelList(apiParams)
-      
-      const hotelList: Hotel[] = response.data.list.map(item => {
-        const basePrice = item.min_price
-        const discountPrice = Math.floor(basePrice * 0.85)
-        return {
-          id: item._id,
-          name: item.name_cn,
-          image: item.cover_image,
-          price: basePrice,
-          rating: item.score,
-          location: item.location?.address || item.location?.district || '',
-          starLevel: item.star_rating,
-          tags: [],
-          description: `${item.name_cn}，提供优质住宿体验`,
-          reviewCount: Math.floor(Math.random() * 3000) + 100,
-          hotelType: item.star_rating >= 5 ? '豪华型' : item.star_rating >= 4 ? '舒适型' : '经济型',
-          locationInfo: `${item.location?.district || '市区'} | 近商圈`,
-          hasVideo: Math.random() > 0.5,
-          discountPrice,
-          discountAmount: basePrice - discountPrice,
-          discountTag: '立减券'
-        }
-      })
-      
-      setHotels(prev => [...prev, ...hotelList])
-      setCurrentPage(parseInt(apiParams.page || '1'))
-      setHasMore(response.data.list.length + (parseInt(apiParams.page || '1') - 1) * parseInt(apiParams.limit || '10') < response.data.total)
-    } catch (error) {
-      console.error('Failed to load more hotels:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isLoading, hasMore, location, keyword, sortType, currentPage, pageSize, selectedRating, selectedPrice])
-
-  // 滚动监听回调 - 移到 loadMoreHotels 之后定义
+  // 滚动监听回调 - 检测是否到达底部，加载更多数据
   const lastHotelRef = useCallback((node: HTMLDivElement | null) => {
-    if (isLoading) return
-    if (observerRef.current) observerRef.current.disconnect()
-    observerRef.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore) {
-        loadMoreHotels()
+    if (isFetchingNextPage) return
+    
+    if (node) {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage()
+        }
+      })
+      
+      observer.observe(node)
+      
+      return () => {
+        observer.disconnect()
       }
-    })
-    if (node) observerRef.current.observe(node)
-  }, [isLoading, hasMore, loadMoreHotels])
+    }
+  }, [isFetchingNextPage, hasNextPage, fetchNextPage])
 
-  // 当过滤条件或排序变化时，重新加载第一页
+  // 当筛选条件变化时，更新URL参数
   useEffect(() => {
-    loadFirstPage()
-  }, [loadFirstPage])
+    const params = new URLSearchParams();
+    if (location) params.set('city', location);
+    if (keyword) params.set('keyword', keyword);
+    if (datesStr) params.set('dates', datesStr);
+    if (selectedTags.length > 0) params.set('tags', JSON.stringify(selectedTags));
+    if (sortType !== 'default') params.set('sort', sortType);
+    if (selectedPrice !== '价格') params.set('price', selectedPrice);
+    if (selectedRating !== '星级') params.set('rating', selectedRating);
+    if (selectedScore !== '评分') params.set('score', selectedScore);
+    
+    // 只有当URL真正变化时才导航，避免无限循环
+    const currentUrl = window.location.search;
+    const newUrl = `?${params.toString()}`;
+    if (currentUrl !== newUrl) {
+      navigate(`/Hotellist${newUrl}`, { replace: true }); // 使用 replace 避免历史记录堆积
+    }
+  }, [location, keyword, datesStr, selectedTags, sortType, selectedPrice, selectedRating, selectedScore, navigate]);
+
+  // 当过滤条件或排序变化时，重新获取数据
+  useEffect(() => {
+    refetch()
+  }, [location, keyword, sortType, selectedRating, selectedPrice, selectedScore, selectedTags, refetch])
 
   // 处理快捷标签点击
   const handleTagClick = (tagValue: string) => {
@@ -251,7 +217,7 @@ function HotelListPage() {
       prev.includes(tagValue)
         ? prev.filter((tag) => tag !== tagValue)
         : [...prev, tagValue]
-    )
+    );
   }
 
   // 处理查看酒店详情
@@ -263,19 +229,17 @@ function HotelListPage() {
     console.log('打开筛选面板');
   };
 
+
+
   // 处理日期变更
   const handleDateChange = (startDate: Date, endDate: Date) => {
     console.log('用户选择了新的日期:', startDate, endDate);
     
-    const params = new URLSearchParams();
-    if (location) params.set('city', location);
-    if (keyword) params.set('keyword', keyword);
-    if (tagsStr) params.set('tags', tagsStr);
-    
+    // 更新 datesStr 状态，这将通过 useEffect 触发 URL 更新
     const dates = [startDate.toISOString(), endDate.toISOString()];
+    const params = new URLSearchParams(window.location.search);
     params.set('dates', JSON.stringify(dates));
-    
-    navigate(`/Hotellist?${params.toString()}`);
+    navigate(`/Hotellist?${params.toString()}`, { replace: true });
   };
 
   // 处理城市变更
@@ -341,7 +305,7 @@ function HotelListPage() {
 
       {/* 酒店列表 */}
       <div className={styles.hotelList}>
-        {isInitialLoading ? (
+        {isLoading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.spinner}></div>
             <div className={styles.loadingText}>正在加载酒店...</div>
@@ -349,30 +313,30 @@ function HotelListPage() {
         ) : hotels.length > 0 ? (
           <>
             <div className={styles.hotelGrid}>
-              {hotels.map((hotel: Hotel, index) => (
-                <div
-                  key={hotel.id}
-                  ref={index === hotels.length - 1 ? lastHotelRef : null}
-                >
-                  <HotelCard
-                    hotel={hotel}
-                    onViewDetail={handleViewDetail}
-                  />
-                </div>
-              ))}
-            </div>
-            {/* 加载更多状态 */}
-            <div className={styles.loadMoreContainer}>
-              {isLoading && (
-                <div className={styles.loadingMore}>
-                  <div className={styles.spinnerSmall}></div>
-                  <span className={styles.loadingMoreText}>加载中...</span>
-                </div>
-              )}
-              {!hasMore && !isLoading && (
-                <div className={styles.noMoreText}>没有更多酒店了</div>
-              )}
-            </div>
+                {hotels.map((hotel: Hotel, index) => (
+                  <div
+                    key={hotel.id}
+                    ref={index === hotels.length - 1 ? lastHotelRef : null}
+                  >
+                    <HotelCard
+                      hotel={hotel}
+                      onViewDetail={handleViewDetail}
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* 加载更多状态 */}
+              <div className={styles.loadMoreContainer}>
+                {isFetchingNextPage && (
+                  <div className={styles.loadingMore}>
+                    <div className={styles.spinnerSmall}></div>
+                    <span className={styles.loadingMoreText}>加载中...</span>
+                  </div>
+                )}
+                {!hasNextPage && !isFetchingNextPage && (
+                  <div className={styles.noMoreText}>没有更多酒店了</div>
+                )}
+              </div>
           </>
         ) : (
           <div className={styles.emptyState}>

@@ -16,20 +16,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
 
-// 1. 直接从我们的“地图”文件导入路由配置
 import { routes } from './router';
+import { queryClient } from './config/reactQuery';
 
-// 引入全局样式
 import 'antd-mobile/es/global';
 import './index.css';
 
-// 2. 使用地图配置来创建路由
 const router = createBrowserRouter(routes);
 
-// 3. 启动应用
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );

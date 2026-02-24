@@ -10,6 +10,9 @@ interface Room {
   discount?: number;
   image: string;
   tags?: string[];
+  availability?: number;
+  maxOccupancy?: number;
+  area?: number;
 }
 
 interface RoomListProps {
@@ -58,13 +61,25 @@ export default function RoomList({ rooms, onRoomSelect }: RoomListProps) {
                   {room.originalPrice && (
                     <div className={styles.originalPrice}>¥{room.originalPrice}</div>
                   )}
+                  {room.availability !== undefined && (
+                    <div className={styles.availability}>
+                      {room.availability > 5 ? (
+                        <span className={styles.availabilityHigh}>余房充足</span>
+                      ) : room.availability > 0 ? (
+                        <span className={styles.availabilityLow}>仅剩{room.availability}间</span>
+                      ) : (
+                        <span className={styles.availabilityNone}>暂无房</span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 
                 <Button 
                   className={styles.selectButton}
                   onClick={() => onRoomSelect(room.id)}
+                  disabled={room.availability === 0}
                 >
-                  选择
+                  {room.availability === 0 ? '暂无房' : '选择'}
                 </Button>
               </div>
             </div>

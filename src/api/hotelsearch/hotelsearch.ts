@@ -1,7 +1,7 @@
 // src/api/hotelsearch/hotelsearch.ts
 import { apiClient } from '../config';
 import type { Hotel, SearchParams, HotelDetail, Review, RoomType, Facility } from '../../types/hotel';
-import { MOCK_HOTEL_IMAGES, MOCK_HOTEL_FACILITIES, MOCK_HOTEL_REVIEWS, MOCK_ROOM_TYPES, MOCK_ROOMS, MOCK_SEARCH_SUGGESTIONS, MOCK_HOTEL_DETAILS } from '../../data/hotelDetail';
+import { MOCK_HOTEL_IMAGES, MOCK_HOTEL_FACILITIES, MOCK_HOTEL_REVIEWS, MOCK_SEARCH_SUGGESTIONS, MOCK_HOTEL_DETAILS, MOCK_ROOMS_BY_HOTEL } from '../../data/hotelDetail';
 import { MOCK_HOTELS } from '../../data/hotels';
 
 // 后端接口请求参数
@@ -188,8 +188,8 @@ export async function getHotelRoomTypes(hotelId: string): Promise<RoomType[]> {
     return response.data;
   } catch (error) {
     console.error('Failed to get hotel room types:', error);
-    // 返回模拟数据
-    return MOCK_ROOMS;
+    // 返回模拟数据 - 根据酒店ID返回对应房型
+    return MOCK_ROOMS_BY_HOTEL[hotelId] || [];
   }
 }
 

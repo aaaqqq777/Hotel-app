@@ -1,6 +1,3 @@
-// src/router/index.ts
-
-import { AppOutline } from 'antd-mobile-icons';
 import type { RouteObject } from 'react-router-dom';
 
 // 导入所有页面组件

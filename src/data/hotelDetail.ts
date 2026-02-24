@@ -477,42 +477,63 @@ export const MOCK_HOTEL_DETAILS: Record<string, any> = {
   },
 };
 
-// 房型列表
-export const MOCK_ROOMS = [
-  {
-    id: '1',
-    name: '豪华大床房',
-    description: '1张1.8米大床，45㎡，豪华装修，独立卫浴，免费WiFi，液晶电视，迷你吧',
-    price: 1088,
-    originalPrice: 1288,
-    discount: 8.5,
-    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20king%20room%20with%20one%20bed&image_size=landscape_16_9',
-    tags: ['含早餐', '立即确认', '免费取消'],
-    maxOccupancy: 2,
-    area: 45,
-  },
-  {
-    id: '2',
-    name: '豪华双床房',
-    description: '2张1.2米单人床，45㎡，豪华装修，独立卫浴，免费WiFi，液晶电视，迷你吧',
-    price: 1088,
-    originalPrice: 1288,
-    discount: 8.5,
-    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20twin%20room%20with%20two%20beds&image_size=landscape_16_9',
-    tags: ['含早餐', '立即确认', '免费取消'],
-    maxOccupancy: 2,
-    area: 45,
-  },
-  {
-    id: '3',
-    name: '行政大床房',
-    description: '1张1.8米大床，55㎡，行政楼层，豪华装修，独立卫浴，免费WiFi，液晶电视，迷你吧，行政礼遇',
-    price: 1388,
-    originalPrice: 1688,
-    discount: 8.2,
-    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=executive%20hotel%20room%20luxury&image_size=landscape_16_9',
-    tags: ['含早餐', '立即确认', '免费取消', '行政礼遇'],
-    maxOccupancy: 2,
-    area: 55,
-  },
-];
+// 房型列表 - 按酒店ID分组
+export const MOCK_ROOMS_BY_HOTEL: Record<string, any[]> = {
+  '1': [
+    { id: '1-1', 
+      name: '海景大床房', 
+      description: '1张1.8米大床，45㎡，一线海景，独立卫浴，免费WiFi', 
+      price: 1288, 
+      originalPrice: 1488, 
+      discount: 8.7, 
+      image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ocean%20view%20hotel%20king%20room%20with%20balcony&image_size=landscape_16_9', 
+      tags: ['含早餐', '立即确认', '免费取消'], 
+      maxOccupancy: 2, 
+      area: 45, 
+      availability: 8 
+    },
+    { id: '1-2', name: '海景双床房', description: '2张1.2米单人床，45㎡，一线海景，独立卫浴，免费WiFi', price: 1288, originalPrice: 1488, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ocean%20view%20hotel%20twin%20room%20with%20two%20beds&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 45, availability: 5 },
+    { id: '1-3', name: '行政海景套房', description: '1张2.0米特大床，85㎡，行政楼层，私人阳台，海景浴缸', price: 2888, originalPrice: 3388, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20ocean%20view%20suite%20with%20balcony&image_size=landscape_16_9', tags: ['含早餐', '行政礼遇', '免费取消'], maxOccupancy: 2, area: 85, availability: 2 },
+  ],
+  '2': [
+    { id: '2-1', name: '商务大床房', description: '1张1.8米大床，35㎡，商务装修，独立卫浴，免费WiFi，办公桌', price: 450, originalPrice: 520, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20king%20room%20with%20desk&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 35, availability: 12 },
+    { id: '2-2', name: '商务双床房', description: '2张1.2米单人床，35㎡，商务装修，独立卫浴，免费WiFi，办公桌', price: 450, originalPrice: 520, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20twin%20room%20with%20desk&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 35, availability: 10 },
+    { id: '2-3', name: '商务套房', description: '1张1.8米大床，55㎡，独立客厅，商务设施，会议桌', price: 880, originalPrice: 1080, discount: 8.1, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20suite%20with%20meeting%20table&image_size=landscape_16_9', tags: ['含早餐', '商务设施', '免费取消'], maxOccupancy: 2, area: 55, availability: 3 },
+  ],
+  '3': [
+    { id: '3-1', name: '家庭亲子房', description: '1张1.8米大床+1张1.2米儿童床，50㎡，儿童装饰，儿童用品', price: 580, originalPrice: 680, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=family%20friendly%20hotel%20room%20with%20kids%20bed&image_size=landscape_16_9', tags: ['含早餐', '儿童用品', '免费取消'], maxOccupancy: 3, area: 50, availability: 6 },
+    { id: '3-2', name: '亲子主题房', description: '1张1.8米大床+儿童上下铺，60㎡，主题装饰，玩具乐园', price: 780, originalPrice: 920, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=themed%20kids%20hotel%20room%20with%20play%20area&image_size=landscape_16_9', tags: ['含早餐', '主题装饰', '免费取消'], maxOccupancy: 4, area: 60, availability: 3 },
+  ],
+  '4': [
+    { id: '4-1', name: '标准大床房', description: '1张1.5米大床，25㎡，干净整洁，独立卫浴，免费WiFi', price: 180, originalPrice: 220, discount: 8.2, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20queen%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 25, availability: 20 },
+    { id: '4-2', name: '标准双床房', description: '2张1.2米单人床，25㎡，干净整洁，独立卫浴，免费WiFi', price: 180, originalPrice: 220, discount: 8.2, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20twin%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 25, availability: 15 },
+  ],
+  '5': [
+    { id: '5-1', name: '山景大床房', description: '1张1.8米大床，40㎡，山景视野，独立卫浴，免费WiFi', price: 920, originalPrice: 1080, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotel%20king%20room&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 40, availability: 5 },
+    { id: '5-2', name: '温泉房', description: '1张1.8米大床，50㎡，私人温泉池，山景，豪华装修', price: 1580, originalPrice: 1880, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotspring%20hotel%20room%20with%20private%20onsen&image_size=landscape_16_9', tags: ['含早餐', '私人温泉', '免费取消'], maxOccupancy: 2, area: 50, availability: 2 },
+    { id: '5-3', name: '山景双床房', description: '2张1.2米单人床，40㎡，山景视野，独立卫浴，免费WiFi', price: 920, originalPrice: 1080, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotel%20twin%20room&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 40, availability: 4 },
+  ],
+  '6': [
+    { id: '6-1', name: '古雅大床房', description: '1张1.8米大床，38㎡，古风装修，独立卫浴，免费WiFi', price: 680, originalPrice: 780, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20style%20hotel%20king%20room%20traditional%20decor&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 38, availability: 6 },
+    { id: '6-2', name: '文化套房', description: '1张1.8米大床，65㎡，传统中式设计，书房，茶具', price: 1280, originalPrice: 1480, discount: 8.6, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20style%20hotel%20suite%20with%20study&image_size=landscape_16_9', tags: ['含早餐', '文化体验', '免费取消'], maxOccupancy: 2, area: 65, availability: 2 },
+  ],
+  '7': [
+    { id: '7-1', name: '滨海大床房', description: '1张1.8米大床，50㎡，私人阳台，一线海景，独立卫浴', price: 1580, originalPrice: 1880, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20king%20room%20with%20ocean%20view%20balcony&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 50, availability: 4 },
+    { id: '7-2', name: '滨海双床房', description: '2张1.2米单人床，50㎡，私人阳台，一线海景，独立卫浴', price: 1580, originalPrice: 1880, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20twin%20room%20with%20ocean%20view%20balcony&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 50, availability: 3 },
+    { id: '7-3', name: '总统套房', description: '1张2.2米特大床，120㎡，私人泳池，270°海景，管家服务', price: 5888, originalPrice: 6888, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20presidential%20suite%20with%20private%20pool&image_size=landscape_16_9', tags: ['含早餐', '管家服务', '免费取消'], maxOccupancy: 2, area: 120, availability: 1 },
+  ],
+  '8': [
+    { id: '8-1', name: '精品大床房', description: '1张1.8米大床，32㎡，设计感装修，独立卫浴，免费WiFi', price: 520, originalPrice: 620, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20king%20room%20modern%20design&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 32, availability: 7 },
+    { id: '8-2', name: '设计套房', description: '1张1.8米大床，48㎡，独特设计，艺术装饰，客厅区', price: 880, originalPrice: 1080, discount: 8.1, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20suite%20artistic%20design&image_size=landscape_16_9', tags: ['含早餐', '独特设计', '免费取消'], maxOccupancy: 2, area: 48, availability: 3 },
+  ],
+  '9': [
+    { id: '9-1', name: '木屋大床房', description: '1张1.8米大床，42㎡，全木质结构，森林景，独立卫浴', price: 880, originalPrice: 1020, discount: 8.6, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20king%20room%20forest%20view&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 42, availability: 4 },
+    { id: '9-2', name: '木屋双床房', description: '2张1.2米单人床，42㎡，全木质结构，森林景，独立卫浴', price: 880, originalPrice: 1020, discount: 8.6, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20twin%20room%20forest%20view&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 42, availability: 3 },
+    { id: '9-3', name: '独栋木屋', description: '1张2.0米特大床，80㎡，独立木屋，私人庭院，森林环绕', price: 1680, originalPrice: 1980, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=private%20wooden%20cabin%20villa%20in%20forest&image_size=landscape_16_9', tags: ['含早餐', '独立庭院', '免费取消'], maxOccupancy: 4, area: 80, availability: 2 },
+  ],
+  '10': [
+    { id: '10-1', name: '快捷大床房', description: '1张1.5米大床，22㎡，干净整洁，独立卫浴，免费WiFi', price: 280, originalPrice: 320, discount: 8.8, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20queen%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 22, availability: 18 },
+    { id: '10-2', name: '快捷双床房', description: '2张1.2米单人床，22㎡，干净整洁，独立卫浴，免费WiFi', price: 280, originalPrice: 320, discount: 8.8, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20twin%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 22, availability: 12 },
+    { id: '10-3', name: '家庭房', description: '1张1.8米大床+1张1.2米单人床，32㎡，适合家庭出行', price: 380, originalPrice: 450, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20family%20room%20three%20beds&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 3, area: 32, availability: 8 },
+  ],
+};

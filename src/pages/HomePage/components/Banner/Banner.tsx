@@ -3,31 +3,14 @@ import { useState, useEffect, useRef } from 'react'
 import { Card } from 'antd-mobile'
 import { useNavigate } from 'react-router-dom'
 import styles from './Banner.module.css'
-import { fetchBannerList, type BannerData } from '../../../../api/advertisement/advertisement'
+import { useAdvertisements } from '../../../../hooks/useHotelQueries'
+import type { BannerData } from '../../../../api/advertisement/advertisement'
 
 function Banner() {
   const navigate = useNavigate()
-  const [bannerList, setBannerList] = useState<BannerData[]>([])
-  const [loading, setLoading] = useState(true)
+  const { data: bannerList = [], isLoading: loading } = useAdvertisements()
   const [currentIndex, setCurrentIndex] = useState(0)
   const timerRef = useRef<number | null>(null);
-
-  // 获取广告数据
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        const data = await fetchBannerList()
-        setBannerList(data)
-      } catch (error) {
-        console.error('Failed to fetch banner data:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
 
   // 自动轮播
   useEffect(() => {
@@ -93,7 +76,7 @@ function Banner() {
 
   // 如果只有一个广告，静止显示
   if (bannerList.length === 1) {
-    const banner = bannerList[0]
+    const banner = bannerList[0] as BannerData
     return (
       <Card
         className={styles.container}
@@ -121,7 +104,7 @@ function Banner() {
     >
       {/* 轮播内容 */}
       <div className={styles.carouselWrapper}>
-        {bannerList.map((banner, index) => (
+        {bannerList.map((banner: BannerData, index: number) => (
           <div
             key={banner.id}
             className={`${styles.slide} ${index === currentIndex ? styles.active : ''}`}
@@ -144,7 +127,7 @@ function Banner() {
 
       {/* 指示器 */}
       <div className={styles.indicators}>
-        {bannerList.map((_, index) => (
+        {bannerList.map((_: any, index: number) => (
           <div
             key={index}
             className={`${styles.indicator} ${index === currentIndex ? styles.active : ''}`}

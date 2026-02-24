@@ -60,6 +60,7 @@ export interface RoomType {
   tags?: string[];
   maxOccupancy: number;
   area: number;
+  availability?: number;
 }
 
 // 搜索参数的类型
