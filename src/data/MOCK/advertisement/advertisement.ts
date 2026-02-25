@@ -1,6 +1,6 @@
 
 // 广告数据接口
-import type { BannerData } from '../../types/hotel';
+import type { BannerData } from '../../../types/hotel';
 
 // 模拟广告数据
 export const MOCK_BANNERS: BannerData[] = [

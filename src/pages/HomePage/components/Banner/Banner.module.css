@@ -1,84 +1,216 @@
+/* ══════════════════════════════════════════
+   Banner.module.css  —  广告轮播样式
+   文字叠加在图片上，强烈广告视觉效果
+   ══════════════════════════════════════════ */
+
+/* ── 外层卡片，去掉所有 Card 默认内边距 ── */
 .container {
-  margin-bottom: 0%;
-  cursor: pointer;
-  height: 300px;
+  margin: 0;
+  border-radius: 0 ;
   overflow: hidden;
-  position: relative;
+
+  /* 覆盖 antd-mobile Card 内边距 */
+  --adm-card-padding-top: 0;
+  --adm-card-padding-bottom: 0;
+  --adm-card-body-padding: 0;
+  --adm-card-padding-left: 0;
+  --adm-card-padding-right: 0;
 }
 
-/* 轮播容器 */
+/* 彻底清除 antd-mobile Card body 内边距 */
+.container :global(.adm-card-body) {
+  padding: 0 ;
+}
+
+/* ── 轮播容器 ── */
 .carouselWrapper {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: #1A1A2E;
 }
 
-/* 幻灯片 */
+/* ── 单张幻灯片 ── */
 .slide {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.6s ease;
+  cursor: pointer;
 }
 
-/* 激活的幻灯片 */
 .slide.active {
   opacity: 1;
 }
 
-/* 内容区域 */
+/* ── 图片背景 + 文字容器 ── */
 .content {
-  height: 300px;
-  padding: 24px 16px;
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  color: white;
-  border-radius: var(--adm-border-radius-lg);
-  background-size: cover;
-  background-position: center;
+  justify-content: flex-end;   /* 文字贴底部 */
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.content h3 {
-  margin: 0 0 8px 0;
-  font-size: 20px;
-  font-weight: 600;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+/* ── 底部渐变遮罩：让文字在图片上清晰可读 ── */
+.content::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0)        0%,
+    rgba(0,0,0,0.08)    40%,
+    rgba(0,0,0,0.55)    75%,
+    rgba(0,0,0,0.78)   100%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
-.content p {
+/* ── 文字内容区（z-index 高于遮罩） ── */
+.textBlock {
+  position: relative;
+  z-index: 2;
+  padding: 0 16px 48px;   /* 底部留空给指示器 */
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ── 促销角标（左上角） ── */
+.badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 3;
+  background: linear-gradient(135deg, #C8963E, #E8B84B);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 6px rgba(200,150,62,0.5);
+}
+
+/* ── 主标题 ── */
+.title {
   margin: 0;
-  font-size: 14px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
+  /* 文字阴影让标题在任何图片背景上都清晰 */
+  text-shadow:
+    0 1px 3px rgba(0,0,0,0.5),
+    0 2px 10px rgba(0,0,0,0.3);
 }
 
-/* 指示器容器 */
+/* ── 副标题 / 描述 ── */
+.description {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.88);
+  line-height: 1.5;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.45);
+  /* 超出两行显示省略号 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── 价格标签（如需展示价格） ── */
+.priceTag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.priceCurrency {
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFD97A;
+}
+
+.priceAmount {
+  font-size: 28px;
+  font-weight: 900;
+  color: #FFD97A;
+  line-height: 1;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.priceUnit {
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  margin-left: 2px;
+}
+
+/* ── 指示器（圆点） ── */
 .indicators {
   position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 14px;
+  left: 0;
+  right: 0;
   display: flex;
-  gap: 8px;
-  z-index: 10;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  z-index: 4;
 }
 
-/* 指示器 */
 .indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.4);
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.45);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-/* 激活的指示器 */
+/* 激活态：拉伸为胶囊形 */
 .indicator.active {
-  width: 24px;
-  border-radius: 4px;
-  background-color: white;
+  width: 20px;
+  background: #C8963E;
+  box-shadow: 0 0 6px rgba(200,150,62,0.6);
+}
+
+/* ── 单图静止模式（复用同一套样式） ── */
+/* 单图时 carouselWrapper 和 slide 不参与，直接渲染 content，
+   只需确保外层高度一致 */
+.container > :global(.adm-card-body) > .content {
+  height: 220px;
+  cursor: pointer;
+}
+
+/* ── 加载态 ── */
+.loadingState {
+  height: 220px;
+  background: linear-gradient(135deg, #2A2A3E 0%, #1A1A2E 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #C8963E;
+  animation: pulse 1.2s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%       { opacity: 1;   transform: scale(1.1); }
 }

@@ -21,6 +21,7 @@ export interface HotelSearchParams {
 
   lat?: number;
   lng?: number;
+  tags?: string[];
 }
 
 export interface HotelListItem {

@@ -34,7 +34,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #663399;
+  color: #9A6F28;
   font-size: 14px;
   white-space: nowrap;
   transition: all 0.2s ease;
@@ -47,7 +47,7 @@
 /* 按钮文本 */
 .btnText {
   font-size: 14px;
-  color: #7703ea;
+  color: #C8963E;
   white-space: nowrap;
 }
 
@@ -55,7 +55,7 @@
 .downIcon {
   width: 12px;
   height: 12px;
-  color: #9c4deb;
+  color: #B8B8CC;
   flex-shrink: 0;
 }
 
@@ -91,7 +91,7 @@
 
 .dropdownItem:hover {
   background-color: #f9f9f9;
-  color: #9945ed;
+  color: #feb200c0;
 }
 
 .dropdownItem:active {
@@ -133,7 +133,7 @@
 }
 
 .customPriceInputField:focus {
-  border-color: #9c4deb;
+  border-color: #feb200c0;
 }
 
 /* 自定义价格分隔符 */
@@ -147,7 +147,7 @@
 .customPriceApply {
   width: 100%;
   padding: 8px 12px;
-  background-color: #7703ea;
+  background-color: #feb200c0;
   color: white;
   border: none;
   border-radius: 4px;
@@ -157,12 +157,12 @@
 }
 
 .customPriceApply:hover {
-  background-color: #9c4deb;
+  background-color: #feb200c0;
   opacity: 0.9;
 }
 
 .customPriceApply:active {
-  background-color: #663399;
+  background-color: #feb200c0;
 }
 
 /* 筛选面板内容容器 */
@@ -232,7 +232,7 @@
   padding: 6px 12px;
   border: 1px solid #e8e8e8;
   border-radius: 4px;
-  background: #1890ff;
+  background: #feb200c0;
   color: white;
   cursor: pointer;
 }
@@ -278,7 +278,7 @@
 /* 筛选面板自定义价格确定按钮 */
 .filterPanelCustomPriceApply {
   padding: 8px 16px;
-  background: #1890ff;
+  background: #feb200c0;
   color: white;
   border: none;
   border-radius: 4px;
@@ -290,7 +290,7 @@
 .filterPanelConfirmBtn {
   width: 100%;
   padding: 12px;
-  background: #1890ff;
+  background: #feb200c0;
   color: white;
   border: none;
   border-radius: 6px;
@@ -298,3 +298,5 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+

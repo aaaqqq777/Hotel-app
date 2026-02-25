@@ -187,6 +187,12 @@ function HotelListPage() {
     navigate(`/hotellist?${sp.toString()}`, { replace: true })
   }
 
+  const handleKeywordChange = (keyword: string) => {
+    const sp = new URLSearchParams(window.location.search)
+    sp.set('keyword', keyword)
+    navigate(`/hotellist?${sp.toString()}`, { replace: true })
+  }
+
   return (
     <div className={styles.container}>
       {/* 固定头部 */}
@@ -198,7 +204,7 @@ function HotelListPage() {
           guestCount={guestCount ?? 1}
           onRoomCountChange={setRoomCount}
           onGuestCountChange={setGuestCount}
-          onOpenFilter={handleOpenFilter}
+          onKeywordChange={handleKeywordChange}
           onDateChange={handleDateChange}
           onCityChange={handleCityChange}
         />

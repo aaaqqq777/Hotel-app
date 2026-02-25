@@ -68,6 +68,7 @@ export function useSearchLogic() {
       pageSize: 10,
       lat,
       lng,
+      tags: raw.tags?.length ? raw.tags : undefined,
     }
 
     const searchParams = new URLSearchParams()

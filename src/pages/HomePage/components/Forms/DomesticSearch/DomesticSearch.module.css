@@ -1,123 +1,167 @@
+/* ══════════════════════════════════════════
+   DomesticSearch.module.css
+   - 行高/字体加大
+   - 弹窗标签可横向滑动
+   - 选中标签无尺寸变化
+   - 无 !important
+   ══════════════════════════════════════════ */
+
+/* ── 表单根容器 ── */
 .container {
-  padding: 16px 12px;
-  background: #f8f9fa;
-  border-radius: 12px;
+  padding: 16px 14px 20px;
+  background: #FFFFFF;
 }
 
-/* 统一色调变量 */
-:root {
-  --primary-color: #1677ff;
-  --bg-white: #ffffff;
-  --bg-light: #f8f9fa;
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --text-light: #999999;
-  --border-color: #f0f0f0;
+.verticalSpace {
+  --gap: 14px;
+  width: 100%;
 }
 
-/* 隐藏所有按钮边界线 */
-.adm-button {
-  --adm-button-border-width: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-/* 调整输入框样式 */
-.adm-input {
-  --adm-input-border-width: 0;
-  border: none;
-  background: var(--bg-white);
-  border-radius: 8px;
-  padding: 12px;
-}
-
-/* 调整日期选择和筛选按钮样式 */
-.dateselect,
-.filterButton {
-  border: none;
-  box-shadow: none;
-  background: var(--bg-white);
-  border-radius: 8px;
-  transition: all 0.2s ease;
+/* ══ 第一行：城市 + 搜索 + 定位 ══════════════ */
+.inputGroup {
   display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+/* 城市按钮
+   用 .container .cityButton 提高特异性，替代 !important */
+.container .cityButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 72px;
+  max-width: 120px;
+  height: 48px;
+  padding: 0 14px;
+  background: #F5ECD7;
+  border: 1px solid rgba(200,150,62,0.35);
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #9A6F28;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.container .cityButton:active {
+  background: #EFE0BE;
+}
+
+/* antd-mobile Input 包裹层 */
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+}
+
+/* 覆盖 antd-mobile Input — 用后代选择器，无需 !important */
+.container .searchInput :global(.adm-input-wrapper) {
+  height: 48px;
+  background: #F8F6F2;
+  border: 1px solid rgba(26,26,46,0.1);
+  border-radius: 10px;
+  padding: 0 12px;
+}
+
+.container .searchInput :global(.adm-input) {
+  font-size: 15px;
+  color: #1A1A2E;
+}
+
+/* 定位按钮 */
+.container .locationBtn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  min-height: 64px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  background: #F8F6F2;
+  border: 1px solid rgba(26,26,46,0.1);
+  border-radius: 10px;
+  color: #6B6B8A;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-/* 鼠标悬停效果 */
-.dateselect:hover,
-.filterButton:hover {
-  background: #f0f7ff;
+.container .locationBtn:active {
+  background: #F5ECD7;
+  border-color: rgba(200,150,62,0.4);
 }
 
-/* 日期选择容器 */
+/* ══ 第二行：日期 + 品牌筛选 ══════════════════ */
+.dateFilterRow {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* 日期选择块 */
 .dateselect {
   flex: 3;
-  padding: 10px 12px;
-  white-space: nowrap;
-  /* overflow: hidden; */
+  min-height: 70px;
+  padding: 12px 16px;
+  background: #F8F6F2;
+  border: 1px solid rgba(26,26,46,0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s, border-color 0.15s;
+  box-sizing: border-box;
 }
 
-/* 筛选按钮 */
-.filterButton {
-  padding: 10px 12px;
-  white-space: nowrap;
-  /* min-width: 80px; */
-  text-align: center;
-  flex: 1;
-  max-width: 150px;
+.dateselect:active {
+  background: #F5ECD7;
+  border-color: rgba(200,150,62,0.4);
 }
 
-/* 日期文本容器 */
 .dateText {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   white-space: nowrap;
   overflow: hidden;
 }
 
-/* 日期标签 */
 .dateLabel {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: #999;
-  white-space: nowrap;
+  font-size: 14px;
+  color: #B8B8CC;
 }
 
-/* 日期值 */
 .dateValue {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1A2E;
   display: flex;
   align-items: center;
-  white-space: nowrap;
   overflow: hidden;
-  width: 100%;
 }
 
-/* 日期值内部容器 */
 .dateValue span {
   flex-shrink: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* 开始日期 */
 .startDate {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* 结束日期 */
 .endDate {
   flex: 1;
   overflow: hidden;
@@ -125,280 +169,300 @@
   text-align: right;
 }
 
-/* 晚数信息 */
 .nightsInfo {
-  font-size: 14px;
-  color: #999;
-  margin: 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #C8963E;
+  margin: 0 6px;
   flex-shrink: 0;
 }
 
-/* 日期选择和筛选按钮容器 */
-.dateFilterRow {
-  display: flex;
-  gap: 12px;
-  align-items: stretch;
-  margin-top: 12px;
-  width: 100%;
-  /* overflow: hidden; */
-}
-
-/* 搜索按钮样式 */
-.searchButton {
-  margin-top: 16px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(22, 119, 255, 0.25);
-  --adm-color-primary: var(--primary-color);
-  height: 48px;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-/* 搜索按钮的背景色 */
-.searchButton.adm-button-primary {
-  background: var(--primary-color) !important;
-}
-
-/* 城市输入和定位按钮容器 */
-.inputGroup {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.inputGroup input {
+/* 品牌/价格筛选 */
+.filterButton {
   flex: 1;
-  padding: 10px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-/* 定位按钮 */
-.locationBtn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
-  font-size: 14px;
-  white-space: nowrap;
-  width: 44px;
-}
-
-/* 城市按钮 */
-.cityButton {
-  min-width: 60px;
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* 搜索输入框 */
-.searchInput {
-  flex: 1;
-}
-
-/* 垂直空间 */
-.verticalSpace {
-  --gap: 16px;
-}
-
-/* 水平空间 */
-.horizontalSpace {
-  --gap: 8px;
-}
-
-/* 日历选择弹窗 */
-.calendarPopup {
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-}
-
-/* 城市选择弹窗 */
-.cityPopup {
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  height: 70%;
-}
-
-/* 筛选标签弹窗 */
-.filterPopup {
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  height: 80%;
-}
-
-/* 弹窗内容 */
-.popupContent {
-  padding: 16px;
-}
-
-/* 弹窗标题 */
-.popupTitle {
-  text-align: center;
-  margin: 0 0 16px 0;
-}
-
-/* 弹窗中的部分容器 */
-.sectionContainer {
-  margin-bottom: 16px;
-}
-
-/* 弹窗中的部分标题 */
-.sectionTitle {
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-color, #333);
-}
-
-/* 弹窗中的部分副标题 */
-.sectionSubtitle {
-  margin-bottom: 8px;
-  font-size: 13px;
-  color: var(--text-light, #999);
-}
-
-/* 搜索表单中的输入框 */
-.input {
-  padding: 10px 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-/* 标签容器 */
-.tagContainer {
-  width: 100%;
-  overflow: hidden;
-  padding: 4px 0;
-}
-/* 标签滚动容器 */
-.tagScroll {
-  display: flex;
-  overflow-x: auto;
-  flex-wrap: nowrap;
-  gap: 10px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  writing-mode: horizontal-tb;
-  white-space: nowrap;
-  padding: 4px 0;
-}
-
-/* 标签按钮样式统一 */
-.tagScroll .adm-button {
-  border-radius: 24px;
-  padding: 8px 16px;
-  font-size: 13px;
-  height: 36px;
-  --adm-button-border-width: 1px !important;
-  border: 1px solid var(--border-color) !important;
-  background: var(--bg-white) !important;
-  color: var(--text-secondary) !important;
-  transition: all 0.2s ease;
-}
-
-/* 选中标签样式 */
-.tagScroll .adm-button.adm-button-solid {
-  background: #e6f4ff !important;
-  border: 1px solid var(--primary-color) !important;
-  color: var(--primary-color) !important;
-}
-
-/* 隐藏滚动条 */
-.tagScroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* 房间数/人数选择行 */
-.roomGuestRow {
-  display: flex;
-  margin-top: 12px;
-  width: 100%;
-}
-
-/* 房间数/人数选择按钮 */
-.roomGuestButton {
-  width: 100%;
-  border: none;
-  box-shadow: none;
-  background: var(--bg-white);
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  max-width: 110px;
+  min-height: 70px;
+  padding: 12px;
+  background: #F8F6F2;
+  border: 1px solid rgba(26,26,46,0.08);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 12px;
-  min-height: 43px;
   cursor: pointer;
-}
-
-.roomGuestButton:hover {
-  background: #f0f7ff;
-}
-
-/* 房间数/人数标签 */
-.roomGuestLabel {
-  font-size: 16px;
-  color: #999;
-}
-
-/* 房间数/人数值 */
-.roomGuestValue {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: #6B6B8A;
+  text-align: center;
+  white-space: nowrap;
+  transition: background 0.15s;
+  box-sizing: border-box;
 }
 
-/* 分隔符 */
+.filterButton:active {
+  background: #F5ECD7;
+  color: #9A6F28;
+}
+
+/* ══ 第三行：房间/人数 ════════════════════════ */
+.roomGuestRow {
+  display: flex;
+  width: 100%;
+}
+
+.roomGuestButton {
+  width: 100%;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 14px 16px;
+  background: #F8F6F2;
+  border: 1px solid rgba(26,26,46,0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-sizing: border-box;
+}
+
+.roomGuestButton:active {
+  background: #F5ECD7;
+}
+
+.roomGuestLabel {
+  font-size: 15px;
+  color: #B8B8CC;
+}
+
+.roomGuestValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1A2E;
+  line-height: 1;
+}
+
 .roomGuestDivider {
   font-size: 16px;
-  color: #999;
-  margin: 0 4px;
+  color: #D0D0D8;
+  margin: 0 8px;
 }
 
-/* 房间数/人数选择弹窗 */
-.roomGuestPopup {
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
+/* ══ 第四行：地标标签横滑 ════════════════════ */
+.tagContainer {
+  width: 100%;
+  /* 关键：overflow-x: auto 让子元素可以横向滚动
+     不能写 overflow: hidden，否则截断滚动 */
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  padding: 3px 0;
+  scrollbar-width: none;
 }
 
-/* 房间数/人数区域 */
+.tagContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.tagScroll {
+  display: flex;
+  flex-wrap: nowrap;        /* 关键：不换行 */
+  gap: 8px;
+  width: max-content;       /* 关键：撑开横向宽度 */
+  padding: 2px 1px;
+}
+
+/* 标签按钮基础样式（未选中）
+   通过 .tagScroll 后代提高特异性 */
+.tagScroll :global(.adm-button) {
+  border-radius: 20px;
+  padding: 0 16px;
+  font-size: 14px;
+  height: 34px;
+  line-height: 34px;
+  border: 1px solid rgba(26,26,46,0.12);
+  background: #F8F6F2;
+  color: #6B6B8A;
+  box-shadow: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  /* 选中/未选中统一尺寸，不允许有大小变化 */
+  min-width: unset;
+}
+
+/* 选中标签：同样 height/padding，只改颜色 */
+.tagScroll :global(.adm-button.adm-button-solid) {
+  height: 34px;
+  line-height: 34px;
+  padding: 0 16px;
+  background: #F5ECD7;
+  border: 1px solid #C8963E;
+  color: #9A6F28;
+  font-weight: 600;
+  box-shadow: none;
+  transform: none;
+}
+
+/* ══ 搜索按钮 ════════════════════════════════ */
+.container .searchButton {
+  margin-top: 4px;
+  height: 52px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  background: linear-gradient(135deg, #C8963E 0%, #9A6F28 100%);
+  border: none;
+  box-shadow: 0 4px 16px rgba(200,150,62,0.38);
+  color: #FFFFFF;
+  --adm-color-primary: #C8963E;
+  transition: opacity 0.15s;
+}
+
+.container .searchButton:active {
+  opacity: 0.82;
+}
+
+/* ══ Popup 通用 ══════════════════════════════ */
+.popupContent {
+  padding: 22px 16px 36px;
+}
+
+.popupTitle {
+  text-align: center;
+  margin: 0 0 22px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1A2E;
+}
+
+/* Popup 圆角 */
+.calendarPopup :global(.adm-popup-body),
+.cityPopup :global(.adm-popup-body),
+.roomGuestPopup :global(.adm-popup-body) {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.filterPopup :global(.adm-popup-body){
+  overflow: visible;
+}
+.cityPopup :global(.adm-popup-body)   { height: 70%; }
+.filterPopup :global(.adm-popup-body) { height: 50%; }
+
+/* 弹窗内分区 */
+.sectionContainer {
+  margin-bottom: 10px;
+  overflow: visible;
+}
+
+.sectionTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1A1A2E;
+  padding-left: 9px;
+  border-left: 3px solid #C8963E;
+  overflow: visible;
+}
+
+.sectionSubtitle {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #B8B8CC;
+  font-weight: 500;
+}
+
+/* 弹窗内城市快捷按钮 */
+.sectionContainer :global(.adm-space-item .adm-button) {
+  border-radius: 20px;
+  font-size: 14px;
+  height: 34px;
+  padding: 0 16px;
+  border: 1px solid rgba(26,26,46,0.12);
+  background: #F8F6F2;
+  color: #1A1A2E;
+  box-shadow: none;
+  /* overflow: visible; */
+}
+
+/* 弹窗内 Input */
+.popupContent :global(.adm-input-wrapper) {
+  height: 44px;
+  background: #F8F6F2;
+  border: 1px solid rgba(26,26,46,0.1);
+  border-radius: 10px;
+  padding: 0 12px;
+  margin-bottom: 16px;
+}
+
+/* 弹窗内确定按钮 */
+.popupContent :global(.adm-button.adm-button-primary.adm-button-large) {
+  background: linear-gradient(135deg, #C8963E 0%, #9A6F28 100%);
+  border: none;
+  border-radius: 12px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(200,150,62,0.3);
+  --adm-color-primary: #C8963E;
+}
+
+/* ══ 房间弹窗 ════════════════════════════════ */
 .roomGuestSection {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(26,26,46,0.06);
 }
 
-.roomGuestSection:last-child {
+.roomGuestSection:last-of-type {
   border-bottom: none;
 }
 
-/* 房间数/人数标题 */
 .roomGuestTitle {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 600;
+  color: #1A1A2E;
 }
 
-/* 数字步进器 */
 .numberStepper {
   display: flex;
   align-items: center;
-  gap: 16px;
+  background: #F8F6F2;
+  border-radius: 24px;
+  border: 1px solid rgba(26,26,46,0.08);
+  overflow: hidden;
 }
 
-/* 数字值 */
+.numberStepper :global(.adm-button) {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  font-weight: 300;
+  color: #C8963E;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.numberStepper :global(.adm-button[disabled]) {
+  color: #D0D0D8;
+}
+
 .numberValue {
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--text-primary);
-  min-width: 32px;
+  font-size: 19px;
+  font-weight: 700;
+  color: #1A1A2E;
+  min-width: 42px;
   text-align: center;
+}
+
+/* 水平 Space */
+.horizontalSpace {
+  --gap: 8px;
 }

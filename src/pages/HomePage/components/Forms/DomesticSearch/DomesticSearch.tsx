@@ -53,7 +53,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
   const [roomGuestVisible, setRoomGuestVisible] = useState(false);
   const [roomCount, setRoomCount] = useState(value.roomCount || 1);
   const [guestCount, setGuestCount] = useState(value.guestCount || 1);
-
+  
   // 当外部value变化时，更新内部状态
   useEffect(() => {
     if (value.city && value.city !== city) {
@@ -131,6 +131,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
       brands: selectedBrand !== '不限' ? [selectedBrand] : undefined,
       roomCount,
       guestCount,
+      tags: selectedTags.length > 0 ? selectedTags : undefined,
     }
     onChange(formData)
     onSearch(formData)  // 直接传出去，解决异步问题

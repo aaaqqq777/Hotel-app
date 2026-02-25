@@ -8,14 +8,14 @@ export function getMockHotelList(params: HotelSearchParams): HotelListResponse {
 
   let filteredHotels = [...MOCK_HOTELS];
 
-  // 关键词过滤
-  if (params.keyword) {
-    const keyword = params.keyword.toLowerCase();
-    filteredHotels = filteredHotels.filter(hotel =>
-      hotel.name.toLowerCase().includes(keyword) ||
-      hotel.location.address.toLowerCase().includes(keyword)
-    );
-  }
+  // // 关键词过滤
+  // if (params.keyword) {
+  //   const keyword = params.keyword.toLowerCase();
+  //   filteredHotels = filteredHotels.filter(hotel =>
+  //     hotel.name.toLowerCase().includes(keyword) ||
+  //     hotel.location.address.toLowerCase().includes(keyword)
+  //   );
+  // }
 
   // 星级过滤
   if (params.starLevels) {

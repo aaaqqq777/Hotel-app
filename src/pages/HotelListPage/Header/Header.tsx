@@ -4,17 +4,17 @@ import styles from './Header.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import PeriodCalendar from '../../../components/PeriodCalendar/PeriodCalendar';
-
 interface HeaderProps {
   location?: string;
   checkInDate?: string;
   roomCount?: number;
   guestCount?: number;
+  keyword?: string;
   onDateChange?: (startDate: Date, endDate: Date) => void;
   onCityChange?: (city: string) => void;
   onRoomCountChange?: (count: number) => void;
   onGuestCountChange?: (count: number) => void;
-  onOpenFilter?: () => void;
+  onKeywordChange?: (keyword: string) => void;
 }
 
 export default function Header({
@@ -26,6 +26,7 @@ export default function Header({
   onCityChange,
   onRoomCountChange,
   onGuestCountChange,
+  onKeywordChange,
 }: HeaderProps) {
   const navigate = useNavigate();
 
@@ -41,7 +42,7 @@ export default function Header({
   const [roomVisible, setRoomVisible] = useState(false);
   const [tempRoomCount, setTempRoomCount] = useState(roomCount);
   const [tempGuestCount, setTempGuestCount] = useState(guestCount);
-
+  const [keyword, setKeyword] = useState('');
   // ── 日历 ────────────────────────────────────────────────
   const handleDateChange = (start: Date | null, end: Date | null) => {
     setStartDate(start);
@@ -74,7 +75,14 @@ export default function Header({
     setTempGuestCount(guestCount);
     setRoomVisible(false);
   };
-
+  const handleKeywordBlur = () => {
+  if (keyword.trim()) {
+    onKeywordChange?.(keyword);
+  } else {
+    onKeywordChange?.(''); // 清空关键词
+  }
+}
+    
   // ── 日期解析显示 ─────────────────────────────────────────
   const parseDateRange = (dateStr: string) => {
     if (!dateStr) return { checkIn: '', checkOut: '' };
@@ -129,10 +137,14 @@ export default function Header({
         {/* 关键词搜索 */}
         <div className={styles.searchSection}>
           <SearchOutline className={styles.searchIcon} />
-          <input
+          <Input
             type="text"
             className={styles.searchInput}
             placeholder="位置/酒店/关键词"
+            value={keyword}
+            onChange={setKeyword}
+            onBlur={handleKeywordBlur}
+            clearable
           />
         </div>
       </div>
