@@ -1,28 +1,27 @@
-// src/pages/HomePage/hooks/useSearchParams.ts
-import { useState } from 'react';
-import type { RawSearchData } from './useSearchLogic';
+import { useState } from 'react'
+import type { HotelSearchParams } from '../../../types/hotel'
+
+// 扩展类型，补充 UI 专用字段
+export type SearchFormData = Partial<HotelSearchParams> & {
+  region?: 'domestic' | 'overseas' | 'hourly' | 'bnb'
+  dates?: [Date, Date]
+}
 
 export function useSearchParams() {
-  const [params, setParams] = useState<Partial<RawSearchData>>({
+  const [params, setParams] = useState<SearchFormData>({
     region: 'domestic',
-    city: '上海', // 为domestic类型设置默认城市
-  });
+    city: '上海',
+  })
 
-  const updateParams = (partial: Partial<RawSearchData>) => {
-    // 使用函数式更新，确保获取最新状态
+  const updateParams = (partial: Partial<SearchFormData>) => {
     setParams(prev => {
-      const newParams = { ...prev, ...partial };
-      // 确保domestic类型始终有城市值
+      const newParams = { ...prev, ...partial }
       if (newParams.region === 'domestic' && !newParams.city) {
-        newParams.city = '上海';
+        newParams.city = '上海'
       }
-      console.log("searchparam:", newParams);
-      return newParams;
-    });
-  };
+      return newParams
+    })
+  }
 
-  return {
-    params,
-    updateParams,
-  };
+  return { params, updateParams }
 }

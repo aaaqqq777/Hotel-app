@@ -1,160 +1,132 @@
-
-import { Button, Popup, Input } from 'antd-mobile';
+import { Button, Popup, Input, Stepper, Space } from 'antd-mobile';
 import { EnvironmentOutline, LeftOutline, SearchOutline } from 'antd-mobile-icons';
 import styles from './Header.module.css';
-
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import PeriodCalendar from '../../../components/PeriodCalendar/PeriodCalendar';
-import RoomSelector from '../RoomSelector/RoomSelector';
 
 interface HeaderProps {
-  location?: string
-  checkInDate?: string
-  roomCount?: number
-  guestCount?: number
-  onDateChange?: (startDate: Date, endDate: Date) => void
-  onCityChange?: (city: string) => void
-  onRoomCountChange?: (count: number) => void
-  onGuestCountChange?: (count: number) => void
-  onOpenFilter?: () => void
+  location?: string;
+  checkInDate?: string;
+  roomCount?: number;
+  guestCount?: number;
+  onDateChange?: (startDate: Date, endDate: Date) => void;
+  onCityChange?: (city: string) => void;
+  onRoomCountChange?: (count: number) => void;
+  onGuestCountChange?: (count: number) => void;
+  onOpenFilter?: () => void;
 }
 
-export default function Header({ 
-  location, 
-  checkInDate, 
-  roomCount , 
-  guestCount, 
-  onDateChange, 
+export default function Header({
+  location,
+  checkInDate,
+  roomCount = 1,
+  guestCount = 1,
+  onDateChange,
   onCityChange,
   onRoomCountChange,
-  onGuestCountChange
+  onGuestCountChange,
 }: HeaderProps) {
-  console.log('Header 组件接收 props:', { location, checkInDate, roomCount, guestCount });
-  
   const navigate = useNavigate();
+
+  // 日历弹窗
   const [calendarVisible, setCalendarVisible] = useState(false);
-  const [cityVisible, setCityVisible] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  
-  // 这里的函数只是为了示例，可以根据实际需要绑定不同的事件
-  const handleMapClick = () => {
-    console.log('用户点击了地图按钮');
-    // 未来这里可能会打开一个地图模态框
-    // onOpenMapModal(); 
-  };
-  
-  const handleBackClick = () => {
-    console.log('用户点击了返回按钮');
-    // 执行路由返回
-    navigate(-1); 
-  };
-  
 
-  
-  const handleDateClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 防止事件冒泡
-    console.log('用户点击了日期');
-    setCalendarVisible(true);
+  // 城市弹窗
+  const [cityVisible, setCityVisible] = useState(false);
+
+  // 房间/人数弹窗（原 RoomSelector 状态）
+  const [roomVisible, setRoomVisible] = useState(false);
+  const [tempRoomCount, setTempRoomCount] = useState(roomCount);
+  const [tempGuestCount, setTempGuestCount] = useState(guestCount);
+
+  // ── 日历 ────────────────────────────────────────────────
+  const handleDateChange = (start: Date | null, end: Date | null) => {
+    setStartDate(start);
+    setEndDate(end);
+    if (end) setCalendarVisible(false);
+    if (onDateChange) onDateChange(start || new Date(), end || new Date());
   };
 
-  const handleCityClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 防止事件冒泡
-    console.log('用户点击了城市');
-    setCityVisible(true);
-  };
-
+  // ── 城市 ────────────────────────────────────────────────
   const handleCitySelect = (city: string) => {
-    console.log('用户选择了城市:', city);
     setCityVisible(false);
-    if (onCityChange) {
-      onCityChange(city);
-    }
+    onCityChange?.(city);
   };
-  
-  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
-    console.log('Selected dates:', { startDate, endDate });
-    if (endDate) {
-      setCalendarVisible(false);
-    }
-    if (onDateChange) {
-      onDateChange(startDate || new Date(), endDate || new Date());
-    }
+
+  // ── 房间/人数 ────────────────────────────────────────────
+  const handleRoomOpen = () => {
+    setTempRoomCount(roomCount);
+    setTempGuestCount(guestCount);
+    setRoomVisible(true);
   };
-  
-  // 解析日期字符串，提取入住和离店日期
+
+  const handleRoomConfirm = () => {
+    onRoomCountChange?.(tempRoomCount);
+    onGuestCountChange?.(tempGuestCount);
+    setRoomVisible(false);
+  };
+
+  const handleRoomCancel = () => {
+    setTempRoomCount(roomCount);
+    setTempGuestCount(guestCount);
+    setRoomVisible(false);
+  };
+
+  // ── 日期解析显示 ─────────────────────────────────────────
   const parseDateRange = (dateStr: string) => {
-    console.log('parseDateRange 开始解析日期:', dateStr);
-    if (!dateStr) {
-      console.log('日期字符串为空，返回空值');
-      return { checkIn: '', checkOut: '' };
-    }
-    // 假设dateStr格式为"住MM/dd 离MM/dd"
+    if (!dateStr) return { checkIn: '', checkOut: '' };
     const match = dateStr.match(/住(\d+\/\d+) 离(\d+\/\d+)/);
     if (match) {
-      const [, checkIn, checkOut] = match;
-      // 将MM/dd格式转换为MM.dd格式
-      const formattedCheckIn = checkIn.replace('/', '.');
-      const formattedCheckOut = checkOut.replace('/', '.');
-      console.log('格式化后的入住和离店日期:', formattedCheckIn, formattedCheckOut);
-      return { checkIn: formattedCheckIn, checkOut: formattedCheckOut };
+      return {
+        checkIn: match[1].replace('/', '.'),
+        checkOut: match[2].replace('/', '.'),
+      };
     }
-    console.log('日期解析失败，返回空值');
     return { checkIn: '', checkOut: '' };
   };
 
   const { checkIn, checkOut } = parseDateRange(checkInDate || '');
-  console.log('解析后的日期:', { checkIn, checkOut });
 
   return (
     <div className={styles.container}>
       {/* 返回按钮 */}
-      <Button 
-        fill="none" 
-        onClick={handleBackClick}
-        className={styles.backButton}
-      >
+      <Button fill="none" onClick={() => navigate(-1)} className={styles.backButton}>
         <LeftOutline />
       </Button>
 
-      {/* 搜索摘要 - 新格式 */}
+      {/* 搜索摘要栏 */}
       <div className={styles.newSearchSummary}>
-        {/* 地点部分 */}
+        {/* 城市 */}
         {location && (
-          <div className={styles.locationSection} onClick={handleCityClick}>
+          <div className={styles.locationSection} onClick={() => setCityVisible(true)}>
             <span className={styles.locationText}>{location}</span>
           </div>
         )}
 
-        {/* 分隔线 */}
-        {(location && checkInDate) && <div className={styles.divider} />}
+        {location && checkInDate && <div className={styles.divider} />}
 
-        {/* 日期部分 */}
-        {(
-          <div className={styles.dateSection} onClick={handleDateClick}>
-            <div className={styles.dateItem}>住 {checkIn}</div>
-            <div className={styles.dateItem}>离 {checkOut}</div>
-          </div>
-        )}
+        {/* 日期 */}
+        <div className={styles.dateSection} onClick={() => setCalendarVisible(true)}>
+          <div className={styles.dateItem}>住 {checkIn}</div>
+          <div className={styles.dateItem}>离 {checkOut}</div>
+        </div>
 
-        {/* 分隔线 */}
-        {(checkInDate || location) && <div className={styles.divider} />}
-
-        {/* 房间选择部分 */}
-        <RoomSelector 
-          roomCount={roomCount ?? 1}
-          guestCount={guestCount ?? 1}
-          onRoomCountChange={onRoomCountChange || (() => {})} 
-          onGuestCountChange={onGuestCountChange || (() => {})} 
-        />
-
-        {/* 分隔线 */}
         <div className={styles.divider} />
 
-        {/* 搜索框部分 */}
+        {/* 房间/人数（原 RoomSelector） */}
+        <div className={styles.roomSection} onClick={handleRoomOpen}>
+          <div className={styles.textContainer}>
+            <span className={styles.roomCount}>{roomCount}间</span>
+            <span className={styles.guestCount}>{guestCount}人</span>
+          </div>
+        </div>
+
+        <div className={styles.divider} />
+
+        {/* 关键词搜索 */}
         <div className={styles.searchSection}>
           <SearchOutline className={styles.searchIcon} />
           <input
@@ -167,12 +139,12 @@ export default function Header({
 
       {/* 地图按钮 */}
       <div className={styles.right}>
-        <button className={styles.mapButton} onClick={handleMapClick}>
+        <button className={styles.mapButton}>
           <EnvironmentOutline />
         </button>
       </div>
-      
-      {/* 日历选择弹窗 */}
+
+      {/* ── 日历弹窗 ── */}
       <Popup
         visible={calendarVisible}
         onMaskClick={() => setCalendarVisible(false)}
@@ -181,7 +153,7 @@ export default function Header({
       >
         <div style={{ padding: '16px' }}>
           <h3 style={{ textAlign: 'center', margin: '0 0 16px 0' }}>选择日期</h3>
-          <PeriodCalendar 
+          <PeriodCalendar
             startDate={startDate}
             endDate={endDate}
             onDateChange={handleDateChange}
@@ -189,7 +161,7 @@ export default function Header({
         </div>
       </Popup>
 
-      {/* 城市选择弹窗 */}
+      {/* ── 城市弹窗 ── */}
       <Popup
         visible={cityVisible}
         onMaskClick={() => setCityVisible(false)}
@@ -202,21 +174,44 @@ export default function Header({
           <div style={{ marginTop: '16px' }}>
             <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>热门城市</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {['北京', '上海', '广州', '深圳', '杭州', '成都', '南京', '重庆'].map((cityItem) => (
-                <Button 
-                  key={cityItem}
-                  fill="outline"
-                  onClick={() => handleCitySelect(cityItem)}
-                  style={{ margin: '2px' }}
-                >
-                  {cityItem}
+              {['北京', '上海', '广州', '深圳', '杭州', '成都', '南京', '重庆'].map(city => (
+                <Button key={city} fill="outline" onClick={() => handleCitySelect(city)}>
+                  {city}
                 </Button>
               ))}
             </div>
           </div>
         </div>
       </Popup>
+
+      {/* ── 房间/人数弹窗（原 RoomSelector Popup） ── */}
+      <Popup
+        visible={roomVisible}
+        onMaskClick={handleRoomCancel}
+        position="bottom"
+        bodyStyle={{ minHeight: '200px', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}
+      >
+        <div className={styles.roomPopupContent}>
+          <h3 className={styles.roomPopupTitle}>房间与入住人数</h3>
+
+          <div className={styles.roomOptionRow}>
+            <span className={styles.roomOptionLabel}>房间数</span>
+            <Stepper value={tempRoomCount} min={1} max={10} onChange={setTempRoomCount} />
+          </div>
+
+          <div className={styles.roomOptionRow}>
+            <span className={styles.roomOptionLabel}>入住人数</span>
+            <Stepper value={tempGuestCount} min={1} max={20} onChange={setTempGuestCount} />
+          </div>
+
+          <div className={styles.roomButtonGroup}>
+            <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+              <Button fill="outline" color="primary" onClick={handleRoomCancel}>取消</Button>
+              <Button color="primary" onClick={handleRoomConfirm}>确认</Button>
+            </Space>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 }
-

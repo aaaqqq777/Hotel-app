@@ -114,7 +114,7 @@ export interface RoomType {
     remaining: number;
     isSoldOut: boolean;
   };
-
+  description?: string;
   tags?: string[];
 }
 //advertisement

@@ -12,7 +12,7 @@ import {
   useHotelDetail,
   useHotelRoomTypes
 } from '../../hooks/useHotelQueries';
-import { MOCK_SERVICES } from '../../data/hotelDetail';
+import { MOCK_SERVICES } from '../../data/MOCK/hotelDetail';
 
 function DetailPage() {
   // 获取URL参数
@@ -34,7 +34,15 @@ function DetailPage() {
   // 使用API获取酒店数据
   const { data: hotelDetail } = useHotelDetail(hotelId);
 
-  const { data: hotelRoomTypes } = useHotelRoomTypes(hotelId);
+  const { data: hotelRoomTypes, isLoading: isLoadingRooms, error: roomsError } = useHotelRoomTypes(hotelId);
+
+  // 调试日志
+  useEffect(() => {
+    console.log(`[DetailPage] hotelId: ${hotelId}`);
+    console.log(`[DetailPage] hotelRoomTypes:`, hotelRoomTypes);
+    console.log(`[DetailPage] isLoadingRooms:`, isLoadingRooms);
+    console.log(`[DetailPage] roomsError:`, roomsError);
+  }, [hotelId, hotelRoomTypes, isLoadingRooms, roomsError]);
 
   // 处理房型选择
   const handleRoomSelect = (roomId: string) => {

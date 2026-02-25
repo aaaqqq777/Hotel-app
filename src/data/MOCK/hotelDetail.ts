@@ -1,5 +1,5 @@
-import type { HotelDetail, RoomType } from "../types/hotel";
-import { MOCK_HOTEL_DETAIL, MOCK_ROOM_TYPES } from "./hotels";
+import type { HotelDetail, RoomType } from "../../types/hotel";
+import { MOCK_HOTEL_DETAIL, MOCK_ROOM_TYPES } from "../MOCK/hotels";
 
 // 导出酒店详情数据
 export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {

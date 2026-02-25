@@ -1,7 +1,7 @@
 // src/api/modules/advertisement.ts
 import { api } from '../index';
 import type { BannerData } from '../../types/hotel';
-import { MOCK_BANNERS } from '../../data/advertisement/advertisement';
+import { MOCK_BANNERS } from '../../data/MOCK/advertisement/advertisement';
 
 // 广告API
 export const advertisementApi = {

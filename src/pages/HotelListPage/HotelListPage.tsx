@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ErrorBlock } from 'antd-mobile'
 import styles from './HotelListPage.module.css'
 import Header from './Header/Header'
@@ -13,15 +13,14 @@ import { useHotelListData } from './hooks/useHotelListData'
 
 function HotelListPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const observerRef = useRef<IntersectionObserver | null>(null)
 
-  // 使用自定义Hook获取数据和方法
   const {
     hotels,
     isLoading,
     isInitialLoading,
     hasMore,
-    loadFirstPage,
     loadMoreHotels,
     location,
     keyword,
@@ -33,27 +32,129 @@ function HotelListPage() {
     selectedTags,
     setSelectedTags,
     allSelectedTags,
-  } = useHotelListData();
+  } = useHotelListData()
 
-  // 状态管理：排序筛选
-  const [sortType, setSortType] = useState<SortType>('default')
-  const [selectedPrice, setSelectedPrice] = useState('价格')
-  const [selectedRating, setSelectedRating] = useState('星级')
-  const [selectedScore, setSelectedScore] = useState('评分')
+  // ── 筛选状态：从 URL 初始化，返回后自动恢复 ──────────────────
+  const [sortType, setSortType] = useState<SortType>(() => {
+    const sortBy    = searchParams.get('sortBy')
+    const sortOrder = searchParams.get('sortOrder')
+    if (sortBy === 'price' && sortOrder === 'asc')  return 'price-asc'
+    if (sortBy === 'price' && sortOrder === 'desc') return 'price-desc'
+    if (sortBy === 'rating')                        return 'rating'
+    return 'default'
+  })
+
+  const [selectedPrice, setSelectedPrice] = useState<string>(() => {
+    const min = searchParams.get('minPrice')
+    const max = searchParams.get('maxPrice')
+    if (!min && !max)                     return '价格'
+    if (min === '0'   && max === '300')   return '300以下'
+    if (min === '300' && max === '500')   return '300-500'
+    if (min === '500' && max === '99999') return '500以上'
+    if (min && max)                       return `${min}-${max}`
+    return '价格'
+  })
+
+  const [selectedRating, setSelectedRating] = useState<string>(() => {
+    const star = searchParams.get('starLevels')
+    const map: Record<string, string> = { '5': '5星', '4': '4星', '3': '3星及以下' }
+    return map[star || ''] || '星级'
+  })
+
+  const [selectedScore, setSelectedScore] = useState<string>(() => {
+    const score = searchParams.get('score')
+    const map: Record<string, string> = {
+      '4.8': '4.8分以上',
+      '4.5': '4.5分以上',
+      '4.0': '4.0分以上',
+    }
+    return map[score || ''] || '评分'
+  })
+
   const [isScrolled, setIsScrolled] = useState(false)
 
-  // 滚动事件监听
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 100)
-    }
+  // ── 前端标签过滤 ──────────────────────────────────────────────
+  // some：含任意一个选中标签即显示（宽松，推荐）
+  // every：必须含所有选中标签才显示（严格）
+  const filteredHotels = selectedTags.length === 0
+    ? hotels
+    : hotels.filter(hotel =>
+        selectedTags.some(tag => hotel.tags?.includes(tag))
+      )
 
+  // ── 筛选/排序变化 → 写回 URL → 触发重新请求 ─────────────────
+  const applyFilter = useCallback((updates: Record<string, string>) => {
+    const sp = new URLSearchParams(window.location.search)
+    Object.entries(updates).forEach(([k, v]) => {
+      if (v && v !== '全部') {
+        sp.set(k, v)
+      } else {
+        sp.delete(k)
+      }
+    })
+    navigate(`/hotellist?${sp.toString()}`, { replace: true })
+  }, [navigate])
+
+  const handleSortChange = (sort: SortType) => {
+    setSortType(sort)
+    const sortMap: Record<SortType, { sortBy: string; sortOrder: string }> = {
+      'default':    { sortBy: '',       sortOrder: '' },
+      'price-asc':  { sortBy: 'price',  sortOrder: 'asc' },
+      'price-desc': { sortBy: 'price',  sortOrder: 'desc' },
+      'rating':     { sortBy: 'rating', sortOrder: 'desc' },
+    }
+    applyFilter(sortMap[sort])
+  }
+
+  const handlePriceChange = (price: string) => {
+    setSelectedPrice(price)
+    const match = price.match(/^(\d+)-(\d+)$/)
+    if (match) {
+      applyFilter({ minPrice: match[1], maxPrice: match[2] })
+    } else if (price === '300以下') {
+      applyFilter({ minPrice: '0', maxPrice: '300' })
+    } else if (price === '300-500') {
+      applyFilter({ minPrice: '300', maxPrice: '500' })
+    } else if (price === '500以上') {
+      applyFilter({ minPrice: '500', maxPrice: '99999' })
+    } else {
+      applyFilter({ minPrice: '', maxPrice: '' })
+    }
+  }
+
+  const handleRatingChange = (rating: string) => {
+    setSelectedRating(rating)
+    const starMap: Record<string, string> = {
+      '5星': '5', '4星': '4', '3星及以下': '3', '全部': '',
+    }
+    applyFilter({ starLevels: starMap[rating] || '' })
+  }
+
+  const handleScoreChange = (score: string) => {
+    setSelectedScore(score)
+    const scoreMap: Record<string, string> = {
+      '4.8分以上': '4.8', '4.5分以上': '4.5', '4.0分以上': '4.0', '全部': '',
+    }
+    applyFilter({ score: scoreMap[score] || '' })
+  }
+
+  // ── 快捷标签：纯前端过滤，不触发 API 请求 ───────────────────
+  const handleTagClick = (tagValue: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tagValue)
+        ? prev.filter(t => t !== tagValue)
+        : [...prev, tagValue]
+    )
+  }
+
+  // ── 滚动监听 ──────────────────────────────────────────────────
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 100)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // 滚动监听回调 - 移到 loadMoreHotels 之后定义
+  // ── 无限滚动：监听 filteredHotels 最后一个卡片 ───────────────
   const lastHotelRef = useCallback((node: HTMLDivElement | null) => {
     if (isLoading) return
     if (observerRef.current) observerRef.current.disconnect()
@@ -65,63 +166,32 @@ function HotelListPage() {
     if (node) observerRef.current.observe(node)
   }, [isLoading, hasMore, loadMoreHotels])
 
-  // 当过滤条件、排序或房间/客人数量变化时，重新加载第一页
-  useEffect(() => {
-    loadFirstPage()
-  }, [loadFirstPage, roomCount, guestCount])
-
-  // 处理快捷标签点击
-  const handleTagClick = (tagValue: string) => {
-    setSelectedTags((prev) =>
-      prev.includes(tagValue)
-        ? prev.filter((tag) => tag !== tagValue)
-        : [...prev, tagValue]
-    )
-  }
-
-  // 处理查看酒店详情
   const handleViewDetail = (hotelId: string) => {
     navigate(`/detailpage?id=${hotelId}`)
   }
 
   const handleOpenFilter = () => {
-    console.log('打开筛选面板');
-  };
+    console.log('打开筛选面板')
+  }
 
-  // 处理日期变更
   const handleDateChange = (startDate: Date, endDate: Date) => {
-    console.log('用户选择了新的日期:', startDate, endDate);
-    
-    const params = new URLSearchParams();
-    if (location) params.set('city', location);
-    if (keyword) params.set('keyword', keyword);
-    params.set('roomCount', roomCount.toString());
-    params.set('guestCount', guestCount.toString());
-    
-    const dates = [startDate.toISOString(), endDate.toISOString()];
-    params.set('dates', JSON.stringify(dates));
-    
-    navigate(`/Hotellist?${params.toString()}`);
-  };
+    const sp = new URLSearchParams(window.location.search)
+    sp.set('checkInDate',  startDate.toISOString().split('T')[0])
+    sp.set('checkOutDate', endDate.toISOString().split('T')[0])
+    navigate(`/hotellist?${sp.toString()}`, { replace: true })
+  }
 
-  // 处理城市变更
   const handleCityChange = (city: string) => {
-    console.log('用户选择了新的城市:', city);
-    
-    const params = new URLSearchParams();
-    params.set('city', city);
-    if (keyword) params.set('keyword', keyword);
-    params.set('roomCount', roomCount.toString());
-    params.set('guestCount', guestCount.toString());
-    
-    navigate(`/Hotellist?${params.toString()}`);
+    const sp = new URLSearchParams(window.location.search)
+    sp.set('city', city)
+    navigate(`/hotellist?${sp.toString()}`, { replace: true })
   }
 
   return (
     <div className={styles.container}>
-      {/* 固定头部：Header */}
+      {/* 固定头部 */}
       <div className={styles.stickyHeader}>
-        <Header 
+        <Header
           location={location}
           checkInDate={formattedDateRange}
           roomCount={roomCount ?? 1}
@@ -133,33 +203,32 @@ function HotelListPage() {
           onCityChange={handleCityChange}
         />
 
-        {/* 固定排序栏：SortBar */}
-        <SortBar 
-          currentSort={sortType} 
-          onSortChange={setSortType}
+        <SortBar
+          currentSort={sortType}
+          onSortChange={handleSortChange}
           onFilterClick={handleOpenFilter}
           selectedPrice={selectedPrice}
-          onPriceChange={setSelectedPrice}
+          onPriceChange={handlePriceChange}
           selectedRating={selectedRating}
-          onRatingChange={setSelectedRating}
+          onRatingChange={handleRatingChange}
           selectedScore={selectedScore}
-          onScoreChange={setSelectedScore}
+          onScoreChange={handleScoreChange}
         />
 
-        {/* 固定显示选中的标签 */}
+        {/* 有选中标签时固定展示在顶部 */}
         {selectedTags.length > 0 && (
           <div className={styles.selectedTagsContainer}>
             <QuickTagsBar
-            tags={QUICK_TAGS.map(tag => ({ label: tag.name, value: tag.id }))}
-            selectedTags={allSelectedTags}
-            onTagClick={handleTagClick}
-            showOnlySelected={true}
-          />
+              tags={QUICK_TAGS.map(tag => ({ label: tag.name, value: tag.id }))}
+              selectedTags={allSelectedTags}
+              onTagClick={handleTagClick}
+              showOnlySelected={true}
+            />
           </div>
         )}
       </div>
 
-      {/* 根据滚动状态显示标签：回到顶部时显示所有标签，滑动时只显示选中标签 */}
+      {/* 快捷标签栏：滚动后收起未选中的 */}
       <div className={styles.tagsContainer}>
         <QuickTagsBar
           tags={QUICK_TAGS.map(tag => ({ label: tag.name, value: tag.id }))}
@@ -169,20 +238,20 @@ function HotelListPage() {
         />
       </div>
 
-      {/* 酒店列表 */}
+      {/* 酒店列表：使用 filteredHotels 渲染 */}
       <div className={styles.hotelList}>
         {isInitialLoading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.spinner}></div>
             <div className={styles.loadingText}>正在加载酒店...</div>
           </div>
-        ) : hotels.length > 0 ? (
+        ) : filteredHotels.length > 0 ? (
           <>
             <div className={styles.hotelGrid}>
-              {hotels.map((hotel: HotelListItem, index) => (
+              {filteredHotels.map((hotel: HotelListItem, index) => (
                 <div
                   key={hotel.id}
-                  ref={index === hotels.length - 1 ? lastHotelRef : null}
+                  ref={index === filteredHotels.length - 1 ? lastHotelRef : null}
                 >
                   <HotelCard
                     hotel={hotel}
@@ -191,7 +260,7 @@ function HotelListPage() {
                 </div>
               ))}
             </div>
-            {/* 加载更多状态 */}
+
             <div className={styles.loadMoreContainer}>
               {isLoading && (
                 <div className={styles.loadingMore}>
@@ -199,14 +268,21 @@ function HotelListPage() {
                   <span className={styles.loadingMoreText}>加载中...</span>
                 </div>
               )}
-              {!hasMore && !isLoading && (
+              {/* 有标签过滤时不显示"没有更多"，后端可能还有未加载的数据 */}
+              {!hasMore && !isLoading && selectedTags.length === 0 && (
                 <div className={styles.noMoreText}>没有更多酒店了</div>
               )}
             </div>
           </>
         ) : (
           <div className={styles.emptyState}>
-            <ErrorBlock description="没有找到匹配的酒店" />
+            <ErrorBlock
+              description={
+                selectedTags.length > 0
+                  ? '没有符合该标签的酒店，试试其他标签？'
+                  : '没有找到匹配的酒店'
+              }
+            />
           </div>
         )}
       </div>

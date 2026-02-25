@@ -3,7 +3,7 @@ import styles from './SearchForm.module.css';
 
 import { useSearchParams } from '../../hooks/useSearchParams';
 import { useSearchLogic } from '../../hooks/useSearchLogic';
-
+import type { SearchFormData } from '../../hooks/useSearchParams'
 import OverseasSearch from '../Forms/OverseasSearch/OverseasSearch';
 import DomesticSearchForm from '../Forms/DomesticSearch/DomesticSearch';
 
@@ -19,10 +19,10 @@ export default function SearchForm() {
   // 确保 activeTab 有默认值
   const activeTab = params.region || 'domestic';
 
-  const onSearch = () => {
-    console.log('触发搜索，当前参数:', params);
-    handleFinalSearch(params);
-  };
+  const onSearch = (latestData: SearchFormData) => {
+    const merged = { ...params, ...latestData }
+    handleFinalSearch(merged)
+  }
 
   const renderSearchForm = () => {
     switch (activeTab) {

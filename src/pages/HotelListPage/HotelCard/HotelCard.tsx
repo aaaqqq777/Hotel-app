@@ -20,7 +20,7 @@ const tagLabels: Record<string, string> = {
 }
 
 export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
-  console.log('HotelCard 渲染，酒店信息:', hotel);
+  // console.log('HotelCard 渲染，酒店信息:', hotel);
   
   // 安全地处理评分信息
   const ratingLevel = !hotel.rating 

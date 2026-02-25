@@ -1,4 +1,4 @@
-import { searchHotelList, type HotelListResponse } from '../hotelsearch/hotelsearch';
+import { searchHotelList, type HotelListResponse } from '../hotel/hotelSearch';
 import type { HotelSearchParams } from '../../types/hotel';
 import type { HotelListItem } from '../../types/hotel';
 
@@ -36,6 +36,13 @@ export async function fetchHotelList(params: HotelListQueryParams): Promise<{ ho
       pageSize: parseInt(params.limit || '10'),
       roomCount: params.roomCount ? parseInt(params.roomCount) : undefined,
       guestCount: params.guestCount ? parseInt(params.guestCount) : undefined,
+      // 转换其他参数
+      lat: params.lat ? parseFloat(params.lat) : undefined,
+      lng: params.lng ? parseFloat(params.lng) : undefined,
+      minPrice: params.minPrice ? parseInt(params.minPrice) : undefined,
+      maxPrice: params.maxPrice ? parseInt(params.maxPrice) : undefined,
+      sortBy: params.sortBy as any || undefined,
+      sortOrder: params.sortOrder as any || undefined,
     };
     
     console.log('🔍 fetchHotelList 转换后的API参数:', apiParams);

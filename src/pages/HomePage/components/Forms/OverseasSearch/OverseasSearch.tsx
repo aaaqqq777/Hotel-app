@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Button, Input, Space, Popup } from 'antd-mobile';
 import { LocationOutline, RightOutline } from 'antd-mobile-icons';
-import type { RawSearchData } from '../../../hooks/useSearchLogic';
 import styles from './OverseasSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
+import type { SearchFormData } from '../../../hooks/useSearchParams';
 
 interface OverseasSearchFormProps {
-  value: Partial<RawSearchData>;
-  onChange: (data: Partial<RawSearchData>) => void;
-  onSearch: () => void;
+  value: SearchFormData;
+  onChange: (data: SearchFormData) => void;
+  onSearch: (data: SearchFormData) => void; // ← 从 () => void 改为这个
 }
-
 const CITY_TAGS: { [key: string]: string[] } = {
   '曼谷': ['大皇宫', '湄南河', '考山路', '素万那普机场', '暹罗广场', '四面佛', '唐人街', '芭提雅'],
   '东京': ['涩谷', '新宿', '浅草寺', '银座', '迪士尼', '上野', '秋叶原', '成田机场'],
@@ -135,23 +134,16 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
   };
 
   const handleInternalSearch = () => {
-    const formData: Partial<RawSearchData> = {
-      region: 'overseas',
-      city: city || '曼谷',
-      // country: country || '泰国',
-      keyword,
-      dates: startDate && endDate ? [startDate, endDate] : undefined,
-      brands: selectedBrand !== '不限' ? [selectedBrand] : undefined,
-      roomCount,
-      guestCount
-    };
-    
-    onChange(formData);
-    
-    setTimeout(() => {
-      onSearch();
-    }, 0);
+  const formData: SearchFormData = {
+    region: 'overseas',
+    city: city || '',
+    keyword,
+    dates: startDate && endDate ? [startDate, endDate] : undefined,
+    // ...其他字段
   };
+  onChange(formData);
+  onSearch(formData); // ← 直接传数据
+};
 
   return (
     <div className={styles.container}>

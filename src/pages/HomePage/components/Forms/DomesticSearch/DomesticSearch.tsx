@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Button, Input, Space, Popup } from 'antd-mobile';
 import { LocationOutline, RightOutline } from 'antd-mobile-icons';
-import type { RawSearchData } from '../../../hooks/useSearchLogic'; // 导入类型
+import type { SearchFormData } from '../../../hooks/useSearchParams'
+
 import styles from './DomesticSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
 
 // 定义该组件接收的 Props
-interface DomesticSearchFormProps { 
-  value: Partial<RawSearchData>;
-  onChange: (data: Partial<RawSearchData>) => void;
-  onSearch: () => void;
+interface DomesticSearchFormProps {
+  value: SearchFormData
+  onChange: (data: SearchFormData) => void
+  onSearch: (data: SearchFormData) => void  // 带参数
 }
 
 // 模拟城市常用标签数据
@@ -122,21 +123,17 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
 
   const handleInternalSearch = () => {
     // --- 汇总自己内部的数据 ---
-    const formData: Partial<RawSearchData> = {
+    const formData: SearchFormData = {
       region: 'domestic',
-      city: city || '上海', // 确保城市值存在
+      city: city || '上海',
       keyword,
       dates: startDate && endDate ? [startDate, endDate] : undefined,
       brands: selectedBrand !== '不限' ? [selectedBrand] : undefined,
       roomCount,
-      guestCount
-    };
-    
-    console.log('DomesticSearch 准备提交的搜索数据:', formData);
-    
-    // 更新上层状态
-    onChange(formData);
-    onSearch();
+      guestCount,
+    }
+    onChange(formData)
+    onSearch(formData)  // 直接传出去，解决异步问题
   };
 
   return (

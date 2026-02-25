@@ -1,13 +1,28 @@
 import { Button } from 'antd-mobile';
 import styles from './RoomList.module.css';
 import type { RoomType } from '../../../../types/hotel';
-
 interface RoomListProps {
   rooms: RoomType[];
   onRoomSelect: (roomId: string) => void;
 }
 
 export default function RoomList({ rooms, onRoomSelect }: RoomListProps) {
+  // 添加安全检查
+  const safeRooms = Array.isArray(rooms) && rooms.length > 0 ? rooms : [];
+
+  if (safeRooms.length === 0) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h3 className={styles.title}>房型列表</h3>
+        </div>
+        <div className={styles.emptyState}>
+          <p>暂无可用房型</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -15,12 +30,14 @@ export default function RoomList({ rooms, onRoomSelect }: RoomListProps) {
       </div>
       
       <div className={styles.roomList}>
-        {rooms.map((room) => (
+        {safeRooms.map((room) => (
           <div key={room.id} className={styles.roomCard}>
             <div className={styles.roomImage}>
               <img src={room.image} alt={room.name} />
-              {room.price.discount && (
-                <div className={styles.discountBadge}>{room.price.discount}折</div>
+              {room.price?.discount && (
+                <div className={styles.discountBadge}>
+                  {(room.price.discount * 10).toFixed(1)}折
+                </div>
               )}
             </div>
             
@@ -36,7 +53,7 @@ export default function RoomList({ rooms, onRoomSelect }: RoomListProps) {
                 )}
               </div>
               
-              <p className={styles.roomDescription}>面积: {room.area}㎡, 最多入住: {room.maxOccupancy}人</p>
+              <p className={styles.roomDescription}>{room.description || '优秀的房间'}</p>
               
               <div className={styles.roomFooter}>
                 <div className={styles.priceInfo}>
@@ -48,25 +65,13 @@ export default function RoomList({ rooms, onRoomSelect }: RoomListProps) {
                   {room.price.original && (
                     <div className={styles.originalPrice}>¥{room.price.original}</div>
                   )}
-                  {room.availability && (
-                    <div className={styles.availability}>
-                      {room.availability.remaining > 5 ? (
-                        <span className={styles.availabilityHigh}>余房充足</span>
-                      ) : room.availability.remaining > 0 ? (
-                        <span className={styles.availabilityLow}>仅剩{room.availability.remaining}间</span>
-                      ) : (
-                        <span className={styles.availabilityNone}>已售罄</span>
-                      )}
-                    </div>
-                  )}
                 </div>
                 
                 <Button 
                   className={styles.selectButton}
                   onClick={() => onRoomSelect(room.id)}
-                  disabled={room.availability.isSoldOut}
                 >
-                  {room.availability.isSoldOut ? '已售罄' : '选择'}
+                  选择
                 </Button>
               </div>
             </div>

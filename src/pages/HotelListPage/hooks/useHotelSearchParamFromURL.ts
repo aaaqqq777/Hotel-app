@@ -2,55 +2,42 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { HotelSearchParams } from '../../../types/hotel';
 
+function parse(searchParams: URLSearchParams): HotelSearchParams {
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const fmt = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const score = searchParams.get('score') ? parseFloat(searchParams.get('score')!) : undefined;
+  
+  return {
+    city:         searchParams.get('city') || '上海',
+    keyword:      searchParams.get('keyword') || undefined,
+    checkInDate:  searchParams.get('checkInDate') || fmt(today),
+    checkOutDate: searchParams.get('checkOutDate') || fmt(tomorrow),
+    minPrice:     searchParams.get('minPrice')   ? Number(searchParams.get('minPrice'))   : undefined,
+    maxPrice:     searchParams.get('maxPrice')   ? Number(searchParams.get('maxPrice'))   : undefined,
+    starLevels:   searchParams.get('starLevels') ? Number(searchParams.get('starLevels')) : undefined,
+    brands:       searchParams.get('brands')     ? searchParams.get('brands')!.split(',') : undefined,
+    roomCount:    searchParams.get('roomCount')  ? Number(searchParams.get('roomCount'))  : 1,
+    guestCount:   searchParams.get('guestCount') ? Number(searchParams.get('guestCount')) : 1,
+    sortBy:       (searchParams.get('sortBy') as HotelSearchParams['sortBy']) || undefined,
+    sortOrder:    (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined,
+    page:         searchParams.get('page')     ? Number(searchParams.get('page'))     : 1,
+    pageSize:     searchParams.get('pageSize') ? Number(searchParams.get('pageSize')) : 10,
+    lat:          searchParams.get('lat') ? Number(searchParams.get('lat')) : undefined,
+    lng:          searchParams.get('lng') ? Number(searchParams.get('lng')) : undefined,
+    score,
+  };
+}
+
 export function useHotelSearchParamFromURL() {
   const [searchParams] = useSearchParams();
-  
-  // 从 URL 参数解析酒店搜索参数
-  const parseSearchParams = (): HotelSearchParams => {
-    const city = searchParams.get('city') || '上海';
-    const keyword = searchParams.get('keyword') || undefined;
-    const checkInDate = searchParams.get('checkInDate') || undefined;
-    const checkOutDate = searchParams.get('checkOutDate') || undefined;
-    const minPrice = searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!) : undefined;
-    const maxPrice = searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : undefined;
-    const starLevelsStr = searchParams.get('starLevels');
-    const starLevels = starLevelsStr ? Number(starLevelsStr) : undefined;
-    const brandsStr = searchParams.get('brands');
-    const brands = brandsStr ? brandsStr.split(',') : undefined;
-
-    const roomCount = searchParams.get('roomCount') ? parseInt(searchParams.get('roomCount')!) : 1;
-    const guestCount = searchParams.get('guestCount') ? parseInt(searchParams.get('guestCount')!) : 1;
-    const sortBy = searchParams.get('sortBy') as 'price' | 'distance' | 'rating' | 'star' | null || undefined;
-    const sortOrder = searchParams.get('sortOrder') as 'asc' | 'desc' | null || undefined;
-    const page = searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1;
-    const pageSize = searchParams.get('pageSize') ? parseInt(searchParams.get('pageSize')!) : 10;
-    const lat = searchParams.get('lat') ? parseFloat(searchParams.get('lat')!) : undefined;
-    const lng = searchParams.get('lng') ? parseFloat(searchParams.get('lng')!) : undefined;
-    
-    return {
-      city,
-      keyword,
-      checkInDate: checkInDate || '',
-      checkOutDate: checkOutDate || '',
-      minPrice,
-      maxPrice,
-      starLevels,
-      brands,
-      roomCount,
-      guestCount,
-      sortBy,
-      sortOrder,
-      page,
-      pageSize,
-      lat,
-      lng,
-    };
-  };
-
-  const [params, setParams] = useState<HotelSearchParams>(() => parseSearchParams());
+  const [params, setParams] = useState<HotelSearchParams>(() => parse(searchParams));
 
   useEffect(() => {
-    setParams(parseSearchParams());
+    setParams(parse(searchParams));
   }, [searchParams]);
 
   return params;

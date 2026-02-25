@@ -125,15 +125,15 @@ describe('列表页组件测试', () => {
     
     // 等待筛选选项出现
     await waitFor(() => {
-      expect(screen.getByText('200以下')).toBeInTheDocument();
+      expect(screen.getByText('300以下')).toBeInTheDocument();
     });
     
     // 模拟选择价格范围
-    const priceOption = screen.getByText('200-500');
+    const priceOption = screen.getByText('300-500');
     fireEvent.click(priceOption);
     
     // 检查状态是否更新
-    expect(screen.getByText('200-500')).toBeInTheDocument();
+    expect(screen.getByText('300-500')).toBeInTheDocument();
   });
 
   it('应正确处理排序功能', async () => {
