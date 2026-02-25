@@ -3,7 +3,7 @@ import Header from './components/Header/Header';
 import ImageSection from './components/ImageSection/ImageSection';
 import HotelDetails from './components/HotelDetails/HotelDetails';
 import DateSelection from './components/DateSelection/DateSelection';
-import ServiceTags from './components/ServiceTags/ServiceTags';
+// import ServiceTags from './components/ServiceTags/ServiceTags';
 import RoomList from './components/RoomList/RoomList';
 import BottomBar from './components/BottomBar/BottomBar';
 import { useDetailPage } from './useDetailPage';
@@ -12,14 +12,14 @@ function DetailPage() {
   const {
     currentHotelDetail,
     hotelRoomTypes,
-    serviceTags,
+    // serviceTags,
     minPrice,
     checkInDate,
     checkOutDate,
     showBottomBar,
     roomListRef,
     handleRoomSelect,
-    handleServiceTagSelect,
+    // handleServiceTagSelect,
     handleViewRooms,
     handleContactHotel,
   } = useDetailPage();
@@ -29,13 +29,14 @@ function DetailPage() {
       {/* 顶部导航栏 */}
       <Header hotelName={currentHotelDetail.name} />
 
-      {/* 图片展示 */}
-      <ImageSection
-        images={currentHotelDetail.images || []}
-        videoUrl={currentHotelDetail.videoUrl}
-      />
-
+      {/* 所有内容统一在 content 内，共享左右边距 */}
       <div className={styles.content}>
+        {/* 图片轮播 */}
+        <ImageSection
+          images={currentHotelDetail.images || []}
+          videoUrl={currentHotelDetail.videoUrl}
+        />
+
         {/* 酒店详情 */}
         <HotelDetails
           hotelName={currentHotelDetail.name}
@@ -59,7 +60,7 @@ function DetailPage() {
         </div>
       </div>
 
-      {/* 底部导航栏 */}
+      {/* 底部栏 */}
       <BottomBar
         minPrice={minPrice}
         onViewRooms={handleViewRooms}

@@ -25,7 +25,6 @@ export default function HotelDetails({
   const hotelType = '舒适型';
   const openingDate = '2024年10月开业';
 
-  // 根据评分计算等级
   const getRatingLevel = (r: number | undefined) => {
     if (!r || r === 0) return '暂无评分';
     if (r >= 4.5) return '超棒';
@@ -34,17 +33,14 @@ export default function HotelDetails({
     return '尚可';
   };
   const ratingLevel = getRatingLevel(rating);
-
   const [reviewPopupVisible, setReviewPopupVisible] = useState(false);
 
-  // 星级渲染
-  const renderStars = (level: number) => {
-    return '★'.repeat(Math.min(level, 5)) + '☆'.repeat(Math.max(5 - level, 0));
-  };
+  const renderStars = (level: number) =>
+    '★'.repeat(Math.min(level, 5)) + '☆'.repeat(Math.max(5 - level, 0));
 
   return (
     <div className={styles.container}>
-      {/* ── 酒店名称 + 星级 ──────────────────── */}
+      {/* 酒店名称 + 星级 */}
       <div className={styles.header}>
         <div className={styles.nameRow}>
           <h2 className={styles.hotelName}>{hotelName}</h2>
@@ -59,7 +55,7 @@ export default function HotelDetails({
         </div>
       </div>
 
-      {/* ── 设施标签横滑 ────────────────────── */}
+      {/* 设施标签横滑 */}
       {tags && tags.length > 0 && (
         <div className={styles.facilityScroll}>
           {tags.map((tag, index) => (
@@ -75,30 +71,23 @@ export default function HotelDetails({
         </div>
       )}
 
-      {/* ── 评分 + 位置 左右并排 ─────────────── */}
+      {/* 评分 + 位置 */}
       <div className={styles.infoRow}>
-        {/* 左：评分 */}
-        <div
-          className={styles.ratingCard}
-          onClick={() => setReviewPopupVisible(true)}
-        >
+        <div className={styles.ratingCard} onClick={() => setReviewPopupVisible(true)}>
           <div className={styles.ratingTop}>
-            <span className={styles.ratingValue}>{rating || 0}</span>
+            <span className={styles.ratingValue}>{rating || '0.0'}</span>
             <span className={styles.ratingLevel}>{ratingLevel}</span>
           </div>
-          <div className={styles.ratingDesc}>干净卫生，安静...</div>
-          <div className={styles.reviewCount}>{reviewCount}条评价 &gt;</div>
+          <div className={styles.ratingMeta}>{reviewCount}条 &gt;</div>
+          <div className={styles.ratingDesc}>"干净卫生，安静舒适"</div>
         </div>
 
-        {/* 右：位置 */}
         <div className={styles.locationCard}>
-          <div className={styles.distanceRow}>
-            <span className={styles.distanceText}>距上海新国际博览中心B</span>
+          <div className={styles.locationRow}>
+            <span className={styles.locationLabel}>距上海新国际博览中心B</span>
           </div>
-          <div className={styles.distanceRow}>
-            <span className={styles.distanceValue}>
-              驾车{distance || '—'}，约...
-            </span>
+          <div className={styles.locationRow}>
+            <span className={styles.locationMeta}>驾车{distance || '—'}，约...</span>
           </div>
           <div className={styles.addressRow}>
             <span className={styles.addressText}>{address}</span>
@@ -111,32 +100,25 @@ export default function HotelDetails({
         </div>
       </div>
 
-      {/* ── 打车入口 ────────────────────────── */}
+      {/* 打车 */}
       <div className={styles.taxiBar}>
         <span className={styles.taxiIcon}>🚖</span>
         <span className={styles.taxiText}>打车</span>
       </div>
 
-      {/* ── 评价弹窗 ────────────────────────── */}
+      {/* 评价弹窗 */}
       <Popup
         visible={reviewPopupVisible}
         onMaskClick={() => setReviewPopupVisible(false)}
         position="bottom"
-        bodyStyle={{
-          borderTopLeftRadius: '16px',
-          borderTopRightRadius: '16px',
-        }}
+        bodyStyle={{ borderTopLeftRadius: '16px', borderTopRightRadius: '16px' }}
       >
         <div style={{ padding: '16px' }}>
-          <h3 style={{ textAlign: 'center', margin: '0 0 16px 0' }}>
-            评价详情
-          </h3>
+          <h3 style={{ textAlign: 'center', margin: '0 0 16px 0' }}>评价详情</h3>
           <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
             <div style={{ marginBottom: '16px' }}>
               <h4>总体评分</h4>
-              <p>
-                {rating} ({ratingLevel})
-              </p>
+              <p>{rating} ({ratingLevel})</p>
             </div>
             <div style={{ marginBottom: '16px' }}>
               <h4>评价数量</h4>
@@ -148,9 +130,7 @@ export default function HotelDetails({
             </div>
             <div style={{ marginBottom: '16px' }}>
               <h4>用户评价</h4>
-              <p>
-                酒店环境很好，服务态度也很棒，房间干净整洁，交通便利，下次还会再来。
-              </p>
+              <p>酒店环境很好，服务态度也很棒，房间干净整洁，交通便利，下次还会再来。</p>
             </div>
           </div>
         </div>

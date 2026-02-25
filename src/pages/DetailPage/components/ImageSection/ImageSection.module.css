@@ -1,7 +1,9 @@
 .container {
   position: relative;
-  height: 300px;
-  margin-top: 68px;
+  height: 240px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #ecedef 0%, #eaecef 100%);
 }
 
 .carousel {
@@ -16,7 +18,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  transition: transform 0.3s ease;
+  transition: transform 0.35s ease;
 }
 
 .image {
@@ -25,105 +27,109 @@
   object-fit: cover;
 }
 
-.playButton {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
+/* ── 无图占位 ──────────────────────────────── */
+.placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.controls {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  transform: translateY(-50%);
-  display: flex;
-  justify-content: space-between;
-  padding: 0 16px;
-}
-
-.controlButton {
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pagination {
-  position: absolute;
-  bottom: 16px;
-  left: 0;
-  right: 0;
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
 
-.paginationDot {
-  width: 8px;
-  height: 8px;
+.placeholderIcon {
+  font-size: 40px;
+  opacity: 0.6;
+}
+
+.placeholderText {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── 播放按钮 ──────────────────────────────── */
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #E8D9BF;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+/* ── 分页点 — 金色高亮 ─────────────────────── */
+.pagination {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.paginationDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
   transition: all 0.3s ease;
 }
 
 .paginationDot.active {
-  width: 20px;
-  border-radius: 4px;
-  background-color: white;
+  width: 18px;
+  border-radius: 3px;
+  background: #C8A265;
 }
 
+/* ── 图片计数角标 ──────────────────────────── */
 .imageCount {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 12px;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
 }
 
+/* ── 响应式 ────────────────────────────────── */
 @media (max-width: 480px) {
   .container {
-    height: 250px;
-    margin-top: 60px;
+    height: 220px;
   }
-  
+
   .playButton {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
   }
-  
-  .controlButton {
-    width: 36px;
-    height: 36px;
-  }
-  
+
   .pagination {
-    bottom: 12px;
+    bottom: 10px;
   }
-  
+
   .imageCount {
-    bottom: 12px;
-    right: 12px;
+    bottom: 10px;
+    right: 10px;
   }
 }
 
 @media (min-width: 768px) {
   .container {
-    height: 400px;
+    height: 360px;
   }
 }

@@ -55,6 +55,11 @@ export function useDetailPage() {
     error: roomsError,
   } = useHotelRoomTypes(hotelId);
 
+  // ───────── 进入页面时滚动到顶部 ─────────
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // ───────── 调试日志 ─────────
   useEffect(() => {
     console.log(`[DetailPage] hotelId: ${hotelId}`);

@@ -13,22 +13,16 @@ export default function BottomBar({ minPrice, onViewRooms, onContactHotel, visib
   return (
     <div className={`${styles.container} ${visible ? styles.visible : styles.hidden}`}>
       <div className={styles.left}>
-        <Button 
-          className={styles.contactButton}
-          onClick={onContactHotel}
-        >
+        <Button className={styles.contactButton} onClick={onContactHotel}>
           <MessageOutline />
           <span>在线联系</span>
         </Button>
-        <Button 
-          className={styles.phoneButton}
-          onClick={onContactHotel}
-        >
+        <Button className={styles.phoneButton} onClick={onContactHotel}>
           <PhonebookOutline />
           <span>电话</span>
         </Button>
       </div>
-      
+
       <div className={styles.right}>
         <div className={styles.priceInfo}>
           <div className={styles.price}>
@@ -37,10 +31,7 @@ export default function BottomBar({ minPrice, onViewRooms, onContactHotel, visib
             <span className={styles.priceUnit}>起</span>
           </div>
         </div>
-        <Button 
-          className={styles.viewButton}
-          onClick={onViewRooms}
-        >
+        <Button className={styles.viewButton} onClick={onViewRooms}>
           查看房型
         </Button>
       </div>

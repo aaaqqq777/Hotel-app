@@ -6,26 +6,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background-color: white;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 16px;
+  background: #fff;
+  box-shadow: 0 -1px 12px rgba(0, 0, 0, 0.08);
   z-index: 1000;
-  height: 70px;
+  height: 64px;
   box-sizing: border-box;
   transition: transform 0.3s ease-in-out;
 }
 
-.visible {
-  transform: translateY(0);
-}
+.visible { transform: translateY(0); }
+.hidden  { transform: translateY(100%); }
 
-.hidden {
-  transform: translateY(100%);
-}
-
+/* ── 左侧按钮 ─────────────────────────────── */
 .left {
   display: flex;
-  gap: 16px;
+  gap: 10px;
   flex: 0 0 auto;
 }
 
@@ -34,155 +30,102 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 16px;
-  border: 1px solid #f5f5f5;
+  gap: 2px;
+  padding: 6px 14px;
+  border: 1px solid #eee;
   border-radius: 8px;
-  background-color: white;
+  background: #fff;
   color: #666;
-  font-size: 12px;
-  min-width: 80px;
+  font-size: 11px;
+  min-width: 60px;
 }
 
 .contactButton svg,
 .phoneButton svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
+  color: #999;
 }
 
+/* ── 右侧价格 + CTA ───────────────────────── */
 .right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex: 1;
-  margin-left: 16px;
+  justify-content: flex-end;
   min-width: 0;
 }
 
 .priceInfo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 1;
   min-width: 0;
-}
-
-.priceLabel {
-  font-size: 12px;
-  color: #999;
 }
 
 .price {
   display: flex;
   align-items: baseline;
-  gap: 4px;
-  min-width: 0;
+  gap: 2px;
 }
 
 .priceSymbol {
-  font-size: 14px;
-  color: #ff4d4f;
-  font-weight: 500;
-  flex-shrink: 0;
+  font-size: 13px;
+  color: #C8A265;
+  font-weight: 600;
 }
 
 .priceValue {
-  font-size: 20px;
-  color: #ff4d4f;
-  font-weight: 600;
-  flex-shrink: 0;
+  font-size: 22px;
+  color: #C8A265;
+  font-weight: 700;
 }
 
 .priceUnit {
-  font-size: 12px;
+  font-size: 11px;
   color: #999;
-  flex-shrink: 0;
 }
 
+/* CTA — 暖金色渐变，与首页"查询"按钮一致 */
 .viewButton {
-  padding: 10px 24px;
-  font-size: 14px;
-  color: white;
-  background-color: #1677ff;
-  border-radius: 20px;
-  font-weight: 500;
+  padding: 10px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #D4AF61, #B8943D);
+  border: none;
+  border-radius: 22px;
   flex-shrink: 0;
   white-space: nowrap;
+  letter-spacing: 2px;
 }
 
+.viewButton:active {
+  background: linear-gradient(135deg, #C8A255, #A8842D);
+}
+
+/* ── 响应式 ────────────────────────────────── */
 @media (max-width: 480px) {
-  .container {
-    padding: 10px 12px;
-    height: 65px;
-  }
-  
-  .left {
-    gap: 12px;
-  }
-  
+  .container { padding: 8px 12px; height: 60px; }
+  .left { gap: 8px; }
   .contactButton,
   .phoneButton {
-    padding: 6px 12px;
-    font-size: 11px;
-    min-width: 70px;
+    padding: 4px 10px;
+    font-size: 10px;
+    min-width: 52px;
   }
-  
   .contactButton svg,
-  .phoneButton svg {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .right {
-    gap: 12px;
-    margin-left: 12px;
-  }
-  
-  .priceValue {
-    font-size: 18px;
-  }
-  
-  .viewButton {
-    padding: 8px 18px;
-    font-size: 13px;
-  }
+  .phoneButton svg { width: 16px; height: 16px; }
+  .right { gap: 10px; }
+  .priceValue { font-size: 20px; }
+  .viewButton { padding: 8px 22px; font-size: 14px; }
 }
 
 @media (max-width: 360px) {
-  .container {
-    height: 60px;
-    padding: 8px 10px;
-  }
-  
-  .left {
-    gap: 8px;
-  }
-  
+  .container { height: 56px; padding: 6px 10px; }
   .contactButton,
-  .phoneButton {
-    padding: 4px 8px;
-    font-size: 10px;
-    min-width: 60px;
-  }
-  
-  .contactButton svg,
-  .phoneButton svg {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .right {
-    gap: 8px;
-    margin-left: 8px;
-  }
-  
-  .priceValue {
-    font-size: 16px;
-  }
-  
-  .viewButton {
-    padding: 6px 16px;
-    font-size: 12px;
-  }
+  .phoneButton { padding: 3px 8px; min-width: 48px; }
+  .priceValue { font-size: 18px; }
+  .viewButton { padding: 6px 18px; font-size: 13px; }
 }

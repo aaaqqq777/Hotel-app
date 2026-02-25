@@ -1,18 +1,16 @@
 .container {
-  background-color: #fff;
+  background: #fff;
   margin-top: 8px;
   border-radius: 8px;
   overflow: hidden;
-  min-height: 80px; 
-  align-items: center;
 }
 
-/* ── 三列日期区 ────────────────────────────── */
+/* ── 三列日期 ──────────────────────────────── */
 .dateSelector {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
+  padding: 28px 20px;
   cursor: pointer;
 }
 
@@ -21,29 +19,35 @@
   text-align: center;
 }
 
+.dateHint {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 4px;
+}
+
 .dateMain {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 6px;
-  margin-top: 12px
 }
 
 .dateDay {
-  font-size: 20 px;
+  font-size: 24px;
   font-weight: 700;
-  color: #333;
+  color: #222;
 }
 
 .dateLabel {
-  font-size: 20px;
+  font-size: 13px;
   color: #999;
 }
 
-/* ── 中间住几晚 ────────────────────────────── */
+/* ── 住几晚 ────────────────────────────────── */
 .nightsBlock {
   flex-shrink: 0;
-  padding: 0 16px;
+  padding: 0 20px;
   position: relative;
 }
 
@@ -54,21 +58,17 @@
   top: 50%;
   transform: translateY(-50%);
   width: 1px;
-  height: 20px;
-  background: #eee;
+  height: 28px;
+  background: #E8D9BF;
 }
 
-.nightsBlock::before {
-  left: 0;
-}
-
-.nightsBlock::after {
-  right: 0;
-}
+.nightsBlock::before { left: 0; }
+.nightsBlock::after { right: 0; }
 
 .nightsText {
-  font-size: 20x;
-  color: #999;
+  font-size: 15px;
+  color: #C8A265;
+  font-weight: 600;
 }
 
 /* ── 提示条 ────────────────────────────────── */
@@ -77,7 +77,7 @@
   align-items: center;
   gap: 4px;
   padding: 8px 16px;
-  background: #FFF8E6;
+  background: #FAF4EB;
 }
 
 .tipIcon {
@@ -87,33 +87,16 @@
 
 .tipText {
   font-size: 12px;
-  color: #FF8F1F;
+  color: #C8A265;
   line-height: 1.4;
 }
 
 /* ── 响应式 ────────────────────────────────── */
 @media (max-width: 480px) {
-  .dateSelector {
-    padding: 12px;
-  }
-
-  .dateDay {
-    font-size: 16px;
-  }
-
-  .dateLabel {
-    font-size: 12px;
-  }
-
-  .nightsBlock {
-    padding: 0 10px;
-  }
-
-  .tipBar {
-    padding: 6px 12px;
-  }
-
-  .tipText {
-    font-size: 11px;
-  }
+  .dateSelector { padding: 14px 16px; }
+  .dateDay { font-size: 20px; }
+  .dateLabel { font-size: 12px; }
+  .nightsBlock { padding: 0 14px; }
+  .tipBar { padding: 6px 12px; }
+  .tipText { font-size: 11px; }
 }
