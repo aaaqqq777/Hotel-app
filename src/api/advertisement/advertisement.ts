@@ -1,6 +1,6 @@
 
-import type { BannerData } from '../../data/advertisement/advertisement'
 import { MOCK_BANNERS } from '../../data/advertisement/advertisement'
+import type { BannerData } from '../../types/hotel'
 
 // 获取广告列表
 export async function fetchBannerList(): Promise<BannerData[]> {

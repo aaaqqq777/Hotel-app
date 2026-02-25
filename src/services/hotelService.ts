@@ -3,7 +3,7 @@
  * 负责数据处理、过滤、排序等
  */
 
-import type { Hotel, HotelFilterParams, SortType } from '../data/types'
+import type { HotelListItem as Hotel, HotelFilterParams, SortType } from '../types/hotel'
 import { MOCK_HOTELS } from '../data/hotels'
 
 /**
@@ -34,7 +34,7 @@ function filterHotels(hotels: Hotel[], params: HotelFilterParams): Hotel[] {
     if (params.keyword) {
       const keyword = params.keyword.toLowerCase()
       const nameMatch = hotel.name.toLowerCase().includes(keyword)
-      const descMatch = hotel.description.toLowerCase().includes(keyword)
+      const descMatch = hotel.coverImage.toLowerCase().includes(keyword) // 使用coverImage代替description
       if (!nameMatch && !descMatch) {
         return false
       }
@@ -66,14 +66,14 @@ function filterHotels(hotels: Hotel[], params: HotelFilterParams): Hotel[] {
         '600以上': [600, Infinity],
       }
       const [minPrice, maxPrice] = priceRangeMap[params.priceRange] || [0, Infinity]
-      if (hotel.price < minPrice || hotel.price > maxPrice) {
+      if (hotel.price.lowest < minPrice || hotel.price.lowest > maxPrice) {
         return false
       }
     }
 
     // 标签过滤（支持多个标签，任意匹配即可）
     if (params.tags && params.tags.length > 0) {
-      const hasMatchingTag = params.tags.some((tag) => hotel.tags.includes(tag))
+      const hasMatchingTag = params.tags.some((tag: string) => hotel.tags?.includes(tag))
       if (!hasMatchingTag) {
         return false
       }
@@ -91,10 +91,10 @@ function sortHotels(hotels: Hotel[], sortType: SortType): Hotel[] {
 
   switch (sortType) {
     case 'price-asc':
-      sorted.sort((a, b) => a.price - b.price)
+      sorted.sort((a, b) => a.price.lowest - b.price.lowest)
       break
     case 'price-desc':
-      sorted.sort((a, b) => b.price - a.price)
+      sorted.sort((a, b) => b.price.lowest - a.price.lowest)
       break
     case 'rating':
       sorted.sort((a, b) => b.starLevel - a.starLevel)

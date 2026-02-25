@@ -1,202 +1,276 @@
-/**
- * 预存的酒店数据
- * 便于后期从后端 API 替换
- */
+import type { HotelListItem, HotelDetail, RoomType } from "../types/hotel";
 
-import type { Hotel } from './types'
-
-export const MOCK_HOTELS: Hotel[] = [
+// 模拟酒店列表数据
+export const MOCK_HOTELS: HotelListItem[] = [
   {
-    id: '1',
-    name: '海景豪华大酒店',
-    location: '海滨路1号',
-    price: 1288,
+    id: "1",
+    name: "上海外滩华尔道夫酒店",
+    coverImage: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
     starLevel: 5,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+1',
-    tags: ['luxury', 'parking', 'pool', 'breakfast'],
-    description: '五星级豪华酒店，拥有800间客房，靠近海滨，提供一流的服务',
     rating: 4.8,
-    reviewCount: 2560,
-    hotelType: '豪华型',
-    locationInfo: '海滨地区 | 近海景广场',
-    hasVideo: true,
-    discountPrice: 1095,
-    discountAmount: 193,
-    discountTag: '立减券'
+    reviewCount: 1245,
+    price: {
+      lowest: 1288,
+      original: 1588,
+      discount: 0.81,
+    },
+    location: {
+      city: "上海",
+      address: "黄浦区中山东一路2号",
+      lat: 31.233999,
+      lng: 121.491203,
+      distance: 1200
+    },
+    roomAvailability: {
+      hasAvailableRoom: true,
+      lowestRoomPrice: 1288
+    },
+    tags: ["近外滩", "江景房", "含早餐"]
   },
   {
-    id: '2',
-    name: '城市商务酒店',
-    location: '中心商务区',
-    price: 450,
-    starLevel: 4,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+2',
-    tags: ['wifi', 'breakfast'],
-    description: '四星级商务酒店，位于中心商务区，交通便利',
-    rating: 4.3,
-    reviewCount: 1280,
-    hotelType: '商务型',
-    locationInfo: '商务区 | 近地铁站',
-    hasVideo: false,
-    discountPrice: 383,
-    discountAmount: 67,
-    discountTag: '早鸟价'
-  },
-  {
-    id: '3',
-    name: '家庭亲子酒店',
-    location: '儿童乐园附近',
-    price: 580,
-    starLevel: 4,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+3',
-    tags: ['family', 'pool', 'parking'],
-    description: '专为家庭设计的亲子酒店，有儿童娱乐设施',
-    rating: 4.6,
-    reviewCount: 890,
-    hotelType: '亲子型',
-    locationInfo: '亲子区 | 近儿童乐园',
-    hasVideo: true,
-    discountPrice: 493,
-    discountAmount: 87,
-    discountTag: '家庭套餐'
-  },
-  {
-    id: '4',
-    name: '经济快捷酒店',
-    location: '地铁站附近',
-    price: 180,
-    starLevel: 3,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+4',
-    tags: ['wifi'],
-    description: '经济实惠的快捷酒店，距离地铁站步行5分钟',
-    rating: 4.0,
-    reviewCount: 3200,
-    hotelType: '经济型',
-    locationInfo: '地铁口 | 步行5分钟',
-    hasVideo: false,
-    discountPrice: 153,
-    discountAmount: 27,
-    discountTag: '新客专享'
-  },
-  {
-    id: '5',
-    name: '山景温泉酒店',
-    location: '山区度假区',
-    price: 920,
-    starLevel: 4,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+5',
-    tags: ['luxury', 'pool', 'breakfast'],
-    description: '天然温泉酒店，享受山景和温泉体验',
+    id: "2",
+    name: "上海浦东丽思卡尔顿酒店",
+    coverImage: "https://images.unsplash.com/photo-1584218896971-bf6d30b3fmpl?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1584218896971-bf6d30b3fmpl?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1590490360182-c33d2ef20d18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    starLevel: 5,
     rating: 4.7,
-    reviewCount: 1560,
-    hotelType: '度假型',
-    locationInfo: '山区 | 近温泉景区',
-    hasVideo: true,
-    discountPrice: 782,
-    discountAmount: 138,
-    discountTag: '温泉套餐'
+    reviewCount: 987,
+    price: {
+      lowest: 2158,
+      original: 2588,
+      discount: 0.83,
+    },
+    location: {
+      city: "上海",
+      address: "陆家嘴世纪大道2001号",
+      lat: 31.236277,
+      lng: 121.505742,
+      distance: 800
+    },
+    roomAvailability: {
+      hasAvailableRoom: true,
+      lowestRoomPrice: 2158
+    },
+    tags: ["陆家嘴", "高空景观", "行政酒廊"]
   },
   {
-    id: '6',
-    name: '古城文化酒店',
-    location: '古城中心',
-    price: 680,
-    starLevel: 4,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+6',
-    tags: ['wifi', 'breakfast', 'parking'],
-    description: '位于古城中心的文化主题酒店，体验历史韵味',
-    rating: 4.4,
-    reviewCount: 980,
-    hotelType: '文化型',
-    locationInfo: '古城内 | 近景点',
-    hasVideo: false,
-    discountPrice: 578,
-    discountAmount: 102,
-    discountTag: '文化体验'
-  },
-  {
-    id: '7',
-    name: '滨海度假酒店',
-    location: '海滨度假区',
-    price: 1580,
+    id: "3",
+    name: "上海静安香格里拉大酒店",
+    coverImage: "https://images.unsplash.com/photo-1566073771259-6a8506099456?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099456?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1584284642094-413534496f75?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
     starLevel: 5,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+7',
-    tags: ['luxury', 'pool', 'beach', 'breakfast'],
-    description: '豪华滨海度假酒店，私人沙滩，无敌海景',
+    rating: 4.6,
+    reviewCount: 1562,
+    price: {
+      lowest: 1488,
+      original: 1788,
+      discount: 0.83
+    },
+    location: {
+      city: "上海",
+      address: "延安中路1218号",
+      lat: 31.231705,
+      lng: 121.454211,
+      distance: 3500
+    },
+    roomAvailability: {
+      hasAvailableRoom: true,
+      lowestRoomPrice: 1488
+    },
+    tags: ["静安区", "健身中心", "室内泳池"]
+  },
+  {
+    id: "4",
+    name: "上海新天地朗廷酒店",
+    coverImage: "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1618826237711-79d840e35cbc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    starLevel: 5,
+    rating: 4.5,
+    reviewCount: 876,
+    price: {
+      lowest: 1688,
+      original: 1988,
+      discount: 0.85
+    },
+    location: {
+      city: "上海",
+      address: "黄陂南路380弄1号",
+      lat: 31.228719,
+      lng: 121.476937,
+      distance: 2200
+    },
+    roomAvailability: {
+      hasAvailableRoom: true,
+      lowestRoomPrice: 1688
+    },
+    tags: ["新天地", "英式风情", "下午茶"]
+  },
+  {
+    id: "5",
+    name: "上海素凯泰酒店",
+    coverImage: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    starLevel: 5,
+    rating: 4.7,
+    reviewCount: 756,
+    price: {
+      lowest: 1888,
+      original: 2288,
+      discount: 0.83
+    },
+    location: {
+      city: "上海",
+      address: "威海路380号",
+      lat: 31.234182,
+      lng: 121.461541,
+      distance: 1800
+    },
+    roomAvailability: {
+      hasAvailableRoom: false,
+      lowestRoomPrice: 1888
+    },
+    tags: ["淮海路", "泰式奢华", "屋顶酒吧"]
+  },
+  {
+    id: "6",
+    name: "上海建业里嘉佩乐酒店",
+    coverImage: "https://images.unsplash.com/photo-1590846406698-4d8d6440ae77?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1590846406698-4d8d6440ae77?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1584284642094-413534496f76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    starLevel: 5,
     rating: 4.9,
-    reviewCount: 3200,
-    hotelType: '豪华型',
-    locationInfo: '海滨度假区 | 私人沙滩',
-    hasVideo: true,
-    discountPrice: 1343,
-    discountAmount: 237,
-    discountTag: '海景房'
-  },
-  {
-    id: '8',
-    name: '城市精品酒店',
-    location: '市中心',
-    price: 520,
-    starLevel: 3,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+8',
-    tags: ['wifi', 'breakfast'],
-    description: '位于市中心的精品酒店，设计时尚，交通便利',
-    rating: 4.2,
-    reviewCount: 760,
-    hotelType: '精品型',
-    locationInfo: '市中心 | 近商圈',
-    hasVideo: false,
-    discountPrice: 442,
-    discountAmount: 78,
-    discountTag: '周末特惠'
-  },
-  {
-    id: '9',
-    name: '森林木屋酒店',
-    location: '森林保护区',
-    price: 880,
-    starLevel: 4,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+9',
-    tags: ['nature', 'pool', 'breakfast'],
-    description: '隐藏在森林中的木屋酒店，亲近自然，环境幽静',
-    rating: 4.8,
-    reviewCount: 1120,
-    hotelType: '度假型',
-    locationInfo: '森林区 | 近自然保护区',
-    hasVideo: true,
-    discountPrice: 748,
-    discountAmount: 132,
-    discountTag: '自然套餐'
-  },
-  {
-    id: '10',
-    name: '机场快捷酒店',
-    location: '机场附近',
-    price: 280,
-    starLevel: 2,
-    image: 'https://via.placeholder.com/300x200?text=Hotel+10',
-    tags: ['wifi', 'parking', 'airport'],
-    description: '机场附近的快捷酒店，免费接送机服务，经济实惠',
-    rating: 4.1,
-    reviewCount: 2100,
-    hotelType: '经济型',
-    locationInfo: '机场周边 | 免费接送',
-    hasVideo: false,
-    discountPrice: 238,
-    discountAmount: 42,
-    discountTag: '转机专享'
-  },
-]
+    reviewCount: 1423,
+    price: {
+      lowest: 2988,
+      original: 3588,
+      discount: 0.83
+    },
+    location: {
+      city: "上海",
+      address: "建国西路23号",
+      lat: 31.212234,
+      lng: 121.454098,
+      distance: 4200
+    },
+    roomAvailability: {
+      hasAvailableRoom: true,
+      lowestRoomPrice: 2988
+    },
+    tags: ["石库门建筑", "独栋别墅", "管家服务"]
+  }
+];
 
-export const QUICK_TAGS: Array<{ label: string; value: string }> = [
-  { label: '亲子酒店', value: 'family' },
-  { label: '豪华酒店', value: 'luxury' },
-  { label: '免费停车', value: 'parking' },
-  { label: 'WiFi免费', value: 'wifi' },
-  { label: '有早餐', value: 'breakfast' },
-  { label: '游泳池', value: 'pool' },
-  { label: '海滨度假', value: 'beach' },
-  { label: '文化主题', value: 'culture' },
-  { label: '机场附近', value: 'airport' },
-  { label: '亲近自然', value: 'nature' },
-]
+// 模拟酒店详情数据
+export const MOCK_HOTEL_DETAIL: HotelDetail = {
+  id: "1",
+  name: "上海外滩华尔道夫酒店",
+  starLevel: 5,
+  brand: "华尔道夫",
+  images: [
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  ],
+  videoUrl: "https://example.com/hotel-video.mp4",
+  description: "上海外滩华尔道夫酒店坐落于上海外滩，拥有百年历史的地标建筑与现代奢华设施完美融合。酒店毗邻繁华的南京路步行街和外滩，地理位置优越，是探索上海这座迷人城市的理想下榻之所。",
+  location: {
+    address: "黄浦区中山东一路2号",
+    lat: 31.233999,
+    lng: 121.491203
+  },
+  contact: {
+    phone: "021-6322-9988"
+  },
+  checkInTime: "15:00",
+  checkOutTime: "12:00",
+  facilities: [],
+  rating: 4.8,
+  reviewCount: 1245
+};
+
+// 模拟房型数据
+export const MOCK_ROOM_TYPES: RoomType[] = [
+  {
+    id: "r1",
+    name: "豪华城景房",
+    area: 40,
+    image: "https://images.unsplash.com/photo-1618826237711-79d840e35cbc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    maxOccupancy: 2,
+    price: {
+      current: 1288,
+      original: 1588,
+      discount: 0.81
+    },
+    availability: {
+      remaining: 5,
+      isSoldOut: false
+    },
+    tags: ["免费WiFi", "迷你吧", "浴缸"]
+  },
+  {
+    id: "r2",
+    name: "行政江景房",
+    area: 50,
+    image: "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    maxOccupancy: 2,
+    price: {
+      current: 1888,
+      original: 2288,
+      discount: 0.82
+    },
+    availability: {
+      remaining: 3,
+      isSoldOut: false
+    },
+    tags: ["黄浦江景", "行政待遇", "独立起居室"]
+  },
+  {
+    id: "r3",
+    name: "华尔道夫套房",
+    area: 70,
+    image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    maxOccupancy: 3,
+    price: {
+      current: 3288,
+      original: 3988,
+      discount: 0.82
+    },
+    availability: {
+      remaining: 1,
+      isSoldOut: false
+    },
+    tags: ["独立卧室", "客厅", "私人管家"]
+  }
+];
+
+// 快速筛选标签
+export const QUICK_TAGS = [
+  { value: '近地铁', label: '近地铁' },
+  { value: '含早餐', label: '含早餐' },
+  { value: '免费停车', label: '免费停车' },
+  { value: '游泳池', label: '游泳池' },
+  { value: '健身房', label: '健身房' },
+  { value: '行政酒廊', label: '行政酒廊' },
+  { value: '江景房', label: '江景房' },
+  { value: '亲子酒店', label: '亲子酒店' }
+];

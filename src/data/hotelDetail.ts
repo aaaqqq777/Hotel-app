@@ -1,539 +1,271 @@
-/**
- * 酒店详情页模拟数据
- * 便于后期从后端 API 替换
- */
+import type { HotelDetail, RoomType } from "../types/hotel";
+import { MOCK_HOTEL_DETAIL, MOCK_ROOM_TYPES } from "./hotels";
 
-// 酒店图片
-export const MOCK_HOTEL_IMAGES = [
-  'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20with%20modern%20architecture%20at%20night&image_size=landscape_16_9',
-  'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20lobby%20with%20chandelier&image_size=landscape_16_9',
-  'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20room%20with%20king%20bed&image_size=landscape_16_9',
-  'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20bathroom%20with%20bathtub&image_size=landscape_16_9',
-];
-
-// 酒店设施
-export const MOCK_HOTEL_FACILITIES = [
-  { id: '1', icon: '🏊', name: '游泳池' },
-  { id: '2', icon: '🏋️', name: '健身房' },
-  { id: '3', icon: '🍽️', name: '餐厅' },
-  { id: '4', icon: '☕', name: '咖啡厅' },
-  { id: '5', icon: '🧹', name: '洗衣服务' },
-  { id: '6', icon: '📞', name: '叫醒服务' },
-  { id: '7', icon: '🅿️', name: '停车场' },
-  { id: '8', icon: '📶', name: '免费WiFi' },
-  { id: '9', icon: '🚪', name: '24小时前台' },
-  { id: '10', icon: '🧳', name: '行李寄存' },
-];
-
-// 酒店评价
-export const MOCK_HOTEL_REVIEWS = [
-  {
-    id: '1',
-    userName: '张先生',
-    date: '2026-02-18',
-    rating: 5,
-    content: '酒店环境非常好，服务态度也很棒，房间干净整洁，交通便利，下次还会再来。',
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20room%20interior%20clean%20modern&image_size=landscape_16_9',
-    ],
-  },
-  {
-    id: '2',
-    userName: '李女士',
-    date: '2026-02-17',
-    rating: 4,
-    content: '酒店位置不错，房间宽敞，设施齐全，就是早餐种类可以再丰富一些。',
-  },
-];
-
-// 房型类型
-export const MOCK_ROOM_TYPES = [
-  { id: '1', name: '豪华大床房', description: '1张1.8米大床，45㎡', price: 1088 },
-  { id: '2', name: '豪华双床房', description: '2张1.2米单人床，45㎡', price: 1088 },
-  { id: '3', name: '行政大床房', description: '1张1.8米大床，55㎡，行政礼遇', price: 1388 },
-];
-
-// 服务标签
-export const MOCK_SERVICES = [
-  { id: '1', name: '含早餐' },
-  { id: '2', name: '免费取消' },
-  { id: '3', name: '立即确认' },
-  { id: '4', name: '接送服务' },
-  { id: '5', name: '洗衣服务' },
-  { id: '6', name: '叫醒服务' },
-];
-
-// 搜索建议
-export const MOCK_SEARCH_SUGGESTIONS = ['上海', '北京', '广州', '深圳', '杭州', '成都'];
-
-// 酒店详情数据映射，用于根据酒店ID返回不同的详情数据
-export const MOCK_HOTEL_DETAILS: Record<string, any> = {
-  '1': {
-    id: '1',
-    name: '海景豪华大酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20with%20ocean%20view&image_size=landscape_16_9',
-    price: 1288,
-    rating: 4.9,
-    location: '海滨路1号',
+// 导出酒店详情数据
+export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {
+  "1": MOCK_HOTEL_DETAIL,
+  "2": {
+    id: "2",
+    name: "上海浦东丽思卡尔顿酒店",
     starLevel: 5,
+    brand: "丽思卡尔顿",
     images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20exterior%20with%20ocean%20view&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20lobby%20with%20ocean%20view&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20room%20with%20ocean%20view&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20hotel%20bathroom%20with%20ocean%20view&image_size=landscape_16_9',
+      "https://images.unsplash.com/photo-1584218896971-bf6d30b3fmpl?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1590490360182-c33d2ef20d18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     ],
-    reviewCount: 586,
-    distance: '距离市中心5公里',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20near%20beach&image_size=landscape_16_9',
-    address: '上海市浦东新区海滨路1号',
-    phone: '021-12345678',
-    description: '海景豪华大酒店是一家五星级豪华酒店，拥有800间客房，靠近海滨，提供一流的服务。酒店配备了豪华的客房、餐厅、健身房、游泳池等设施，是商务旅行和休闲度假的理想选择。',
-    facilities: [
-      { id: '1', icon: '🏊', name: '无边泳池' },
-      { id: '2', icon: '🏋️', name: '健身房' },
-      { id: '3', icon: '🍽️', name: '海景餐厅' },
-      { id: '4', icon: '☕', name: '咖啡厅' },
-      { id: '5', icon: '🧹', name: '洗衣服务' },
-      { id: '6', icon: '📞', name: '叫醒服务' },
-      { id: '7', icon: '🅿️', name: '免费停车' },
-      { id: '8', icon: '📶', name: '免费WiFi' },
-      { id: '9', icon: '🚪', name: '24小时前台' },
-      { id: '10', icon: '🧳', name: '行李寄存' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 1288,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2018年开业' },
-      { icon: '🌊', text: '一线海景' },
-      { icon: '🅿️', text: '免费停车' },
-      { icon: '🍽️', text: '海景餐厅' },
-      { icon: '🏊', text: '无边泳池' },
-    ]
-  },
-  '2': {
-    id: '2',
-    name: '城市商务酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20exterior%20in%20city&image_size=landscape_16_9',
-    price: 450,
-    rating: 4.3,
-    location: '中心商务区',
-    starLevel: 4,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20exterior%20in%20city&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20lobby&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20room&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20meeting%20room&image_size=landscape_16_9',
-    ],
-    reviewCount: 234,
-    distance: '距离市中心1公里',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20in%20business%20district&image_size=landscape_16_9',
-    address: '上海市静安区商务中心1号',
-    phone: '021-87654321',
-    description: '城市商务酒店是一家四星级商务酒店，位于中心商务区，交通便利。酒店配备了舒适的客房、会议室、餐厅等设施，是商务旅行的理想选择。',
-    facilities: [
-      { id: '1', icon: '🏋️', name: '健身房' },
-      { id: '2', icon: '🍽️', name: '餐厅' },
-      { id: '3', icon: '☕', name: '咖啡厅' },
-      { id: '4', icon: '📞', name: '叫醒服务' },
-      { id: '5', icon: '🅿️', name: '收费停车' },
-      { id: '6', icon: '📶', name: '免费WiFi' },
-      { id: '7', icon: '🚪', name: '24小时前台' },
-      { id: '8', icon: '🧳', name: '行李寄存' },
-      { id: '9', icon: '📋', name: '会议室' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 450,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2020年开业' },
-      { icon: '💼', text: '商务酒店' },
-      { icon: '📍', text: '中心位置' },
-      { icon: '📋', text: '会议室' },
-    ]
-  },
-  '3': {
-    id: '3',
-    name: '家庭亲子酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=family%20friendly%20hotel%20exterior&image_size=landscape_16_9',
-    price: 580,
-    rating: 4.6,
-    location: '儿童乐园附近',
-    starLevel: 4,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=family%20friendly%20hotel%20exterior&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=family%20friendly%20hotel%20lobby&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=family%20hotel%20room%20with%20kids%20area&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20kids%20playground&image_size=landscape_16_9',
-    ],
-    reviewCount: 312,
-    distance: '距离儿童乐园500米',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20near%20amusement%20park&image_size=landscape_16_9',
-    address: '上海市浦东新区乐园路1号',
-    phone: '021-11223344',
-    description: '家庭亲子酒店是一家专为家庭设计的亲子酒店，有儿童娱乐设施。酒店配备了温馨的家庭房、儿童乐园、餐厅等设施，是家庭出游的理想选择。',
-    facilities: [
-      { icon: '🏊', name: '儿童泳池' },
-      { icon: '🎠', name: '儿童乐园' },
-      { icon: '🍽️', name: '亲子餐厅' },
-      { icon: '☕', name: '咖啡厅' },
-      { icon: '🧹', name: '洗衣服务' },
-      { icon: '📞', name: '叫醒服务' },
-      { icon: '🅿️', name: '免费停车' },
-      { icon: '📶', name: '免费WiFi' },
-      { icon: '🚪', name: '24小时前台' },
-      { icon: '🧳', name: '行李寄存' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 580,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2019年开业' },
-      { icon: '👨‍👩‍👧‍👦', text: '亲子酒店' },
-      { icon: '🎠', text: '儿童乐园' },
-      { icon: '🅿️', text: '免费停车' },
-    ]
-  },
-  '4': {
-    id: '4',
-    name: '经济快捷酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20exterior&image_size=landscape_16_9',
-    price: 180,
-    rating: 4.0,
-    location: '地铁站附近',
-    starLevel: 3,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20exterior&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20lobby&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20room&image_size=landscape_16_9',
-    ],
-    reviewCount: 456,
-    distance: '距离地铁站步行5分钟',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20near%20subway%20station&image_size=landscape_16_9',
-    address: '上海市徐汇区地铁口1号',
-    phone: '021-22334455',
-    description: '经济快捷酒店是一家经济实惠的快捷酒店，距离地铁站步行5分钟。酒店配备了干净整洁的客房、24小时前台等设施，是经济型旅行的理想选择。',
-    facilities: [
-      { icon: '📶', name: '免费WiFi' },
-      { icon: '🚪', name: '24小时前台' },
-      { icon: '🧳', name: '行李寄存' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 180,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2021年开业' },
-      { icon: '💰', text: '经济实惠' },
-      { icon: '🚇', text: '近地铁站' },
-    ]
-  },
-  '5': {
-    id: '5',
-    name: '山景温泉酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotspring%20hotel%20exterior&image_size=landscape_16_9',
-    price: 920,
-    rating: 4.8,
-    location: '山区度假区',
-    starLevel: 4,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotspring%20hotel%20exterior&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotspring%20hotel%20lobby&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotspring%20hotel%20room&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotspring%20pool%20with%20mountain%20view&image_size=landscape_16_9',
-    ],
-    reviewCount: 289,
-    distance: '距离市中心30公里',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20in%20mountain%20area&image_size=landscape_16_9',
-    address: '上海市郊区山路1号',
-    phone: '021-33445566',
-    description: '山景温泉酒店是一家天然温泉酒店，享受山景和温泉体验。酒店配备了舒适的客房、温泉池、餐厅等设施，是休闲度假的理想选择。',
-    facilities: [
-      { icon: '♨️', name: '天然温泉' },
-      { icon: '🏊', name: '游泳池' },
-      { icon: '🏋️', name: '健身房' },
-      { icon: '🍽️', name: '餐厅' },
-      { icon: '☕', name: '咖啡厅' },
-      { icon: '🧹', name: '洗衣服务' },
-      { icon: '📞', name: '叫醒服务' },
-      { icon: '🅿️', name: '免费停车' },
-      { icon: '📶', name: '免费WiFi' },
-      { icon: '🚪', name: '24小时前台' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 920,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2017年开业' },
-      { icon: '⛰️', text: '山景酒店' },
-      { icon: '♨️', text: '天然温泉' },
-      { icon: '🅿️', text: '免费停车' },
-    ]
-  },
-  '6': {
-    id: '6',
-    name: '古城文化酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20city%20cultural%20hotel%20exterior&image_size=landscape_16_9',
-    price: 680,
-    rating: 4.7,
-    location: '古城中心',
-    starLevel: 4,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20city%20cultural%20hotel%20exterior&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20city%20cultural%20hotel%20lobby&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20city%20cultural%20hotel%20room&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20city%20cultural%20hotel%20courtyard&image_size=landscape_16_9',
-    ],
-    reviewCount: 345,
-    distance: '距离古城墙步行10分钟',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20in%20ancient%20city%20center&image_size=landscape_16_9',
-    address: '上海市嘉定区古城中心1号',
-    phone: '021-44556677',
-    description: '古城文化酒店是一家位于古城中心的文化主题酒店，体验历史韵味。酒店配备了古色古香的客房、茶室、餐厅等设施，是文化体验的理想选择。',
-    facilities: [
-      { id: '1', icon: '🍽️', name: '文化餐厅' },
-      { id: '2', icon: '☕', name: '茶室' },
-      { id: '3', icon: '🧹', name: '洗衣服务' },
-      { id: '4', icon: '📞', name: '叫醒服务' },
-      { id: '5', icon: '🅿️', name: '免费停车' },
-      { id: '6', icon: '📶', name: '免费WiFi' },
-      { id: '7', icon: '🚪', name: '24小时前台' },
-      { id: '8', icon: '🧳', name: '行李寄存' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 680,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2016年开业' },
-      { icon: '🏯', text: '古城中心' },
-      { icon: '🎎', text: '文化主题' },
-      { icon: '🅿️', text: '免费停车' },
-    ]
-  },
-  '7': {
-    id: '7',
-    name: '滨海度假酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20hotel%20exterior%20with%20palm%20trees&image_size=landscape_16_9',
-    price: 1580,
-    rating: 4.9,
-    location: '海滨度假区',
-    starLevel: 5,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20hotel%20exterior%20with%20palm%20trees&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20hotel%20lobby%20with%20ocean%20view&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20hotel%20room%20with%20private%20balcony&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=private%20beach%20with%20sun%20loungers&image_size=landscape_16_9',
-    ],
-    reviewCount: 678,
-    distance: '距离市中心15公里',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20on%20beach%20resort&image_size=landscape_16_9',
-    address: '上海市奉贤区海滨度假区1号',
-    phone: '021-55667788',
-    description: '滨海度假酒店是一家豪华滨海度假酒店，私人沙滩，无敌海景。酒店配备了豪华的客房、私人沙滩、游泳池、餐厅等设施，是度假休闲的理想选择。',
-    facilities: [
-      { id: '1', icon: '🏊', name: '无边泳池' },
-      { id: '2', icon: '🏖️', name: '私人沙滩' },
-      { id: '3', icon: '🏋️', name: '健身房' },
-      { id: '4', icon: '🍽️', name: '海景餐厅' },
-      { id: '5', icon: '☕', name: '咖啡厅' },
-      { id: '6', icon: '🧹', name: '洗衣服务' },
-      { id: '7', icon: '📞', name: '叫醒服务' },
-      { id: '8', icon: '🅿️', name: '免费停车' },
-      { id: '9', icon: '📶', name: '免费WiFi' },
-      { id: '10', icon: '🚪', name: '24小时前台' },
-    ],
-    checkInTime: '15:00',
-    checkOutTime: '12:00',
-    minPrice: 1580,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2019年开业' },
-      { icon: '🌊', text: '一线海景' },
-      { icon: '🏖️', text: '私人沙滩' },
-      { icon: '🅿️', text: '免费停车' },
-      { icon: '🏊', text: '无边泳池' },
-    ]
-  },
-  '8': {
-    id: '8',
-    name: '城市精品酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20exterior%20in%20city%20center&image_size=landscape_16_9',
-    price: 520,
-    rating: 4.4,
-    location: '市中心',
-    starLevel: 3,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20exterior%20in%20city%20center&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20lobby%20with%20modern%20design&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20room%20with%20unique%20design&image_size=landscape_16_9',
-    ],
-    reviewCount: 278,
-    distance: '距离市中心步行5分钟',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20in%20city%20center&image_size=landscape_16_9',
-    address: '上海市黄浦区市中心1号',
-    phone: '021-66778899',
-    description: '城市精品酒店是一家位于市中心的精品酒店，设计时尚，交通便利。酒店配备了设计独特的客房、餐厅、咖啡厅等设施，是城市出行的理想选择。',
-    facilities: [
-      { id: '1', icon: '🍽️', name: '精品餐厅' },
-      { id: '2', icon: '☕', name: '咖啡厅' },
-      { id: '3', icon: '📞', name: '叫醒服务' },
-      { id: '4', icon: '📶', name: '免费WiFi' },
-      { id: '5', icon: '🚪', name: '24小时前台' },
-      { id: '6', icon: '🧳', name: '行李寄存' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 520,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2021年开业' },
-      { icon: '🎨', text: '设计酒店' },
-      { icon: '📍', text: '市中心' },
-      { icon: '🚇', text: '近地铁站' },
-    ]
-  },
-  '9': {
-    id: '9',
-    name: '森林木屋酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20in%20forest&image_size=landscape_16_9',
-    price: 880,
-    rating: 4.7,
-    location: '森林保护区',
-    starLevel: 4,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20in%20forest&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20interior&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20bedroom&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=forest%20view%20from%20wooden%20cabin&image_size=landscape_16_9',
-    ],
-    reviewCount: 198,
-    distance: '距离市中心40公里',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20in%20forest%20reserve&image_size=landscape_16_9',
-    address: '上海市崇明区森林路1号',
-    phone: '021-77889900',
-    description: '森林木屋酒店是一家隐藏在森林中的木屋酒店，亲近自然，环境幽静。酒店配备了木质结构的客房、餐厅、户外活动区等设施，是亲近自然的理想选择。',
-    facilities: [
-      { id: '1', icon: '🏊', name: '森林泳池' },
-      { id: '2', icon: '🍽️', name: '森林餐厅' },
-      { id: '3', icon: '☕', name: '咖啡厅' },
-      { id: '4', icon: '🧹', name: '洗衣服务' },
-      { id: '5', icon: '📞', name: '叫醒服务' },
-      { id: '6', icon: '🅿️', name: '免费停车' },
-      { id: '7', icon: '📶', name: '免费WiFi' },
-      { id: '8', icon: '🚪', name: '24小时前台' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 880,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2018年开业' },
-      { icon: '🌲', text: '森林酒店' },
-      { icon: '木屋', text: '木屋住宿' },
-      { icon: '🅿️', text: '免费停车' },
-    ]
-  },
-  '10': {
-    id: '10',
-    name: '机场快捷酒店',
-    imageUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20exterior%20near%20terminal&image_size=landscape_16_9',
-    price: 280,
-    rating: 4.2,
-    location: '机场附近',
-    starLevel: 2,
-    images: [
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20exterior%20near%20terminal&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20lobby&image_size=landscape_16_9',
-      'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20room&image_size=landscape_16_9',
-    ],
-    reviewCount: 567,
-    distance: '距离机场航站楼步行10分钟',
-    mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view%20near%20airport%20terminal&image_size=landscape_16_9',
-    address: '上海市浦东新区机场大道1号',
-    phone: '021-88990011',
-    description: '机场快捷酒店是一家机场附近的快捷酒店，免费接送机服务，经济实惠。酒店配备了干净整洁的客房、24小时前台等设施，是机场中转的理想选择。',
-    facilities: [
-      { id: '1', icon: '🚌', name: '免费接送机' },
-      { id: '2', icon: '📶', name: '免费WiFi' },
-      { id: '3', icon: '🚪', name: '24小时前台' },
-      { id: '4', icon: '🧳', name: '行李寄存' },
-      { id: '5', icon: '🅿️', name: '免费停车' },
-    ],
-    checkInTime: '14:00',
-    checkOutTime: '12:00',
-    minPrice: 280,
-    videoUrl: '',
-    tags: [
-      { icon: '🏢', text: '2020年开业' },
-      { icon: '✈️', text: '机场附近' },
-      { icon: '🚌', text: '免费接送机' },
-      { icon: '🅿️', text: '免费停车' },
-    ]
-  },
-};
-
-// 房型列表 - 按酒店ID分组
-export const MOCK_ROOMS_BY_HOTEL: Record<string, any[]> = {
-  '1': [
-    { id: '1-1', 
-      name: '海景大床房', 
-      description: '1张1.8米大床，45㎡，一线海景，独立卫浴，免费WiFi', 
-      price: 1288, 
-      originalPrice: 1488, 
-      discount: 8.7, 
-      image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ocean%20view%20hotel%20king%20room%20with%20balcony&image_size=landscape_16_9', 
-      tags: ['含早餐', '立即确认', '免费取消'], 
-      maxOccupancy: 2, 
-      area: 45, 
-      availability: 8 
+    videoUrl: "https://example.com/hotel-video-2.mp4",
+    description: "上海浦东丽思卡尔顿酒店位于陆家嘴金融区的核心地带，坐拥黄浦江和上海天际线的壮丽景色。酒店提供顶级的住宿体验、精致的餐饮选择和卓越的服务，是商务和休闲旅客的理想之选。",
+    location: {
+      address: "陆家嘴世纪大道2001号",
+      lat: 31.236277,
+      lng: 121.505742
     },
-    { id: '1-2', name: '海景双床房', description: '2张1.2米单人床，45㎡，一线海景，独立卫浴，免费WiFi', price: 1288, originalPrice: 1488, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ocean%20view%20hotel%20twin%20room%20with%20two%20beds&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 45, availability: 5 },
-    { id: '1-3', name: '行政海景套房', description: '1张2.0米特大床，85㎡，行政楼层，私人阳台，海景浴缸', price: 2888, originalPrice: 3388, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20ocean%20view%20suite%20with%20balcony&image_size=landscape_16_9', tags: ['含早餐', '行政礼遇', '免费取消'], maxOccupancy: 2, area: 85, availability: 2 },
-  ],
-  '2': [
-    { id: '2-1', name: '商务大床房', description: '1张1.8米大床，35㎡，商务装修，独立卫浴，免费WiFi，办公桌', price: 450, originalPrice: 520, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20king%20room%20with%20desk&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 35, availability: 12 },
-    { id: '2-2', name: '商务双床房', description: '2张1.2米单人床，35㎡，商务装修，独立卫浴，免费WiFi，办公桌', price: 450, originalPrice: 520, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20twin%20room%20with%20desk&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 35, availability: 10 },
-    { id: '2-3', name: '商务套房', description: '1张1.8米大床，55㎡，独立客厅，商务设施，会议桌', price: 880, originalPrice: 1080, discount: 8.1, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=business%20hotel%20suite%20with%20meeting%20table&image_size=landscape_16_9', tags: ['含早餐', '商务设施', '免费取消'], maxOccupancy: 2, area: 55, availability: 3 },
-  ],
-  '3': [
-    { id: '3-1', name: '家庭亲子房', description: '1张1.8米大床+1张1.2米儿童床，50㎡，儿童装饰，儿童用品', price: 580, originalPrice: 680, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=family%20friendly%20hotel%20room%20with%20kids%20bed&image_size=landscape_16_9', tags: ['含早餐', '儿童用品', '免费取消'], maxOccupancy: 3, area: 50, availability: 6 },
-    { id: '3-2', name: '亲子主题房', description: '1张1.8米大床+儿童上下铺，60㎡，主题装饰，玩具乐园', price: 780, originalPrice: 920, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=themed%20kids%20hotel%20room%20with%20play%20area&image_size=landscape_16_9', tags: ['含早餐', '主题装饰', '免费取消'], maxOccupancy: 4, area: 60, availability: 3 },
-  ],
-  '4': [
-    { id: '4-1', name: '标准大床房', description: '1张1.5米大床，25㎡，干净整洁，独立卫浴，免费WiFi', price: 180, originalPrice: 220, discount: 8.2, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20queen%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 25, availability: 20 },
-    { id: '4-2', name: '标准双床房', description: '2张1.2米单人床，25㎡，干净整洁，独立卫浴，免费WiFi', price: 180, originalPrice: 220, discount: 8.2, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=budget%20hotel%20twin%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 25, availability: 15 },
-  ],
-  '5': [
-    { id: '5-1', name: '山景大床房', description: '1张1.8米大床，40㎡，山景视野，独立卫浴，免费WiFi', price: 920, originalPrice: 1080, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotel%20king%20room&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 40, availability: 5 },
-    { id: '5-2', name: '温泉房', description: '1张1.8米大床，50㎡，私人温泉池，山景，豪华装修', price: 1580, originalPrice: 1880, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotspring%20hotel%20room%20with%20private%20onsen&image_size=landscape_16_9', tags: ['含早餐', '私人温泉', '免费取消'], maxOccupancy: 2, area: 50, availability: 2 },
-    { id: '5-3', name: '山景双床房', description: '2张1.2米单人床，40㎡，山景视野，独立卫浴，免费WiFi', price: 920, originalPrice: 1080, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mountain%20view%20hotel%20twin%20room&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 40, availability: 4 },
-  ],
-  '6': [
-    { id: '6-1', name: '古雅大床房', description: '1张1.8米大床，38㎡，古风装修，独立卫浴，免费WiFi', price: 680, originalPrice: 780, discount: 8.7, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20style%20hotel%20king%20room%20traditional%20decor&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 38, availability: 6 },
-    { id: '6-2', name: '文化套房', description: '1张1.8米大床，65㎡，传统中式设计，书房，茶具', price: 1280, originalPrice: 1480, discount: 8.6, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=traditional%20chinese%20style%20hotel%20suite%20with%20study&image_size=landscape_16_9', tags: ['含早餐', '文化体验', '免费取消'], maxOccupancy: 2, area: 65, availability: 2 },
-  ],
-  '7': [
-    { id: '7-1', name: '滨海大床房', description: '1张1.8米大床，50㎡，私人阳台，一线海景，独立卫浴', price: 1580, originalPrice: 1880, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20king%20room%20with%20ocean%20view%20balcony&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 50, availability: 4 },
-    { id: '7-2', name: '滨海双床房', description: '2张1.2米单人床，50㎡，私人阳台，一线海景，独立卫浴', price: 1580, originalPrice: 1880, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=beach%20resort%20twin%20room%20with%20ocean%20view%20balcony&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 50, availability: 3 },
-    { id: '7-3', name: '总统套房', description: '1张2.2米特大床，120㎡，私人泳池，270°海景，管家服务', price: 5888, originalPrice: 6888, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=luxury%20presidential%20suite%20with%20private%20pool&image_size=landscape_16_9', tags: ['含早餐', '管家服务', '免费取消'], maxOccupancy: 2, area: 120, availability: 1 },
-  ],
-  '8': [
-    { id: '8-1', name: '精品大床房', description: '1张1.8米大床，32㎡，设计感装修，独立卫浴，免费WiFi', price: 520, originalPrice: 620, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20king%20room%20modern%20design&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 32, availability: 7 },
-    { id: '8-2', name: '设计套房', description: '1张1.8米大床，48㎡，独特设计，艺术装饰，客厅区', price: 880, originalPrice: 1080, discount: 8.1, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boutique%20hotel%20suite%20artistic%20design&image_size=landscape_16_9', tags: ['含早餐', '独特设计', '免费取消'], maxOccupancy: 2, area: 48, availability: 3 },
-  ],
-  '9': [
-    { id: '9-1', name: '木屋大床房', description: '1张1.8米大床，42㎡，全木质结构，森林景，独立卫浴', price: 880, originalPrice: 1020, discount: 8.6, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20king%20room%20forest%20view&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 42, availability: 4 },
-    { id: '9-2', name: '木屋双床房', description: '2张1.2米单人床，42㎡，全木质结构，森林景，独立卫浴', price: 880, originalPrice: 1020, discount: 8.6, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=wooden%20cabin%20hotel%20twin%20room%20forest%20view&image_size=landscape_16_9', tags: ['含早餐', '立即确认', '免费取消'], maxOccupancy: 2, area: 42, availability: 3 },
-    { id: '9-3', name: '独栋木屋', description: '1张2.0米特大床，80㎡，独立木屋，私人庭院，森林环绕', price: 1680, originalPrice: 1980, discount: 8.5, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=private%20wooden%20cabin%20villa%20in%20forest&image_size=landscape_16_9', tags: ['含早餐', '独立庭院', '免费取消'], maxOccupancy: 4, area: 80, availability: 2 },
-  ],
-  '10': [
-    { id: '10-1', name: '快捷大床房', description: '1张1.5米大床，22㎡，干净整洁，独立卫浴，免费WiFi', price: 280, originalPrice: 320, discount: 8.8, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20queen%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 22, availability: 18 },
-    { id: '10-2', name: '快捷双床房', description: '2张1.2米单人床，22㎡，干净整洁，独立卫浴，免费WiFi', price: 280, originalPrice: 320, discount: 8.8, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20twin%20room%20simple%20clean&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 2, area: 22, availability: 12 },
-    { id: '10-3', name: '家庭房', description: '1张1.8米大床+1张1.2米单人床，32㎡，适合家庭出行', price: 380, originalPrice: 450, discount: 8.4, image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=airport%20hotel%20family%20room%20three%20beds&image_size=landscape_16_9', tags: ['立即确认', '免费取消'], maxOccupancy: 3, area: 32, availability: 8 },
-  ],
+    contact: {
+      phone: "021-2020-1888"
+    },
+    checkInTime: "15:00",
+    checkOutTime: "12:00",
+    facilities: [],
+    rating: 4.7,
+    reviewCount: 987
+  },
+  "3": {
+    id: "3",
+    name: "上海静安香格里拉大酒店",
+    starLevel: 5,
+    brand: "香格里拉",
+    images: [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099456?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1584284642094-413534496f75?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    videoUrl: "https://example.com/hotel-video-3.mp4",
+    description: "上海静安香格里拉大酒店位于繁华的静安区，周边购物、餐饮和娱乐设施一应俱全。酒店以其标志性的亚洲式待客之道和现代化的设施，为您提供难忘的住宿体验。",
+    location: {
+      address: "延安中路1218号",
+      lat: 31.231705,
+      lng: 121.454211
+    },
+    contact: {
+      phone: "021-6253-8888"
+    },
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+    facilities: [],
+    rating: 4.6,
+    reviewCount: 1562
+  },
+  "4": {
+    id: "4",
+    name: "上海新天地朗廷酒店",
+    starLevel: 5,
+    brand: "朗廷",
+    images: [
+      "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1618826237711-79d840e35cbc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    videoUrl: "https://example.com/hotel-video-4.mp4",
+    description: "上海新天地朗廷酒店坐落于时尚的新天地地区，融合了经典优雅与现代奢华。酒店设计灵感源自巴黎左岸的艺术气息，为您提供独特的住宿体验。",
+    location: {
+      address: "黄陂南路380弄1号",
+      lat: 31.228719,
+      lng: 121.476937
+    },
+    contact: {
+      phone: "021-3366-9999"
+    },
+    checkInTime: "15:00",
+    checkOutTime: "12:00",
+    facilities: [],
+    rating: 4.5,
+    reviewCount: 876
+  },
+  "5": {
+    id: "5",
+    name: "上海素凯泰酒店",
+    starLevel: 5,
+    brand: "素凯泰",
+    images: [
+      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    videoUrl: "https://example.com/hotel-video-5.mp4",
+    description: "上海素凯泰酒店将泰国传统工艺与现代奢华完美结合，为宾客提供独特而难忘的住宿体验。酒店位于繁华的淮海路商业区，地理位置优越。",
+    location: {
+      address: "威海路380号",
+      lat: 31.234182,
+      lng: 121.461541
+    },
+    contact: {
+      phone: "021-3398-8888"
+    },
+    checkInTime: "15:00",
+    checkOutTime: "12:00",
+    facilities: [],
+    rating: 4.7,
+    reviewCount: 756
+  },
+  "6": {
+    id: "6",
+    name: "上海建业里嘉佩乐酒店",
+    starLevel: 5,
+    brand: "嘉佩乐",
+    images: [
+      "https://images.unsplash.com/photo-1590846406698-4d8d6440ae77?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1584284642094-413534496f76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
+    videoUrl: "https://example.com/hotel-video-6.mp4",
+    description: "上海建业里嘉佩乐酒店坐落于历史悠久的建业里，是沪上唯一的全别墅酒店。酒店巧妙地将上海石库门建筑风格与法式优雅相结合，呈现独特的奢华体验。",
+    location: {
+      address: "建国西路23号",
+      lat: 31.212234,
+      lng: 121.454098
+    },
+    contact: {
+      phone: "021-3307-8888"
+    },
+    checkInTime: "15:00",
+    checkOutTime: "12:00",
+    facilities: [],
+    rating: 4.9,
+    reviewCount: 1423
+  }
 };
+
+// 房型数据按酒店ID分组
+export const MOCK_ROOMS_BY_HOTEL: Record<string, RoomType[]> = {
+  "1": MOCK_ROOM_TYPES,
+  "2": [
+    {
+      id: "2-r1",
+      name: "浦东江景房",
+      area: 55,
+      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      maxOccupancy: 2,
+      price: {
+        current: 2158,
+        original: 2588,
+        discount: 0.83
+      },
+      availability: {
+        remaining: 2,
+        isSoldOut: false
+      },
+      tags: ["黄浦江景", "落地窗", "行政待遇"]
+    },
+    {
+      id: "2-r2",
+      name: "丽思卡尔顿套房",
+      area: 80,
+      image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      maxOccupancy: 3,
+      price: {
+        current: 4288,
+        original: 5188,
+        discount: 0.83
+      },
+      availability: {
+        remaining: 1,
+        isSoldOut: false
+      },
+      tags: ["独立客厅", "餐厅", "私人管家"]
+    }
+  ],
+  "3": [
+    {
+      id: "3-r1",
+      name: "静安城景房",
+      area: 45,
+      image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      maxOccupancy: 2,
+      price: {
+        current: 1488,
+        original: 1788,
+        discount: 0.83
+      },
+      availability: {
+        remaining: 4,
+        isSoldOut: false
+      },
+      tags: ["城市景观", "免费WiFi", "迷你吧"]
+    },
+    {
+      id: "3-r2",
+      name: "香格里拉行政房",
+      area: 60,
+      image: "https://images.unsplash.com/photo-1590490360182-c33d2ef20d18?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      maxOccupancy: 2,
+      price: {
+        current: 2288,
+        original: 2688,
+        discount: 0.85
+      },
+      availability: {
+        remaining: 3,
+        isSoldOut: false
+      },
+      tags: ["行政酒廊", "免费早餐", "会议室"]
+    }
+  ]
+};
+
+// 模拟酒店设施
+export const MOCK_HOTEL_FACILITIES = [
+  { id: "1", name: "游泳池", icon: "🏊" },
+  { id: "2", name: "健身房", icon: "💪" },
+  { id: "3", name: "免费WiFi", icon: "📶" },
+  { id: "4", name: "餐厅", icon: "🍽️" },
+  { id: "5", name: "酒吧", icon: "🍸" },
+  { id: "6", name: "水疗中心", icon: "💆" },
+  { id: "7", name: "停车场", icon: "🅿️" },
+  { id: "8", name: "商务中心", icon: "💼" },
+  { id: "9", name: "儿童乐园", icon: "🎠" },
+  { id: "10", name: "会议室", icon: "👥" }
+];
+
+// 模拟酒店评价
+export const MOCK_HOTEL_REVIEWS = [
+  { id: "1", userId: "user1", userName: "张三", rating: 5, comment: "酒店环境优美，服务态度很好，下次还会再来！", date: "2023-10-15" },
+  { id: "2", userId: "user2", userName: "李四", rating: 4, comment: "位置很好，交通方便，房间干净整洁。", date: "2023-10-10" },
+  { id: "3", userId: "user3", userName: "王五", rating: 5, comment: "设施完善，员工专业热情，是一次愉快的住宿体验。", date: "2023-10-05" },
+  { id: "4", userId: "user4", userName: "赵六", rating: 4, comment: "早餐丰富多样，床铺舒适，值得推荐。", date: "2023-09-28" }
+];
+
+// 模拟搜索建议
+export const MOCK_SEARCH_SUGGESTIONS = [
+  "上海外滩华尔道夫酒店",
+  "上海浦东丽思卡尔顿酒店",
+  "上海静安香格里拉大酒店",
+  "上海新天地朗廷酒店",
+  "上海素凯泰酒店",
+  "上海建业里嘉佩乐酒店",
+  "外滩酒店",
+  "陆家嘴酒店",
+  "静安酒店",
+  "新天地酒店"
+];
+
+// 模拟酒店图片
+export const MOCK_HOTEL_IMAGES = [
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1582719508461-905c673771fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1618826237711-79d840e35cbc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+];
+
+// 模拟服务标签
+export const MOCK_SERVICES = [
+  { id: "1", name: "免费WiFi", icon: "📶" },
+  { id: "2", name: "免费停车", icon: "🅿️" },
+  { id: "3", name: "健身房", icon: "💪" },
+  { id: "4", name: "游泳池", icon: "🏊" },
+  { id: "5", name: "餐厅", icon: "🍽️" },
+  { id: "6", name: "SPA", icon: "💆" },
+  { id: "7", name: "商务中心", icon: "💼" },
+  { id: "8", name: "儿童乐园", icon: "🎠" }
+];

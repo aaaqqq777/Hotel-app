@@ -17,18 +17,21 @@ interface HeaderProps {
   onCityChange?: (city: string) => void
   onRoomCountChange?: (count: number) => void
   onGuestCountChange?: (count: number) => void
+  onOpenFilter?: () => void
 }
 
 export default function Header({ 
   location, 
   checkInDate, 
-  roomCount = 1, 
-  guestCount = 1, 
+  roomCount , 
+  guestCount, 
   onDateChange, 
   onCityChange,
   onRoomCountChange,
   onGuestCountChange
 }: HeaderProps) {
+  console.log('Header 组件接收 props:', { location, checkInDate, roomCount, guestCount });
+  
   const navigate = useNavigate();
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [cityVisible, setCityVisible] = useState(false);
@@ -84,6 +87,11 @@ export default function Header({
   
   // 解析日期字符串，提取入住和离店日期
   const parseDateRange = (dateStr: string) => {
+    console.log('parseDateRange 开始解析日期:', dateStr);
+    if (!dateStr) {
+      console.log('日期字符串为空，返回空值');
+      return { checkIn: '', checkOut: '' };
+    }
     // 假设dateStr格式为"住MM/dd 离MM/dd"
     const match = dateStr.match(/住(\d+\/\d+) 离(\d+\/\d+)/);
     if (match) {
@@ -91,12 +99,15 @@ export default function Header({
       // 将MM/dd格式转换为MM.dd格式
       const formattedCheckIn = checkIn.replace('/', '.');
       const formattedCheckOut = checkOut.replace('/', '.');
+      console.log('格式化后的入住和离店日期:', formattedCheckIn, formattedCheckOut);
       return { checkIn: formattedCheckIn, checkOut: formattedCheckOut };
     }
+    console.log('日期解析失败，返回空值');
     return { checkIn: '', checkOut: '' };
   };
 
   const { checkIn, checkOut } = parseDateRange(checkInDate || '');
+  console.log('解析后的日期:', { checkIn, checkOut });
 
   return (
     <div className={styles.container}>
@@ -122,7 +133,7 @@ export default function Header({
         {(location && checkInDate) && <div className={styles.divider} />}
 
         {/* 日期部分 */}
-        {checkInDate && (
+        {(
           <div className={styles.dateSection} onClick={handleDateClick}>
             <div className={styles.dateItem}>住 {checkIn}</div>
             <div className={styles.dateItem}>离 {checkOut}</div>
@@ -134,8 +145,8 @@ export default function Header({
 
         {/* 房间选择部分 */}
         <RoomSelector 
-          roomCount={roomCount} 
-          guestCount={guestCount} 
+          roomCount={roomCount ?? 1}
+          guestCount={guestCount ?? 1}
           onRoomCountChange={onRoomCountChange || (() => {})} 
           onGuestCountChange={onGuestCountChange || (() => {})} 
         />
@@ -196,7 +207,7 @@ export default function Header({
                   key={cityItem}
                   fill="outline"
                   onClick={() => handleCitySelect(cityItem)}
-                  style={{ margin: '4px' }}
+                  style={{ margin: '2px' }}
                 >
                   {cityItem}
                 </Button>

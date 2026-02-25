@@ -1,77 +1,127 @@
-// src/types/hotel.ts
+export interface HotelSearchParams {
+  city: string;
+  keyword?: string;
 
-// 酒店对象的类型
-export interface Hotel {
-  id: string;
-  name: string;
-  imageUrl: string;
-  price: number;
-  rating: number;
-  location: string;
-  starLevel: number;
-  images?: string[];
-  reviewCount?: number;
-  distance?: string;
-  mapUrl?: string;
+  checkInDate: string;
+  checkOutDate: string;
+
+  minPrice?: number;
+  maxPrice?: number;
+  roomCount?: number;
+  guestCount?: number;
+  
+  starLevels?: number;
+  brands?: string[];
+  score?: number;
+  sortBy?: 'price' | 'distance' | 'rating' | 'star' | '';
+  sortOrder?: 'asc' | 'desc';
+
+  page: number;
+  pageSize: number;
+
+  lat?: number;
+  lng?: number;
 }
 
-// 酒店详情类型
-export interface HotelDetail extends Hotel {
-  address: string;
-  phone: string;
+export interface HotelListItem {
+  id: string;
+  name: string;
+
+  coverImage: string;
+  images?: string[];
+
+  starLevel: number;
+  rating: number;
+  reviewCount: number;
+
+  price: {
+    lowest: number;
+    original?: number;
+    discount?: number;
+  };
+
+  location: {
+    city: string;
+    address: string;
+    lat: number;
+    lng: number;
+    distance?: number; // 单位米，后端计算
+  };
+
+  roomAvailability: {
+    hasAvailableRoom: boolean;
+    lowestRoomPrice?: number;
+  };
+
+  tags?: string[]; // "近地铁 / 新开业 / 含早餐"
+}
+
+export interface HotelFilterParams {
+  keyword?: string;
+  starLevel?: string;
+  priceRange?: string;
+  tags?: string[];
+}
+
+export type SortType = 'price-asc' | 'price-desc' | 'rating' | 'default';
+
+export interface HotelDetail {
+  id: string;
+  name: string;
+
+  starLevel: number;
+  brand?: string;
+  score?: number;
+
+  images: string[];
+  videoUrl?: string;
+
   description: string;
-  facilities: Facility[];
+
+  location: {
+    address: string;
+    lat: number;
+    lng: number;
+  };
+
+  contact: {
+    phone?: string;
+  };
+
   checkInTime: string;
   checkOutTime: string;
-  minPrice?: number;
-  videoUrl?: string;
-  tags?: Array<{
-    icon: string;
-    text: string;
-  }>;
-}
 
-// 设施类型
-export interface Facility {
-  id: string;
-  name: string;
-  icon: string;
-}
+  facilities: [];
 
-// 评价类型
-export interface Review {
-  id: string;
-  userName: string;
-  date: string;
   rating: number;
-  content: string;
-  images?: string[];
+  reviewCount: number;
 }
 
-// 房型类型
 export interface RoomType {
   id: string;
   name: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  discount?: number;
-  image: string;
-  tags?: string[];
-  maxOccupancy: number;
   area: number;
-  availability?: number;
-}
+  image: string;
+  maxOccupancy: number;
 
-// 搜索参数的类型
-export interface SearchParams {
-  city?: string;
-  keyword?: string;
-  startDate?: string;
-  endDate?: string;
-  starLevel?: number;
-  priceMin?: number;
-  priceMax?: number;
-  facilities?: string[];
-  // ... 其他参数
+  price: {
+    current: number;
+    original?: number;
+    discount?: number;
+  };
+
+  availability: {
+    remaining: number;
+    isSoldOut: boolean;
+  };
+
+  tags?: string[];
+}
+//advertisement
+export interface BannerData {
+  id: string
+  imageUrl: string
+  title: string
+  description: string
+  hotelId: string
 }

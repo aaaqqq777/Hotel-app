@@ -8,4 +8,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000
 export const api = createApiService(API_BASE_URL);
 
 // 导出API模块
-export * from './modules';
+export * from './modules/hotel';
+export * from './modules/hotelList';
+export * from './modules/advertisement';

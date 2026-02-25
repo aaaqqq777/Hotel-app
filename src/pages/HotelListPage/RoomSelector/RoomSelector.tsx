@@ -16,17 +16,21 @@ const RoomSelector: React.FC<RoomSelectorProps> = ({
   onRoomCountChange,
   onGuestCountChange
 }) => {
+  console.log('RoomSelector 组件渲染，props:', { roomCount, guestCount });
+  
   const [visible, setVisible] = useState(false);
   const [tempRoomCount, setTempRoomCount] = useState(roomCount);
   const [tempGuestCount, setTempGuestCount] = useState(guestCount);
 
   const handleConfirm = () => {
+    console.log('RoomSelector 确认更改，新的房间数和客人数量:', tempRoomCount, tempGuestCount);
     onRoomCountChange(tempRoomCount);
     onGuestCountChange(tempGuestCount);
     setVisible(false);
   };
 
   const handleCancel = () => {
+    console.log('RoomSelector 取消更改，恢复到原始值:', roomCount, guestCount);
     setTempRoomCount(roomCount);
     setTempGuestCount(guestCount);
     setVisible(false);

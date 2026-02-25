@@ -1,7 +1,7 @@
 import { Card, Tag } from 'antd-mobile'
 import { EnvironmentOutline, VideoOutline } from 'antd-mobile-icons'
 import styles from './HotelCard.module.css'
-import type { Hotel } from '../../../data/types'
+import type { HotelListItem as Hotel } from '../../../types/hotel'
 
 interface HotelCardProps {
   hotel: Hotel
@@ -20,6 +20,8 @@ const tagLabels: Record<string, string> = {
 }
 
 export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
+  console.log('HotelCard 渲染，酒店信息:', hotel);
+  
   // 安全地处理评分信息
   const ratingLevel = !hotel.rating 
     ? '暂无评分' 
@@ -33,9 +35,9 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
     : [];
 
   // 安全地处理数值字段
-  const price = typeof hotel.price === 'number' ? hotel.price : 0;
-  const discountPrice = typeof hotel.discountPrice === 'number' ? hotel.discountPrice : 0;
-  const discountAmount = typeof hotel.discountAmount === 'number' ? hotel.discountAmount : 0;
+  const price = typeof hotel.price?.lowest === 'number' ? hotel.price.lowest : 0;
+  const originalPrice = typeof hotel.price?.original === 'number' ? hotel.price.original : 0;
+  const discount = typeof hotel.price?.discount === 'number' ? hotel.price.discount : 0;
   const reviewCount = typeof hotel.reviewCount === 'number' ? hotel.reviewCount : 0;
 
   return (
@@ -43,7 +45,7 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
       <div className={styles.container}>
         <div className={styles.imageContainer}>
           <img 
-            src={hotel.image || '/placeholder-image.jpg'} 
+            src={hotel.coverImage || '/placeholder-image.jpg'} 
             alt={hotel.name || '酒店图片'} 
             className={styles.image}
             onError={(e) => {
@@ -51,7 +53,8 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
               target.src = '/placeholder-image.jpg'; // 备用图片
             }} 
           />
-          {hotel.hasVideo && (
+          {/* 使用 images 数组的第一个图像或根据某种逻辑决定是否显示视频图标 */}
+          {hotel.images && hotel.images.length > 0 && (
             <div className={styles.videoIcon}>
               <VideoOutline />
             </div>
@@ -61,7 +64,7 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
         <div className={styles.content}>
           <div className={styles.nameContainer}>
             <h3 className={styles.name}>{hotel.name || '酒店名称'}</h3>
-            <span className={styles.hotelType}>{hotel.hotelType || ''}</span>
+            <span className={styles.hotelType}>{hotel.starLevel >= 4 ? '豪华型' : hotel.starLevel >= 3 ? '舒适型' : '经济型'}</span>
           </div>
           
           <div className={styles.ratingContainer}>
@@ -76,7 +79,7 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
           
           <div className={styles.location}>
             <EnvironmentOutline />
-            <span>{hotel.locationInfo || hotel.location || '位置信息'}</span>
+            <span>{hotel.location.address || '位置信息'}</span>
           </div>
           
           {displayTags.length > 0 && (
@@ -94,19 +97,25 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
           )}
           
           <div className={styles.description}>
-            <span className={styles.descriptionLink}>{hotel.description || '酒店描述'}</span>
+            <span className={styles.descriptionLink}>{hotel.name + "，提供优质住宿体验" || '酒店描述'}</span>
           </div>
 
           <div className={styles.priceContainer}>
             <div className={styles.price}>
-              <span className={styles.originalPrice}>¥{price}</span>
+              {originalPrice > price && (
+                <span className={styles.originalPrice}>¥{originalPrice}</span>
+              )}
               <span className={styles.currency}>¥</span>
-              <span className={styles.discountAmount}>{discountPrice}</span>
+              <span className={styles.discountAmount}>{price}</span>
               <span className={styles.unit}>起</span>
             </div>
             <div className={styles.discountInfo}>
-              <span className={styles.discountBadge}>{hotel.discountTag || '优惠'}</span>
-              <span className={styles.discountText}>2项优惠{discountAmount}</span>
+              {discount > 0 ? (
+                <span className={styles.discountBadge}>{Math.round(discount * 100)}折</span>
+              ) : (
+                <span className={styles.discountBadge}>{'优惠'}</span>
+              )}
+              <span className={styles.discountText}>立减优惠</span>
             </div>
           </div>
         </div>

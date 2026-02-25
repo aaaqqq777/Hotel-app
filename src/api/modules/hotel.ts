@@ -1,26 +1,26 @@
 // src/api/modules/hotel.ts
 import { api } from '../index';
-import type { Hotel, SearchParams, HotelDetail, Review, RoomType, Facility } from '../../types/hotel';
+import type { HotelSearchParams, HotelDetail,RoomType } from '../../types/hotel';
 import { MOCK_HOTELS } from '../../data/hotels';
-import { MOCK_HOTEL_DETAILS, MOCK_ROOMS_BY_HOTEL, MOCK_HOTEL_REVIEWS, MOCK_HOTEL_FACILITIES } from '../../data/hotelDetail';
+import { MOCK_HOTEL_DETAILS, MOCK_ROOMS_BY_HOTEL } from '../../data/hotelDetail';
 
 // 后端接口请求参数
-export interface HotelListParams {
-  keyword?: string;
-  city: string;
-  star?: string;
-  sort?: string;
-  lng?: string;
-  lat?: string;
-  page?: string;
-  limit?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  startDate?: string;
-  endDate?: string;
-  roomCount?: number;
-  guestCount?: number;
-}
+// export interface HotelListParams {
+//   keyword?: string;
+//   city: string;
+//   star?: string;
+//   sort?: string;
+//   lng?: string;
+//   lat?: string;
+//   page?: string;
+//   limit?: string;
+//   minPrice?: string;
+//   maxPrice?: string;
+//   startDate?: string;
+//   endDate?: string;
+//   roomCount?: number;
+//   guestCount?: number;
+// }
 
 // 后端接口响应数据结构
 export interface HotelListResponse {
@@ -47,7 +47,7 @@ export interface HotelListResponse {
 // 酒店搜索API
 export const hotelApi = {
   // 搜索酒店列表
-  searchHotels: async (params: HotelListParams): Promise<HotelListResponse> => {
+  searchHotels: async (params: HotelSearchParams): Promise<HotelListResponse> => {
     try {
       return await api.get('/api/hotels/search', { params });
     } catch (error) {
@@ -58,10 +58,10 @@ export const hotelApi = {
         name_cn: hotel.name,
         star_rating: hotel.starLevel,
         score: hotel.rating,
-        cover_image: hotel.image,
-        min_price: hotel.price,
+        cover_image: hotel.coverImage || hotel.images?.[0] || '',
+        min_price: typeof hotel.price === 'object' ? hotel.price.lowest : hotel.price,
         location: {
-          address: hotel.location,
+          address: typeof hotel.location === 'object' ? hotel.location.address : hotel.location || '',
           city: params.city || '上海',
           district: ''
         }
@@ -97,23 +97,23 @@ export const hotelApi = {
     }
   },
 
-  // 获取酒店评论
-  getHotelReviews: async (hotelId: string): Promise<Review[]> => {
-    try {
-      return await api.get(`/api/hotels/${hotelId}/reviews`);
-    } catch (error) {
-      console.error('获取酒店评论失败:', error);
-      return MOCK_HOTEL_REVIEWS;
-    }
-  },
+  // // 获取酒店评论
+  // getHotelReviews: async (hotelId: string): Promise<Review[]> => {
+  //   try {
+  //     return await api.get(`/api/hotels/${hotelId}/reviews`);
+  //   } catch (error) {
+  //     console.error('获取酒店评论失败:', error);
+  //     return MOCK_HOTEL_REVIEWS;
+  //   }
+  // },
 
-  // 获取酒店设施
-  getHotelFacilities: async (hotelId: string): Promise<Facility[]> => {
-    try {
-      return await api.get(`/api/hotels/${hotelId}/facilities`);
-    } catch (error) {
-      console.error('获取酒店设施失败:', error);
-      return MOCK_HOTEL_FACILITIES;
-    }
-  }
+  // // 获取酒店设施
+  // getHotelFacilities: async (hotelId: string): Promise<Facility[]> => {
+  //   try {
+  //     return await api.get(`/api/hotels/${hotelId}/facilities`);
+  //   } catch (error) {
+  //     console.error('获取酒店设施失败:', error);
+  //     return MOCK_HOTEL_FACILITIES;
+  //   }
+  // }
 };

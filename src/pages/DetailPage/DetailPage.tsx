@@ -79,16 +79,29 @@ function DetailPage() {
     id: '0',
     name: '加载中...',
     starLevel: 0,
-    rating: 0,
-    reviewCount: 0,
-    address: '',
-    distance: '',
+    brand: '',
     images: [],
     videoUrl: '',
-    tags: [],
-    minPrice: 0,
-    mapUrl: ''
+    description: '酒店详情加载中...',
+    location: {
+      address: '地址加载中...',
+      lat: 0,
+      lng: 0
+    },
+    contact: {
+      phone: ''
+    },
+    checkInTime: '15:00',
+    checkOutTime: '12:00',
+    facilities: [],
+    rating: 0,
+    reviewCount: 0
   };
+
+  // 计算最低房价
+  const minPrice = hotelRoomTypes && hotelRoomTypes.length > 0 
+    ? Math.min(...hotelRoomTypes.map(room => room.price.current))
+    : 0;
 
   // 使用默认数据或真实数据
   const currentHotelDetail = hotelDetail || defaultHotelDetail;
@@ -115,9 +128,9 @@ function DetailPage() {
           starRating={currentHotelDetail.starLevel} 
           rating={currentHotelDetail.rating} 
           reviewCount={currentHotelDetail.reviewCount || 0} 
-          address={currentHotelDetail.address} 
-          distance={currentHotelDetail.distance || ''} 
-          tags={currentHotelDetail.tags} 
+          address={currentHotelDetail.location?.address || ''} 
+          distance={''} 
+          tags={[]} 
         />
 
         {/* 日期选择 */}
@@ -140,7 +153,7 @@ function DetailPage() {
 
       {/* 底部导航栏 */}
       <BottomBar 
-        minPrice={currentHotelDetail.minPrice || 0} 
+        minPrice={minPrice} 
         onViewRooms={handleViewRooms} 
         onContactHotel={handleContactHotel} 
         visible={showBottomBar}

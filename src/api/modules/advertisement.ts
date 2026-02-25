@@ -1,6 +1,6 @@
 // src/api/modules/advertisement.ts
 import { api } from '../index';
-import type { BannerData } from '../../data/advertisement/advertisement';
+import type { BannerData } from '../../types/hotel';
 import { MOCK_BANNERS } from '../../data/advertisement/advertisement';
 
 // 广告API

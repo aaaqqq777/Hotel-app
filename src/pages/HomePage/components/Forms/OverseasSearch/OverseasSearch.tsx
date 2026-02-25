@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Button, Input, Space, Popup } from 'antd-mobile';
 import { LocationOutline, RightOutline } from 'antd-mobile-icons';
-import type { SearchData } from '../../../hooks/useSearchLogic';
+import type { RawSearchData } from '../../../hooks/useSearchLogic';
 import styles from './OverseasSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
 
 interface OverseasSearchFormProps {
-  value: Partial<SearchData>;
-  onChange: (data: Partial<SearchData>) => void;
+  value: Partial<RawSearchData>;
+  onChange: (data: Partial<RawSearchData>) => void;
   onSearch: () => void;
 }
 
@@ -135,17 +135,13 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
   };
 
   const handleInternalSearch = () => {
-    const formData: Partial<SearchData> = {
-      searchType: 'overseas',
+    const formData: Partial<RawSearchData> = {
+      region: 'overseas',
       city: city || '曼谷',
       // country: country || '泰国',
       keyword,
       dates: startDate && endDate ? [startDate, endDate] : undefined,
-      brand: selectedBrand !== '不限' ? selectedBrand : undefined,
-      tags: [
-        ...selectedTags,
-        ...(selectedRating !== '不限' ? [selectedRating] : [])
-      ].filter(Boolean),
+      brands: selectedBrand !== '不限' ? [selectedBrand] : undefined,
       roomCount,
       guestCount
     };
@@ -427,7 +423,7 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
                 <Button 
                   fill="none"
                   size="small"
-                  onClick={() => setRoomCount(prev => Math.max(1, prev - 1))}
+                  onClick={() => setRoomCount((prev: number) => Math.max(1, prev - 1))}
                   disabled={roomCount <= 1}
                 >
                   -
@@ -436,7 +432,7 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
                 <Button 
                   fill="none"
                   size="small"
-                  onClick={() => setRoomCount(prev => Math.min(10, prev + 1))}
+                  onClick={() => setRoomCount((prev: number) => Math.min(10, prev + 1))}
                   disabled={roomCount >= 10}
                 >
                   +
@@ -450,7 +446,7 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
                 <Button 
                   fill="none"
                   size="small"
-                  onClick={() => setGuestCount(prev => Math.max(1, prev - 1))}
+                  onClick={() => setGuestCount((prev: number) => Math.max(1, prev - 1))}
                   disabled={guestCount <= 1}
                 >
                   -
@@ -459,7 +455,7 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
                 <Button 
                   fill="none"
                   size="small"
-                  onClick={() => setGuestCount(prev => Math.min(20, prev + 1))}
+                  onClick={() => setGuestCount((prev: number) => Math.min(20, prev + 1))}
                   disabled={guestCount >= 20}
                 >
                   +

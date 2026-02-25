@@ -16,9 +16,11 @@ export default function SearchForm() {
   // 搜索提交逻辑
   const { handleFinalSearch } = useSearchLogic();
 
-  const activeTab = params.searchType as SearchTabKey;
+  // 确保 activeTab 有默认值
+  const activeTab = params.region || 'domestic';
 
   const onSearch = () => {
+    console.log('触发搜索，当前参数:', params);
     handleFinalSearch(params);
   };
 
@@ -57,8 +59,21 @@ export default function SearchForm() {
           />
         );
       default:
-        return null;
+        // 默认返回国内搜索
+        return (
+          <DomesticSearchForm
+            value={{ ...params, region: 'domestic' }}
+            onChange={updateParams}
+            onSearch={onSearch}
+          />
+        );
     }
+  };
+
+  const handleTabChange = (key: string) => {
+    console.log('切换搜索类型:', key);
+    // 切换tab时，只更新region，保留其他参数
+    updateParams({ region: key as SearchTabKey });
   };
 
   return (
@@ -66,9 +81,7 @@ export default function SearchForm() {
       <div className={styles.card}>
         <Tabs
           activeKey={activeTab}
-          onChange={(key) =>
-            updateParams({ searchType: key as SearchTabKey })
-          }
+          onChange={handleTabChange}
         >
           <Tabs.Tab title="国内" key="domestic" />
           <Tabs.Tab title="海外" key="overseas" />

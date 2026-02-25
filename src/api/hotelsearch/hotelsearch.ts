@@ -1,24 +1,25 @@
-// src/api/hotelsearch/hotelsearch.ts
 import { apiClient } from '../config'; // 这个现在应该使用 /api 前缀并被代理到后端
-import type { Hotel, SearchParams, HotelDetail, Review, RoomType, Facility } from '../../types/hotel';
-import { MOCK_HOTEL_IMAGES, MOCK_HOTEL_FACILITIES, MOCK_HOTEL_REVIEWS, MOCK_SEARCH_SUGGESTIONS, MOCK_HOTEL_DETAILS, MOCK_ROOMS_BY_HOTEL } from '../../data/hotelDetail';
+import type { RoomType,HotelDetail ,HotelSearchParams} from '../../types/hotel';
 import { MOCK_HOTELS } from '../../data/hotels';
+import { MOCK_HOTEL_DETAILS, MOCK_ROOMS_BY_HOTEL } from '../../data/hotelDetail';
 
 // 后端接口请求参数
-export interface HotelListParams {
-  keyword?: string;
-  city: string;
-  star?: string;
-  sort?: string;
-  lng?: string;
-  lat?: string;
-  page?: string;
-  limit?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  roomCount?: string | number;
-  guestCount?: string | number;
-}
+// export interface HotelListParams {
+//   keyword?: string;
+//   city: string;
+//   star?: string;
+//   sort?: string;
+//   lng?: string;
+//   lat?: string;
+//   page?: string;
+//   limit?: string;
+//   minPrice?: string;
+//   maxPrice?: string;
+//   roomCount?: string | number;
+//   guestCount?: string | number;
+//   checkInDate?: string;
+//   checkOutDate?: string;
+// }
 
 // 后端接口响应数据结构
 export interface HotelListResponse {
@@ -32,27 +33,40 @@ export interface HotelListResponse {
       score: number;
       cover_image: string;
       min_price: number;
+      original_price?: number;
+      discount?: number;
       location: {
         address?: string;
         city?: string;
         district?: string;
+        lat: number;
+        lng: number;
+        distance?: number;
         [key: string]: any;
       };
+      room_availability: {
+        has_available_room: boolean;
+        lowest_room_price?: number;
+      };
+      review_count?: number;
+      tags?: string[];
     }>;
   };
 }
 
 // 搜索酒店列表 (使用后端接口 GET /api/hotels)
-export async function searchHotelList(params: HotelListParams): Promise<HotelListResponse> {
+export async function searchHotelList(params: HotelSearchParams): Promise<HotelListResponse> {
+  console.log('🔍 searchHotelList API调用参数:', params);
   try {
     const response = await apiClient.get('/api/hotels', { params });
+    console.log('✅ searchHotelList API响应:', response.data);
     return response.data;
   } catch (error) {
     console.error('Failed to search hotel list:', error);
     
     // ========== 模拟数据处理 ==========
-    const page = parseInt(params.page || '1');
-    const limit = parseInt(params.limit || '10');
+    const page = params.page || 1;
+    const limit = params.pageSize || 10;
     
     // 根据参数过滤
     let filteredHotels = [...MOCK_HOTELS];
@@ -61,34 +75,39 @@ export async function searchHotelList(params: HotelListParams): Promise<HotelLis
       const keyword = params.keyword.toLowerCase();
       filteredHotels = filteredHotels.filter(hotel => 
         hotel.name.toLowerCase().includes(keyword) ||
-        hotel.location.toLowerCase().includes(keyword)
+        hotel.location.address.toLowerCase().includes(keyword)
       );
     }
     
-    if (params.star) {
-      const star = parseInt(params.star);
-      filteredHotels = filteredHotels.filter(hotel => hotel.starLevel === star);
+    if (params.starLevels) {
+      // const star = parseInt(params.starLevels);
+      filteredHotels = filteredHotels.filter(hotel => hotel.starLevel === params.starLevels);
     }
     
     // 价格筛选
     if (params.minPrice || params.maxPrice) {
-      const minPrice = params.minPrice ? parseInt(params.minPrice) : 0;
-      const maxPrice = params.maxPrice ? parseInt(params.maxPrice) : Infinity;
+      const minPrice = params.minPrice ? params.minPrice : 0;
+      const maxPrice = params.maxPrice ? params.maxPrice : Infinity;
       filteredHotels = filteredHotels.filter(hotel => 
-        hotel.price >= minPrice && hotel.price <= maxPrice
+        hotel.price.lowest >= minPrice && hotel.price.lowest <= maxPrice
       );
     }
     
-    // 排序
-    if (params.sort) {
-      switch (params.sort) {
-        case 'price-asc':
-          filteredHotels.sort((a, b) => a.price - b.price);
+
+    
+    // 排序 
+    if (params.sortBy !== '') {
+      switch (params.sortBy) {
+        case 'price':
+          filteredHotels.sort((a, b) => a.price.lowest - b.price.lowest);
           break;
-        case 'price-desc':
-          filteredHotels.sort((a, b) => b.price - a.price);
+        case 'distance':
+          filteredHotels.sort((a, b) => a.location.lat*a.location.lat+a.location.lng*a.location.lng - b.location.lat*b.location.lat-b.location.lng*b.location.lng);
           break;
         case 'rating':
+          filteredHotels.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'star':
           filteredHotels.sort((a, b) => b.starLevel - a.starLevel);
           break;
       }
@@ -111,14 +130,25 @@ export async function searchHotelList(params: HotelListParams): Promise<HotelLis
           _id: hotel.id,
           name_cn: hotel.name,
           star_rating: hotel.starLevel,
-          score: 4.5,
-          cover_image: hotel.image,
-          min_price: hotel.price,
+          score: hotel.rating,
+          cover_image: hotel.coverImage,
+          min_price: hotel.price.lowest,
+          original_price: hotel.price.original,
+          discount: hotel.price.discount,
           location: {
-            address: hotel.location,
-            city: params.city || '上海',
-            district: ''
-          }
+            address: hotel.location.address,
+            city: hotel.location.city,
+            district: '',
+            lat: hotel.location.lat,
+            lng: hotel.location.lng,
+            distance: hotel.location.distance
+          },
+          room_availability: {
+            has_available_room: hotel.roomAvailability.hasAvailableRoom,
+            lowest_room_price: hotel.roomAvailability.lowestRoomPrice
+          },
+          review_count: hotel.reviewCount,
+          tags: hotel.tags
         }))
       }
     };
@@ -132,117 +162,60 @@ export async function getHotelDetail(hotelId: string): Promise<HotelDetail> {
     return response.data;
   } catch (error) {
     console.error('Failed to get hotel detail:', error);
+    
     // 返回模拟数据，根据酒店ID返回不同的详情
     const hotelDetail = MOCK_HOTEL_DETAILS[hotelId];
     if (hotelDetail) {
       return hotelDetail;
     }
+    
     // 如果没有对应ID的酒店详情，返回默认数据
     return {
       id: hotelId,
       name: `豪华酒店 ${hotelId}`,
-      imageUrl: MOCK_HOTEL_IMAGES[0],
-      price: 1088,
-      rating: 4.8,
-      location: '上海市静安区',
       starLevel: 5,
-      images: MOCK_HOTEL_IMAGES,
-      reviewCount: 256,
-      distance: '距离市中心3.5公里',
-      mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view&image_size=landscape_16_9',
-      address: '上海市静安区南京西路1268号',
-      phone: '021-12345678',
-      description: '豪华酒店位于上海市中心，交通便利，设施齐全，服务周到，是商务旅行和休闲度假的理想选择。',
-      facilities: MOCK_HOTEL_FACILITIES,
-      checkInTime: '14:00',
-      checkOutTime: '12:00',
-      minPrice: 1088,
+      brand: "豪华品牌",
+      images: [
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      ],
       videoUrl: '',
-      tags: [
-        { icon: '🏢', text: '2020年开业' },
-        { icon: '🎨', text: '新中式风' },
-        { icon: '🅿️', text: '免费停车' },
-        { icon: '🌊', text: '一线江景' },
-        { icon: '🍵', text: '江景下午茶' },
-      ]
+      description: '豪华酒店位于上海市中心，交通便利，设施齐全，服务周到，是商务旅行和休闲度假的理想选择。',
+      location: {
+        address: '上海市静安区南京西路1268号',
+        lat: 31.230393,
+        lng: 121.473701
+      },
+      contact: {
+        phone: '021-12345678'
+      },
+      checkInTime: '15:00',
+      checkOutTime: '12:00',
+      facilities: [],
+      rating: 4.5,
+      reviewCount: 100
     };
   }
 }
 
-// 获取酒店评价
-export async function getHotelReviews(hotelId: string, page = 1, pageSize = 10): Promise<Review[]> {
-  try {
-    const response = await apiClient.get(`/api/hotels/${hotelId}/reviews`, {
-      params: { page, pageSize }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to get hotel reviews:', error);
-    // 返回模拟数据
-    return MOCK_HOTEL_REVIEWS;
-  }
-}
+// 后端房型数据结构
+
 
 // 获取酒店房型
 export async function getHotelRoomTypes(hotelId: string): Promise<RoomType[]> {
   try {
     const response = await apiClient.get(`/api/hotels/${hotelId}/room-types`);
-    return response.data;
+    
+    // 转换后端数据为 RoomType 格式
+    const backendData: RoomType[] = response.data;
+    
+    return backendData.map(room => ({
+      ...room,
+      image: room.image || '', // 确保 image 字段存在
+    }));
   } catch (error) {
     console.error('Failed to get hotel room types:', error);
     // 返回模拟数据 - 根据酒店ID返回对应房型
     return MOCK_ROOMS_BY_HOTEL[hotelId] || [];
-  }
-}
-
-// 获取酒店设施
-export async function getHotelFacilities(hotelId: string): Promise<Facility[]> {
-  try {
-    const response = await apiClient.get(`/api/hotels/${hotelId}/facilities`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to get hotel facilities:', error);
-    // 返回模拟数据
-    return MOCK_HOTEL_FACILITIES;
-  }
-}
-
-// 获取搜索建议
-export async function getSearchSuggestions(keyword: string): Promise<string[]> {
-  try {
-    const response = await apiClient.get('/api/hotels/suggestions', {
-      params: { keyword }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to get search suggestions:', error);
-    // 返回模拟数据
-    return MOCK_SEARCH_SUGGESTIONS;
-  }
-}
-
-// 搜索酒店
-export async function searchHotels(params: SearchParams): Promise<Hotel[]> {
-  try {
-    const response = await apiClient.get('/api/hotels/search', { params });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to search hotels:', error);
-    // 返回模拟数据，匹配后端返回结构
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // 转换为后端返回格式并映射为Hotel类型
-    return MOCK_HOTELS.map(hotel => ({
-      id: hotel.id,
-      name: hotel.name,
-      imageUrl: hotel.image,
-      price: hotel.price,
-      rating: 4.5,
-      location: hotel.location,
-      starLevel: hotel.starLevel,
-      reviewCount: 100,
-      distance: '距离市中心3公里',
-      mapUrl: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=hotel%20location%20map%20view&image_size=landscape_16_9'
-    }));
   }
 }

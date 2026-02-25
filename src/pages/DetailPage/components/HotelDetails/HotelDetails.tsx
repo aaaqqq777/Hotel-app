@@ -3,10 +3,6 @@ import { EnvironmentOutline } from 'antd-mobile-icons';
 import { Tag, Popup } from 'antd-mobile';
 import styles from './HotelDetails.module.css';
 
-interface Tag {
-  icon: string;
-  text: string;
-}
 
 interface HotelDetailsProps {
   hotelName: string;
@@ -15,7 +11,7 @@ interface HotelDetailsProps {
   reviewCount: number;
   address: string;
   distance: string;
-  tags?: Tag[];
+  tags?: { icon: string; text: string }[];
 }
 
 export default function HotelDetails({ 
@@ -50,18 +46,11 @@ export default function HotelDetails({
 
       {/* 酒店标签 */}
       <div className={styles.tagsContainer}>
-        <Tag color="gold" className={styles.tag}>
-          2.5倍积分
-        </Tag>
-        <Tag color="default" className={styles.tag}>
-          免费停车
-        </Tag>
-        <Tag color="default" className={styles.tag}>
-          自助洗衣
-        </Tag>
-        <Tag color="default" className={styles.tag}>
-          早餐袋走
-        </Tag>
+        {tags && tags.map((tag, index) => (
+          <Tag key={index} color={index === 0 ? 'gold' : 'default'} className={styles.tag}>
+            {tag.text}
+          </Tag>
+        ))}
         <div className={styles.facilitiesLink}>
           <a href="#">设施/详情 &gt;</a>
         </div>

@@ -1,12 +1,6 @@
 
 // 广告数据接口
-export interface BannerData {
-  id: string
-  imageUrl: string
-  title: string
-  description: string
-  hotelId: string
-}
+import type { BannerData } from '../../types/hotel';
 
 // 模拟广告数据
 export const MOCK_BANNERS: BannerData[] = [
