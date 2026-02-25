@@ -33,12 +33,31 @@ const HOTEL_BRANDS = ['不限', '万豪', '希尔顿', '洲际', '凯悦', '雅�
 // 模拟酒店星级数据
 const HOTEL_RATINGS = ['不限', '5星', '4星', '3星及以下'];
 
+// 【修复3】价格区间字符串 → minPrice / maxPrice 的映射工具
+function parsePriceRange(price: string): { minPrice?: number; maxPrice?: number } {
+  switch (price) {
+    case '0-500':      return { minPrice: 0, maxPrice: 500 };
+    case '500-1000':   return { minPrice: 500, maxPrice: 1000 };
+    case '1000-2000':  return { minPrice: 1000, maxPrice: 2000 };
+    case '2000+':      return { minPrice: 2000 };
+    default:           return {};  // '不限'
+  }
+}
+
+// 【修复3】星级字符串 → starLevels 数值的映射工具
+function parseStarLevel(rating: string): number | undefined {
+  switch (rating) {
+    case '5星':       return 5;
+    case '4星':       return 4;
+    case '3星及以下':  return 3;
+    default:          return undefined;  // '不限'
+  }
+}
+
 export default function DomesticSearch({ value, onChange, onSearch }: DomesticSearchFormProps) {
   // --- 只管理自己内部的状态 ---
-  // 使用value.city作为初始值，如果没有则使用上海
   const [city, setCity] = useState(value.city || '上海');
   const [keyword, setKeyword] = useState('');
-  // 设置默认开始日期为今天
   const today = new Date();
   const [startDate, setStartDate] = useState<Date | null>(today);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -55,6 +74,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
   const [guestCount, setGuestCount] = useState(value.guestCount || 1);
   const [locationVisible, setLocationVisible] = useState(false)
   const [location, setLocation] = useState<{ value: string; lat: number; lng: number } | null>(null)
+
   // 当外部value变化时，更新内部状态
   useEffect(() => {
     if (value.city && value.city !== city) {
@@ -65,7 +85,6 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
   // 当城市变化时，更新城市标签
   useEffect(() => {
     setCityTags(CITY_TAGS[city] || CITY_TAGS['上海']);
-    // 重置选中的标签
     setSelectedTags([]);
   }, [city]);
 
@@ -103,11 +122,13 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
       </div>
     );
   };
+
   const handleLocation = () => {
     setLocationVisible(true)
   }
 
   const handleTagClick = (tag: string) => {
+    console.log('clicked', tag, selectedTags)
     setSelectedTags(prev => {
       if (prev.includes(tag)) {
         return prev.filter(t => t !== tag);
@@ -117,20 +138,31 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
     });
   };
 
-  const handleInternalSearch = () => {
-    // --- 汇总自己内部的数据 ---
-    const formData: SearchFormData = {
+  // 【修复3】将所有内部状态汇总为 SearchFormData 的工具函数
+  const collectFormData = (): SearchFormData => {
+    const priceRange = parsePriceRange(selectedPrice);
+    return {
       region: 'domestic',
       city: city || '上海',
       keyword,
       dates: startDate && endDate ? [startDate, endDate] : undefined,
       brands: selectedBrand !== '不限' ? [selectedBrand] : undefined,
+      starLevels: parseStarLevel(selectedRating),  // ← 新增：星级同步
+      minPrice: priceRange.minPrice,                // ← 新增：最低价同步
+      maxPrice: priceRange.maxPrice,                // ← 新增：最高价同步
       roomCount,
       guestCount,
       tags: selectedTags.length > 0 ? selectedTags : undefined,
+      lat: location?.lat,                           // ← 新增：定位坐标同步
+      lng: location?.lng,                           // ← 新增：定位坐标同步
     }
+  }
+
+  const handleInternalSearch = () => {
+    const formData = collectFormData()
+    console.log(formData)
     onChange(formData)
-    onSearch(formData)  // 直接传出去，解决异步问题
+    onSearch(formData)
   };
 
   return (
@@ -264,7 +296,6 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
                     key={cityItem}
                     fill="outline"
                     onClick={() => {
-                      // 限制城市名称长度为8个字符，防止影响图标显示
                       const truncatedCity = cityItem.length > 8 ? cityItem.substring(0, 8) + '...' : cityItem;
                       setCity(truncatedCity);
                       setCityVisible(false);

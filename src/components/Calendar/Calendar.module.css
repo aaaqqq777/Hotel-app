@@ -66,10 +66,10 @@
 }
 
 .selected { /* 选中的日期 */
-  background-color: #007bff;
+  background-color: #C8963E;
   color: white;
 }
 
 .today { /* 今天的日期 */
-  border: 1px solid #007bff;
+  border: 1px solid #C8963E;
 }

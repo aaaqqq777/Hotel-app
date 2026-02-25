@@ -251,8 +251,6 @@
 /* ══ 第四行：地标标签横滑 ════════════════════ */
 .tagContainer {
   width: 100%;
-  /* 关键：overflow-x: auto 让子元素可以横向滚动
-     不能写 overflow: hidden，否则截断滚动 */
   overflow-x: auto;
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
@@ -266,14 +264,21 @@
 
 .tagScroll {
   display: flex;
-  flex-wrap: nowrap;        /* 关键：不换行 */
+  flex-wrap: nowrap;
   gap: 8px;
-  width: max-content;       /* 关键：撑开横向宽度 */
+  width: max-content;
   padding: 2px 1px;
 }
 
-/* 标签按钮基础样式（未选中）
-   通过 .tagScroll 后代提高特异性 */
+/* ══════════════════════════════════════════
+   【修复2】标签按钮选中样式
+   antd-mobile v5 的 fill="solid" 生成的类名是
+   .adm-button-fill-solid（不是 .adm-button-solid）
+   同时 color="primary" 生成 .adm-button-primary
+   需要同时覆盖这两组类名，确保选中态可见
+   ══════════════════════════════════════════ */
+
+/* 标签按钮基础样式（未选中） */
 .tagScroll :global(.adm-button) {
   border-radius: 20px;
   padding: 0 16px;
@@ -287,12 +292,15 @@
   flex-shrink: 0;
   white-space: nowrap;
   transition: color 0.15s, background 0.15s, border-color 0.15s;
-  /* 选中/未选中统一尺寸，不允许有大小变化 */
   min-width: unset;
+  /* 覆盖 antd-mobile 主题色，防止默认蓝色 */
+  --adm-color-primary: #C8963E;
+  --adm-color-text-light-solid: #9A6F28;
 }
 
-/* 选中标签：同样 height/padding，只改颜色 */
-.tagScroll :global(.adm-button.adm-button-solid) {
+/* 选中标签 — 兼容 antd-mobile v5 类名 .adm-button-fill-solid
+   使用三级选择器确保优先级高于 antd-mobile 内置样式 */
+.container .tagScroll :global(.adm-button-fill-solid) {
   height: 34px;
   line-height: 34px;
   padding: 0 16px;
@@ -302,6 +310,26 @@
   font-weight: 600;
   box-shadow: none;
   transform: none;
+}
+
+/* 同时兼容可能的 .adm-button-solid 类名（antd-mobile 旧版本） */
+.container .tagScroll :global(.adm-button-solid) {
+  height: 34px;
+  line-height: 34px;
+  padding: 0 16px;
+  background: #F5ECD7;
+  border: 1px solid #C8963E;
+  color: #9A6F28;
+  font-weight: 600;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 额外覆盖: fill-solid + primary 组合 */
+.container .tagScroll :global(.adm-button-fill-solid.adm-button-primary) {
+  background: #F5ECD7;
+  border-color: #C8963E;
+  color: #9A6F28;
 }
 
 /* ══ 搜索按钮 ════════════════════════════════ */
@@ -344,11 +372,31 @@
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 }
-.filterPopup :global(.adm-popup-body){
-  overflow: visible;
-}
+
 .cityPopup :global(.adm-popup-body)   { height: 70%; }
-.filterPopup :global(.adm-popup-body) { height: 50%; }
+
+/* ══════════════════════════════════════════
+   【修复1】filterPopup 弹窗可滚动
+   - popup-body 用 overflow: hidden + 圆角（防止内容溢出圆角）
+   - popupContent 内部用 overflow-y: auto 实现滚动
+   ══════════════════════════════════════════ */
+.filterPopup :global(.adm-popup-body) {
+  height: 70%;                          /* 加大高度，容纳更多筛选项 */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  overflow: hidden;                     /* 配合圆角裁剪 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 弹窗内容区可滚动 */
+.filterPopup .popupContent {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 80px;                 /* 为底部确定按钮留空间 */
+}
 
 /* 弹窗内分区 */
 .sectionContainer {
@@ -383,7 +431,6 @@
   background: #F8F6F2;
   color: #1A1A2E;
   box-shadow: none;
-  /* overflow: visible; */
 }
 
 /* 弹窗内 Input */

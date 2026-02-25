@@ -90,23 +90,27 @@
   width: 4px;
   height: 4px;
   border-radius: 80%;
-  background-color: #007bff;
+  /* background-color: #007bff; */
+  background-color: #edaf43;
 }
 
 
 /* --- 范围选择样式 --- */
 
 .inRange {
-  background-color: #007bffd8; /* 淡蓝色背景 */
+  /* background-color: #007bffd8; 淡蓝色背景 */
+  background-color: #f1dba6;
   color: #ffffff;
 }
 
 .startDate, .endDate {
-  background-color: #007bff;
+  /* background-color: #007bff;*/
+  background-color: #edaf43; 
   color: white;
 }
 .startDate:hover, .endDate:hover {
-  background-color: #007bff;
+  /* background-color: #007bff; */
+  background-color: #edaf43;
   color: white;
 }
 
