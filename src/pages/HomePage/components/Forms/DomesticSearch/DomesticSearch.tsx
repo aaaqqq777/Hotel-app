@@ -6,7 +6,7 @@ import type { SearchFormData } from '../../../hooks/useSearchParams'
 import styles from './DomesticSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
-
+import LocationPicker from '../../../../../components/LocationPick/LocationPick';
 // 定义该组件接收的 Props
 interface DomesticSearchFormProps {
   value: SearchFormData
@@ -53,7 +53,8 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
   const [roomGuestVisible, setRoomGuestVisible] = useState(false);
   const [roomCount, setRoomCount] = useState(value.roomCount || 1);
   const [guestCount, setGuestCount] = useState(value.guestCount || 1);
-  
+  const [locationVisible, setLocationVisible] = useState(false)
+  const [location, setLocation] = useState<{ value: string; lat: number; lng: number } | null>(null)
   // 当外部value变化时，更新内部状态
   useEffect(() => {
     if (value.city && value.city !== city) {
@@ -102,14 +103,9 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
       </div>
     );
   };
-
   const handleLocation = () => {
-    // 模拟定位功能，限制城市名称长度
-    const locationName = '当前位置';
-    // 限制城市名称长度为8个字符，防止影响图标显示
-    const truncatedName = locationName.length > 8 ? locationName.substring(0, 8) + '...' : locationName;
-    setCity(truncatedName);
-  };
+    setLocationVisible(true)
+  }
 
   const handleTagClick = (tag: string) => {
     setSelectedTags(prev => {
@@ -218,6 +214,21 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
           查 询
         </Button>
 
+        <Popup
+          visible={locationVisible}
+          onMaskClick={() => setLocationVisible(false)}
+          position="bottom"
+          bodyStyle={{ height: '80vh' }}
+        >
+          <LocationPicker
+            onConfirm={(loc) => {
+              setLocation({ value: '当前位置', ...loc })
+              setCity('当前位置')
+              setLocationVisible(false)
+            }}
+            onCancel={() => setLocationVisible(false)}
+          />
+        </Popup>
         {/* 日历选择弹窗 */}
         <Popup
           visible={calendarVisible}

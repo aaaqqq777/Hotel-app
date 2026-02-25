@@ -9,35 +9,78 @@ import { getAdvertisements } from '../api/advertisement/advertisement';
 export type { HotelSearchParams as HotelListParams, HotelListResponse };
 
 // ─── 后端字段 → HotelListItem（唯一一份，不再重复） ───────────────────
+// function mapHotel(hotel: any, city: string): HotelListItem {
+//   return {
+//     id:          hotel._id || '',
+//     name:        hotel.name_cn || '未知酒店',
+//     coverImage:  hotel.cover_image || '',
+//     images:      [hotel.cover_image || ''],
+//     starLevel:   hotel.star_rating || 0,
+//     rating:      hotel.score || 0,
+//     reviewCount: hotel.review_count || 0,
+//     price: {
+//       lowest:   hotel.min_price || 0,
+//       original: hotel.original_price,
+//       discount: hotel.discount,
+//     },
+//     location: {
+//       city:     hotel.location?.city || city,
+//       address:  hotel.location?.address || hotel.location?.district || '未知位置',
+//       lat:      hotel.location?.lat || 0,
+//       lng:      hotel.location?.lng || 0,
+//       distance: hotel.location?.distance,
+//     },
+//     roomAvailability: {
+//       hasAvailableRoom: hotel.room_availability?.has_available_room ?? true,
+//       lowestRoomPrice:  hotel.room_availability?.lowest_room_price,
+//     },
+//     tags: hotel.tags || [],
+//   };
+// }
 function mapHotel(hotel: any, city: string): HotelListItem {
+  const rooms = Array.isArray(hotel.available_rooms)
+    ? hotel.available_rooms.filter(
+        (r: any) => r.status === 1 && r.is_published === true
+      )
+    : [];
+
+  const lowestRoomPrice =
+    rooms.length > 0
+      ? Math.min(...rooms.map((r: any) => r.price))
+      : undefined;
+
   return {
-    id:          hotel._id || '',
-    name:        hotel.name_cn || '未知酒店',
-    coverImage:  hotel.cover_image || '',
-    images:      [hotel.cover_image || ''],
-    starLevel:   hotel.star_rating || 0,
-    rating:      hotel.score || 0,
+    id: hotel._id,
+    name: hotel.name_cn,
+
+    coverImage: hotel.cover_image,
+    images: hotel.detail_images || [],
+
+    starLevel: hotel.star_rating || 0,
+    rating: hotel.score || 0,
     reviewCount: hotel.review_count || 0,
+
     price: {
-      lowest:   hotel.min_price || 0,
-      original: hotel.original_price,
+      lowest: hotel.min_price || lowestRoomPrice || 0,
       discount: hotel.discount,
+      original: rooms[0]?.original_price,
     },
+
     location: {
-      city:     hotel.location?.city || city,
-      address:  hotel.location?.address || hotel.location?.district || '未知位置',
-      lat:      hotel.location?.lat || 0,
-      lng:      hotel.location?.lng || 0,
-      distance: hotel.location?.distance,
+      city: hotel.city || city,
+      address: hotel.address,
+      lat: hotel.location?.coordinates?.[1] ?? 0,
+      lng: hotel.location?.coordinates?.[0] ?? 0,
     },
+
     roomAvailability: {
-      hasAvailableRoom: hotel.room_availability?.has_available_room ?? true,
-      lowestRoomPrice:  hotel.room_availability?.lowest_room_price,
+      hasAvailableRoom: rooms.length > 0,
+      lowestRoomPrice,
     },
+
     tags: hotel.tags || [],
   };
 }
-
 function mapResponse(response: HotelListResponse, city: string) {
   return {
     ...response,
@@ -59,10 +102,20 @@ export const queryKeys = {
 };
 
 // ─── Hooks ────────────────────────────────────────────────────────────
+// export function useHotelDetail(hotelId: string) {
+//   return useQuery({
+//     queryKey: queryKeys.hotelDetail(hotelId),
+
+//     queryFn:  () => getHotelDetail(hotelId),
+//   });
+// }
 export function useHotelDetail(hotelId: string) {
   return useQuery({
     queryKey: queryKeys.hotelDetail(hotelId),
-    queryFn:  () => getHotelDetail(hotelId),
+    queryFn: () => {
+      console.log('🔍 请求酒店详情，hotelId:', hotelId);  // ← 加这行
+      return getHotelDetail(hotelId);
+    },
   });
 }
 

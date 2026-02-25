@@ -19,12 +19,12 @@ export const routes: AppRouteObject[] = [
 
   {
     // 列表页没有 TabBar，所以我们把它作为一个独立的顶层路由
-    path: '/Homepage',
+    path: '/hhomepage',
     element: <HomePage />,
     title: '首页',
   },  
   {
-    path: '/Hotellist',
+    path: '/hotellist',
     element: <HotelListPage />,
     title: '酒店列表',
   },

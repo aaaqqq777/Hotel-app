@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Popup } from 'antd-mobile';
 import PeriodCalendar from '../../../../components/PeriodCalendar/PeriodCalendar';
 import styles from './DateSelection.module.css';
@@ -13,71 +13,89 @@ export default function DateSelection({ checkInDate, checkOutDate }: DateSelecti
   const [startDate, setStartDate] = useState<Date | null>(new Date(checkInDate));
   const [endDate, setEndDate] = useState<Date | null>(new Date(checkOutDate));
 
-  // 格式化日期为 MM.DD 格式
-  const formatDate = (date: Date) => {
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${month}月${day}日`;
-  };
-
   // 获取星期几
   const getDayOfWeek = (date: Date) => {
     const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     return days[date.getDay()];
   };
 
+  // 判断是否是今天
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  };
+
+  // 判断是否是明天
+  const isTomorrow = (date: Date) => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return date.toDateString() === tomorrow.toDateString();
+  };
+
+  // 获取日期标签（今天/明天/周几）
+  const getDateLabel = (date: Date) => {
+    if (isToday(date)) return '今天';
+    if (isTomorrow(date)) return '明天';
+    return getDayOfWeek(date);
+  };
+
+  // 计算住几晚
+  const nights = useMemo(() => {
+    if (startDate && endDate) {
+      return Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    }
+    return 0;
+  }, [startDate, endDate]);
+
   // 处理日期变化
-  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
-    console.log('Selected dates:', { startDate, endDate });
-    if (endDate) {
+  const handleDateChange = (start: Date | null, end: Date | null) => {
+    setStartDate(start);
+    setEndDate(end);
+    if (end) {
       setCalendarVisible(false);
     }
   };
 
   return (
     <div className={styles.container}>
+      {/* 三列日期选择区 */}
       <div className={styles.dateSelector} onClick={() => setCalendarVisible(true)}>
-        <div className={styles.dateInfo}>
-          <div className={styles.dateRow}>
-            <div className={styles.dateRange}>
-              {startDate && endDate ? (
-                <>
-                  <span className={styles.dateText}>
-                    {formatDate(startDate)} - {formatDate(endDate)}
-                  </span>
-                  <div className={styles.weekInfo}>
-                    {getDayOfWeek(startDate)}入住 {getDayOfWeek(endDate)}离店
-                  </div>
-                </>
-              ) : (
-                <span className={styles.datePlaceholder}>选择入住和离店日期</span>
-              )}
-            </div>
-            <div className={styles.roomTypeSelector}>
-              {/* <Button 
-                size="small" 
-                fill="solid" 
-                color="primary" 
-                className={styles.roomTypeButton}
-              >
-                全日房
-              </Button>
-              <Button 
-                size="small" 
-                fill="outline" 
-                color="primary" 
-                className={styles.roomTypeButton}
-              >
-                钟点房
-              </Button> */}
-            </div>
-          </div>
+        {/* 入住日期 */}
+        <div className={styles.dateBlock}>
+          {startDate && (
+            <>
+              <div className={styles.dateMain}>
+                <span className={styles.dateDay}>
+                  {startDate.getMonth() + 1}月{startDate.getDate()}日
+                </span>
+                <span className={styles.dateLabel}>{getDateLabel(startDate)}</span>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* 住几晚 */}
+        <div className={styles.nightsBlock}>
+          <span className={styles.nightsText}>{nights}晚</span>
+        </div>
+
+        {/* 离店日期 */}
+        <div className={styles.dateBlock}>
+          {endDate && (
+            <>
+              <div className={styles.dateMain}>
+                <span className={styles.dateDay}>
+                  {endDate.getMonth() + 1}月{endDate.getDate()}日
+                </span>
+                <span className={styles.dateLabel}>{getDateLabel(endDate)}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* 日历选择弹窗 */}
+
+      {/* 日历弹窗 */}
       <Popup
         visible={calendarVisible}
         onMaskClick={() => setCalendarVisible(false)}
@@ -86,7 +104,7 @@ export default function DateSelection({ checkInDate, checkOutDate }: DateSelecti
       >
         <div style={{ padding: '16px' }}>
           <h3 style={{ textAlign: 'center', margin: '0 0 16px 0' }}>选择日期</h3>
-          <PeriodCalendar 
+          <PeriodCalendar
             startDate={startDate}
             endDate={endDate}
             onDateChange={handleDateChange}

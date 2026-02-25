@@ -1,46 +1,71 @@
-import { apiClient } from '../config';
-import type { HotelSearchParams } from '../../types/hotel';
+// import { apiClient } from '../config';
+// import type { HotelSearchParams } from '../../types/hotel';
 import { getMockHotelList } from '../../data/MOCK/hotellist/mockHotelService';
+import { api } from '../index';
+import type { HotelSearchParams } from '../../types/hotel';
 
-// 后端响应结构
 export interface HotelListResponse {
   code: number;
   data: {
     total: number;
-    list: Array<{
-      _id: string;
-      name_cn: string;
-      star_rating: number;
-      score: number;
-      cover_image: string;
-      min_price: number;
-      original_price?: number;
-      discount?: number;
-      location: {
-        address?: string;
-        city?: string;
-        district?: string;
-        lat: number;
-        lng: number;
-        distance?: number;
-        [key: string]: any;
-      };
-      room_availability: {
-        has_available_room: boolean;
-        lowest_room_price?: number;
-      };
-      review_count?: number;
-      tags?: string[];
-    }>;
+    list: any[];
   };
 }
+
+// export async function searchHotelList(
+//   params: HotelSearchParams
+// ): Promise<HotelListResponse> {
+//   try {
+//     // return await api.get('/api/hotels/search', { params });
+    
+//     return await api.get('/api/hot', { params });
+//   } catch (error) {
+//     console.error('❌ searchHotelList 请求失败:', error);
+//     throw error;
+//   }
+// }
+// 后端响应结构
+// export interface HotelListResponse {
+//   code: number;
+//   data: {
+//     total: number;
+//     list: Array<{
+//       _id: string;
+//       name_cn: string;
+//       star_rating: number;
+//       score: number;
+//       cover_image: string;
+//       min_price: number;
+//       discount?: number;
+//       review_count?: number;
+//       tags?: string[];
+
+//       city?: string;
+//       address?: string;
+
+//       location?: {
+//         type: 'Point';
+//         coordinates: [number, number]; // [lng, lat]
+//       };
+
+//       available_rooms?: Array<{
+//         price: number;
+//         original_price?: number;
+//         status: number;
+//         is_published: boolean;
+//       }>;
+//     }>;
+//   };
+// }
+
+
 
 export async function searchHotelList(
   params: HotelSearchParams
 ): Promise<HotelListResponse> {
   console.log('🔍 searchHotelList 请求参数:', params);
   try {
-    const response = await apiClient.get('/api/hotels', { params });
+    const response = await api.get('/api/hotelssd', { params });
     console.log('✅ searchHotelList 响应:', response.data);
     return response.data;
   } catch (error) {

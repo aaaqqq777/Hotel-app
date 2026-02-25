@@ -72,7 +72,6 @@ export interface HotelDetail {
 
   starLevel: number;
   brand?: string;
-  score?: number;
 
   images: string[];
   videoUrl?: string;
@@ -92,9 +91,9 @@ export interface HotelDetail {
   checkInTime: string;
   checkOutTime: string;
 
-  facilities: [];
+  facilities: string[];
 
-  rating: number;
+  rating?: number;
   reviewCount: number;
 }
 
