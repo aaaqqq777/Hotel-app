@@ -307,7 +307,7 @@ export const MOCK_ROOMS_BY_HOTEL: Record<string, RoomType[]> = {
       image: "https://images.unsplash.com/photo-1618826237711-79d840e35cbc?auto=format&fit=crop&w=800&q=80",
       maxOccupancy: 2,
       price: { current: 1288, original: 1588, discount: 0.81 },
-      availability: { remaining: 5, isSoldOut: false },
+      availability: { remaining: 6, isSoldOut: false },
       tags: ["免费WiFi", "迷你吧", "浴缸"],
     },
     {
@@ -339,7 +339,7 @@ export const MOCK_ROOMS_BY_HOTEL: Record<string, RoomType[]> = {
       image: "https://images.unsplash.com/photo-1590490360182-c33d2ef20d18?auto=format&fit=crop&w=800&q=80",
       maxOccupancy: 2,
       price: { current: 2158, original: 2588, discount: 0.83 },
-      availability: { remaining: 4, isSoldOut: false },
+      availability: { remaining: 6, isSoldOut: false },
       tags: ["黄浦江景", "免费WiFi", "浴缸"],
     },
     {

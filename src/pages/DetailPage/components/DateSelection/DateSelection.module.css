@@ -3,6 +3,8 @@
   margin-top: 8px;
   border-radius: 8px;
   overflow: hidden;
+  height: 100px;
+  margin-bottom: 8px;
 }
 
 /* ── 三列日期 ──────────────────────────────── */
@@ -12,6 +14,8 @@
   justify-content: space-between;
   padding: 28px 20px;
   cursor: pointer;
+  margin-bottom: 18px;
+  margin-top: 18px;
 }
 
 .dateBlock {
@@ -59,7 +63,7 @@
   transform: translateY(-50%);
   width: 1px;
   height: 28px;
-  background: #E8D9BF;
+  background: #ffffff;
 }
 
 .nightsBlock::before { left: 0; }

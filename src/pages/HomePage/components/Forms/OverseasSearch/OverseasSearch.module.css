@@ -466,3 +466,79 @@
 .horizontalSpace {
   --gap: 8px;
 }
+/* 自定义标签 */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 0 16px;
+  font-size: 14px;
+  height: 34px;
+  line-height: 34px;
+  border: 1px solid rgba(26,26,46,0.12);
+  background: #F8F6F2;
+  color: #6B6B8A;
+  flex-shrink: 0;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tag:active { opacity: 0.8; }
+
+.tagActive {
+  background: #F5ECD7;
+  border-color: #C8963E;
+  color: #9A6F28;
+  font-weight: 600;
+}
+
+/* 弹窗内标签换行 */
+.popupTagWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+/* 筛选弹窗布局 */
+.filterPopup :global(.adm-popup-body) {
+  height: 75vh;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.filterScrollArea {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 22px 16px 16px;
+}
+
+.filterScrollArea::-webkit-scrollbar { display: none; }
+
+.filterFooter {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: #FFFFFF;
+  border-top: 1px solid rgba(26,26,46,0.06);
+}
+
+.filterFooter :global(.adm-button) {
+  background: linear-gradient(135deg, #C8963E 0%, #9A6F28 100%);
+  border: none;
+  border-radius: 12px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(200,150,62,0.3);
+  --adm-color-primary: #C8963E;
+}

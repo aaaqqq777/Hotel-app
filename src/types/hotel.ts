@@ -14,7 +14,7 @@ export interface HotelSearchParams {
   brands?: string[];
   score?: number;
   sortBy?: 'price' | 'distance' | 'rating' | 'star' | '';
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: 'asc' | 'desc' | '';
 
   page: number;
   pageSize: number;
@@ -66,13 +66,15 @@ export interface HotelFilterParams {
 
 export type SortType = 'price-asc' | 'price-desc' | 'rating' | 'default';
 
+
 export interface HotelDetail {
   id: string;
   name: string;
-
   starLevel: number;
   brand?: string;
+  hotelType?: string;
 
+  coverImage?: string;
   images: string[];
   videoUrl?: string;
 
@@ -80,6 +82,9 @@ export interface HotelDetail {
 
   location: {
     address: string;
+    city?: string;
+    district?: string;
+    businessZone?: string;
     lat: number;
     lng: number;
   };
@@ -92,6 +97,11 @@ export interface HotelDetail {
   checkOutTime: string;
 
   facilities: string[];
+  services?: string[];
+  tags?: string[];
+  reviewTags?: string[];
+  minPrice?: number;
+  discount?: number;
 
   rating?: number;
   reviewCount: number;
@@ -102,6 +112,7 @@ export interface RoomType {
   name: string;
   area: number;
   image: string;
+  images?: string[];
   maxOccupancy: number;
 
   price: {
@@ -114,9 +125,35 @@ export interface RoomType {
     remaining: number;
     isSoldOut: boolean;
   };
+
   description?: string;
   tags?: string[];
+  bedType?: string;
+  hasBathtub?: boolean;
+  windowStatus?: string;
+  breakfast?: string;
+  facilities?: string[];
 }
+// export interface RoomType {
+//   id: string;
+//   name: string;
+//   area: number;
+//   image: string;
+//   maxOccupancy: number;
+
+//   price: {
+//     current: number;
+//     original?: number;
+//     discount?: number;
+//   };
+
+//   availability: {
+//     remaining: number;
+//     isSoldOut: boolean;
+//   };
+//   description?: string;
+//   tags?: string[];
+// }
 //advertisement
 export interface BannerData {
   id: string

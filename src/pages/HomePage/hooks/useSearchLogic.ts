@@ -63,7 +63,7 @@ export function useSearchLogic() {
       roomCount: raw.roomCount,
       guestCount: raw.guestCount,
       sortBy: 'price',
-      sortOrder: 'asc',
+      sortOrder: '',
       page: 1,
       pageSize: 10,
       lat,

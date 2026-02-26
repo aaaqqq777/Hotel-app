@@ -129,3 +129,11 @@
 .startDate.endDate {
   border-radius: 80%;
 }
+.disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.disabled .day {
+  pointer-events: none;
+}

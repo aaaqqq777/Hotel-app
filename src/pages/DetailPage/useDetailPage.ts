@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   useHotelDetail,
   useHotelRoomTypes
@@ -13,33 +13,58 @@ const DEFAULT_HOTEL_DETAIL: HotelDetail = {
   name: '加载中...',
   starLevel: 0,
   brand: '',
+  hotelType: '',
+  coverImage: '',
   images: [],
   videoUrl: '',
   description: '酒店详情加载中...',
   location: {
     address: '地址加载中...',
+    city: '',
+    district: '',
+    businessZone: '',
     lat: 0,
     lng: 0,
   },
-  contact: {
-    phone: '',
-  },
+  contact: { phone: '' },
   checkInTime: '15:00',
   checkOutTime: '12:00',
   facilities: [],
+  services: [],
+  tags: [],
+  reviewTags: [],
   rating: 0,
   reviewCount: 0,
 };
-
 export function useDetailPage() {
-  // ───────── URL 参数 ─────────
+  // useDetailPage.ts 中
   const [searchParams] = useSearchParams();
   const hotelId = searchParams.get('id') || '1';
 
-  // ───────── 日期状态 ─────────
-  const [checkInDate] = useState('2026-02-20');
-  const [checkOutDate] = useState('2026-02-21');
+  // 从 URL 读取日期，有默认值
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
+  const [checkInDate, setCheckInDate] = useState(
+    searchParams.get('checkInDate') || today.toISOString().split('T')[0]
+  );
+  const [checkOutDate, setCheckOutDate] = useState(
+    searchParams.get('checkOutDate') || tomorrow.toISOString().split('T')[0]
+  );
+  const navigate = useNavigate(); // 需要导入
+
+  const handleDateChange = useCallback((checkIn: string, checkOut: string) => {
+    setCheckInDate(checkIn);
+    setCheckOutDate(checkOut);
+    // 同步到 URL
+    const sp = new URLSearchParams(window.location.search);
+    sp.set('checkInDate', checkIn);
+    sp.set('checkOutDate', checkOut);
+    navigate(`/detailpage?${sp.toString()}`, { replace: true });
+  }, [navigate]);
+
+ 
   // ───────── 底部栏显隐 ─────────
   const [showBottomBar, setShowBottomBar] = useState(true);
   const lastScrollTopRef = useRef(0);
@@ -134,5 +159,6 @@ export function useDetailPage() {
     handleServiceTagSelect,
     handleViewRooms,
     handleContactHotel,
+    handleDateChange,
   };
 }

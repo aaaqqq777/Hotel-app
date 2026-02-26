@@ -129,3 +129,24 @@
   .priceValue { font-size: 18px; }
   .viewButton { padding: 6px 18px; font-size: 13px; }
 }
+.phonePopup {
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.phoneTitle {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+
+.phoneNumber {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #C8963E;
+  padding: 8px 0;
+}

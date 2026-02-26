@@ -100,11 +100,7 @@ export default function HotelDetails({
         </div>
       </div>
 
-      {/* 打车 */}
-      <div className={styles.taxiBar}>
-        <span className={styles.taxiIcon}>🚖</span>
-        <span className={styles.taxiText}>打车</span>
-      </div>
+      
 
       {/* 评价弹窗 */}
       <Popup

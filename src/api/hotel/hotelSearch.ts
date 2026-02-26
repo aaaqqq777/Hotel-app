@@ -65,7 +65,7 @@ export async function searchHotelList(
 ): Promise<HotelListResponse> {
   console.log('🔍 searchHotelList 请求参数:', params);
   try {
-    const response = await api.get('/api/hotelssd', { params });
+    const response = await api.get('/api/hotels/search', { params });
     console.log('✅ searchHotelList 响应:', response.data);
     return response.data;
   } catch (error) {

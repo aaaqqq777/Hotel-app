@@ -167,10 +167,13 @@ function HotelListPage() {
     })
     if (node) observerRef.current.observe(node)
   }, [isLoading, hasMore, loadMoreHotels])
-
+// HotelListPage.tsx
   const handleViewDetail = (hotelId: string) => {
-    navigate(`/detailpage?id=${hotelId}`)
-  }
+    const sp = new URLSearchParams(window.location.search);
+    const checkIn = sp.get('checkInDate') || '';
+    const checkOut = sp.get('checkOutDate') || '';
+    navigate(`/detailpage?id=${hotelId}&checkInDate=${checkIn}&checkOutDate=${checkOut}`);
+  };
 
   const handleOpenFilter = () => {
     console.log('打开筛选面板')

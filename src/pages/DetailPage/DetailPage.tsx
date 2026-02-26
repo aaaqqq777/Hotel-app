@@ -22,8 +22,9 @@ function DetailPage() {
     // handleServiceTagSelect,
     handleViewRooms,
     handleContactHotel,
+    handleDateChange,
   } = useDetailPage();
-
+  
   return (
     <div className={styles.container}>
       {/* 顶部导航栏 */}
@@ -49,8 +50,11 @@ function DetailPage() {
         />
 
         {/* 日期选择 */}
-        <DateSelection checkInDate={checkInDate} checkOutDate={checkOutDate} />
-
+        <DateSelection
+          checkInDate={checkInDate}
+          checkOutDate={checkOutDate}
+          onDateChange={handleDateChange}
+        />
         {/* 服务标签 */}
         {/* <ServiceTags tags={serviceTags} onTagSelect={handleServiceTagSelect} /> */}
 
@@ -61,11 +65,18 @@ function DetailPage() {
       </div>
 
       {/* 底部栏 */}
+      {/* <BottomBar
+        minPrice={minPrice}
+        onViewRooms={handleViewRooms}
+        onContactHotel={handleContactHotel}
+        visible={showBottomBar}
+      /> */}
       <BottomBar
         minPrice={minPrice}
         onViewRooms={handleViewRooms}
         onContactHotel={handleContactHotel}
         visible={showBottomBar}
+        hotelPhone={currentHotelDetail.contact?.phone || ''}
       />
     </div>
   );
