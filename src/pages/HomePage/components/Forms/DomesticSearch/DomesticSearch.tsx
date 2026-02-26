@@ -7,14 +7,13 @@ import styles from './DomesticSearch.module.css';
 import { differenceInCalendarDays } from 'date-fns';
 import PeriodCalendar from '../../../../../components/PeriodCalendar/PeriodCalendar';
 import LocationPicker from '../../../../../components/LocationPick/LocationPick';
-// 定义该组件接收的 Props
+
 interface DomesticSearchFormProps {
   value: SearchFormData
   onChange: (data: SearchFormData) => void
-  onSearch: (data: SearchFormData) => void  // 带参数
+  onSearch: (data: SearchFormData) => void
 }
 
-// 模拟城市常用标签数据
 const CITY_TAGS: { [key: string]: string[] } = {
   '上海': ['外滩', '陆家嘴', '虹桥', '浦东机场', '迪士尼', '徐家汇', '南京路', '静安寺'],
   '北京': ['天安门', '故宫', '颐和园', '长城', 'CBD', '中关村', '望京', '首都机场'],
@@ -27,35 +26,46 @@ const CITY_TAGS: { [key: string]: string[] } = {
   '当前位置': ['市中心', '机场', '火车站', '商业区', '景区', '高校', '医院', '地铁站']
 };
 
-// 模拟酒店品牌数据
 const HOTEL_BRANDS = ['不限', '万豪', '希尔顿', '洲际', '凯悦', '雅高', '香格里拉'];
-
-// 模拟酒店星级数据
 const HOTEL_RATINGS = ['不限', '5星', '4星', '3星及以下'];
+const PRICE_RANGES = ['不限', '0-500', '500-1000', '1000-2000', '2000+'];
 
-// 【修复3】价格区间字符串 → minPrice / maxPrice 的映射工具
+// 价格区间 → minPrice / maxPrice
 function parsePriceRange(price: string): { minPrice?: number; maxPrice?: number } {
   switch (price) {
     case '0-500':      return { minPrice: 0, maxPrice: 500 };
     case '500-1000':   return { minPrice: 500, maxPrice: 1000 };
     case '1000-2000':  return { minPrice: 1000, maxPrice: 2000 };
     case '2000+':      return { minPrice: 2000 };
-    default:           return {};  // '不限'
+    default:           return {};
   }
 }
 
-// 【修复3】星级字符串 → starLevels 数值的映射工具
+// 星级字符串 → 数值
 function parseStarLevel(rating: string): number | undefined {
   switch (rating) {
     case '5星':       return 5;
     case '4星':       return 4;
     case '3星及以下':  return 3;
-    default:          return undefined;  // '不限'
+    default:          return undefined;
   }
 }
 
+// ═══════════════════════════════════════════
+// 自定义 Tag 组件 — 彻底绕开 antd-mobile Button 样式问题
+// ═══════════════════════════════════════════
+function Tag({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <span
+      className={`${styles.tag} ${active ? styles.tagActive : ''}`}
+      onClick={onClick}
+    >
+      {label}
+    </span>
+  )
+}
+
 export default function DomesticSearch({ value, onChange, onSearch }: DomesticSearchFormProps) {
-  // --- 只管理自己内部的状态 ---
   const [city, setCity] = useState(value.city || '上海');
   const [keyword, setKeyword] = useState('');
   const today = new Date();
@@ -72,73 +82,56 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
   const [roomGuestVisible, setRoomGuestVisible] = useState(false);
   const [roomCount, setRoomCount] = useState(value.roomCount || 1);
   const [guestCount, setGuestCount] = useState(value.guestCount || 1);
-  const [locationVisible, setLocationVisible] = useState(false)
-  const [location, setLocation] = useState<{ value: string; lat: number; lng: number } | null>(null)
+  const [locationVisible, setLocationVisible] = useState(false);
+  const [location, setLocation] = useState<{ value: string; lat: number; lng: number } | null>(null);
 
-  // 当外部value变化时，更新内部状态
   useEffect(() => {
     if (value.city && value.city !== city) {
       setCity(value.city);
     }
   }, [value.city]);
 
-  // 当城市变化时，更新城市标签
   useEffect(() => {
     setCityTags(CITY_TAGS[city] || CITY_TAGS['上海']);
     setSelectedTags([]);
   }, [city]);
 
-  const handleDateChange = (startDate: Date | null, endDate: Date | null) => {
-    setStartDate(startDate);
-    setEndDate(endDate);
-    console.log('Selected dates:', { startDate, endDate });
-    if (endDate) {
-      setCalendarVisible(false);
-    }
+  const handleDateChange = (sd: Date | null, ed: Date | null) => {
+    setStartDate(sd);
+    setEndDate(ed);
+    if (ed) setCalendarVisible(false);
   };
 
-  const nights = (startDate && endDate) 
-    ? differenceInCalendarDays(endDate, startDate) 
+  const nights = (startDate && endDate)
+    ? differenceInCalendarDays(endDate, startDate)
     : 0;
 
-  const renderDateText = () => {
-    return (
-      <div className={styles.dateText}>
-        <div className={styles.dateLabel}>
-          <span>入住</span>
-          <span>离店</span>
-        </div>
-        <div className={styles.dateValue}>
-          <span className={styles.startDate}>
-            {startDate ? `${startDate.getMonth() + 1}月${startDate.getDate()}日` : '-'}
-          </span>
-          <span className={styles.nightsInfo}>
-            {nights > 0 ? `${nights}晚` : ''}
-          </span>
-          <span className={styles.endDate}>
-            {endDate ? `${endDate.getMonth() + 1}月${endDate.getDate()}日` : '-'}  
-          </span>
-        </div>
+  const renderDateText = () => (
+    <div className={styles.dateText}>
+      <div className={styles.dateLabel}>
+        <span>入住</span>
+        <span>离店</span>
       </div>
+      <div className={styles.dateValue}>
+        <span className={styles.startDate}>
+          {startDate ? `${startDate.getMonth() + 1}月${startDate.getDate()}日` : '-'}
+        </span>
+        <span className={styles.nightsInfo}>
+          {nights > 0 ? `${nights}晚` : ''}
+        </span>
+        <span className={styles.endDate}>
+          {endDate ? `${endDate.getMonth() + 1}月${endDate.getDate()}日` : '-'}
+        </span>
+      </div>
+    </div>
+  );
+
+  const handleTagClick = (tag: string) => {
+    setSelectedTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     );
   };
 
-  const handleLocation = () => {
-    setLocationVisible(true)
-  }
-
-  const handleTagClick = (tag: string) => {
-    console.log('clicked', tag, selectedTags)
-    setSelectedTags(prev => {
-      if (prev.includes(tag)) {
-        return prev.filter(t => t !== tag);
-      } else {
-        return [...prev, tag];
-      }
-    });
-  };
-
-  // 【修复3】将所有内部状态汇总为 SearchFormData 的工具函数
   const collectFormData = (): SearchFormData => {
     const priceRange = parsePriceRange(selectedPrice);
     return {
@@ -147,70 +140,73 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
       keyword,
       dates: startDate && endDate ? [startDate, endDate] : undefined,
       brands: selectedBrand !== '不限' ? [selectedBrand] : undefined,
-      starLevels: parseStarLevel(selectedRating),  // ← 新增：星级同步
-      minPrice: priceRange.minPrice,                // ← 新增：最低价同步
-      maxPrice: priceRange.maxPrice,                // ← 新增：最高价同步
+      starLevels: parseStarLevel(selectedRating),
+      minPrice: priceRange.minPrice,
+      maxPrice: priceRange.maxPrice,
       roomCount,
       guestCount,
       tags: selectedTags.length > 0 ? selectedTags : undefined,
-      lat: location?.lat,                           // ← 新增：定位坐标同步
-      lng: location?.lng,                           // ← 新增：定位坐标同步
-    }
-  }
+      lat: location?.lat,
+      lng: location?.lng,
+    };
+  };
 
   const handleInternalSearch = () => {
-    const formData = collectFormData()
-    console.log(formData)
-    onChange(formData)
-    onSearch(formData)
+    const formData = collectFormData();
+    onChange(formData);
+    onSearch(formData);
   };
 
   return (
     <div className={styles.container}>
       <Space direction="vertical" block className={styles.verticalSpace}>
-        {/* 第一行：城市选择 + 检索词输入 + 定位按钮 */}
+        {/* 第一行：城市 + 搜索 + 定位 */}
         <div className={styles.inputGroup}>
-          <Button 
-            fill="none" 
+          <Button
+            fill="none"
             onClick={() => setCityVisible(true)}
             className={styles.cityButton}
           >
             {city}<RightOutline />
           </Button>
-          <Input 
-            placeholder="酒店名称/地标/关键词" 
-            value={keyword} 
+          <Input
+            placeholder="酒店名称/地标/关键词"
+            value={keyword}
             onChange={setKeyword}
             className={styles.searchInput}
             clearable
           />
-          <Button 
-            fill="none" 
-            className={styles.locationBtn}  
-            onClick={handleLocation}
+          <Button
+            fill="none"
+            className={styles.locationBtn}
+            onClick={() => setLocationVisible(true)}
           >
             <LocationOutline />
           </Button>
         </div>
 
-        {/* 第二行：日期选择 + 标签筛选 */}
+        {/* 第二行：日期 + 筛选 */}
         <div className={styles.dateFilterRow}>
           <div className={styles.dateselect} onClick={() => setCalendarVisible(true)}>
             {renderDateText()}
           </div>
           <div className={styles.filterButton} onClick={() => setFilterVisible(true)}>
-            {selectedBrand !== '不限' && selectedPrice !== '不限' ? `${selectedBrand}/${selectedPrice}` : 
-             selectedBrand !== '不限' ? selectedBrand : 
-             selectedPrice !== '不限' ? selectedPrice : '品牌/价格'}
+            {selectedBrand !== '不限' && selectedPrice !== '不限'
+              ? `${selectedBrand}/${selectedPrice}`
+              : selectedBrand !== '不限'
+                ? selectedBrand
+                : selectedPrice !== '不限'
+                  ? selectedPrice
+                  : '品牌/价格'}
           </div>
         </div>
 
-        {/* 第三行：房间数/人数选择 */}
+        {/* 第三行：房间/人数 */}
         <div className={styles.roomGuestRow}>
           <div className={styles.roomGuestButton} onClick={() => setRoomGuestVisible(true)}>
             <span className={styles.roomGuestLabel}>房间</span>
             <span className={styles.roomGuestValue}>{roomCount}</span>
-             <span className={styles.roomGuestLabel}>间</span>
+            <span className={styles.roomGuestLabel}>间</span>
             <span className={styles.roomGuestDivider}>/</span>
             <span className={styles.roomGuestLabel}>人数</span>
             <span className={styles.roomGuestValue}>{guestCount}</span>
@@ -218,34 +214,32 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
           </div>
         </div>
 
-        {/* 标签容器 */}
+        {/* 首页标签横滑 — 使用自定义 Tag */}
         <div className={styles.tagContainer}>
           <div className={styles.tagScroll}>
-            {cityTags.map((tag) => (
-              <Button
+            {cityTags.map(tag => (
+              <Tag
                 key={tag}
-                fill={selectedTags.includes(tag) ? 'solid' : 'outline'}
-                color={selectedTags.includes(tag) ? 'primary' : 'default'}
-                size="small"
+                label={tag}
+                active={selectedTags.includes(tag)}
                 onClick={() => handleTagClick(tag)}
-              >
-                {tag}
-              </Button>
+              />
             ))}
           </div>
         </div>
 
         {/* 搜索按钮 */}
-        <Button 
-          color="primary" 
-          block 
-          size="large" 
+        <Button
+          color="primary"
+          block
+          size="large"
           onClick={handleInternalSearch}
           className={styles.searchButton}
         >
           查 询
         </Button>
 
+        {/* ── 定位弹窗 ── */}
         <Popup
           visible={locationVisible}
           onMaskClick={() => setLocationVisible(false)}
@@ -254,14 +248,15 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
         >
           <LocationPicker
             onConfirm={(loc) => {
-              setLocation({ value: '当前位置', ...loc })
-              setCity('当前位置')
-              setLocationVisible(false)
+              setLocation({ value: '当前位置', ...loc });
+              setCity('当前位置');
+              setLocationVisible(false);
             }}
             onCancel={() => setLocationVisible(false)}
           />
         </Popup>
-        {/* 日历选择弹窗 */}
+
+        {/* ── 日历弹窗 ── */}
         <Popup
           visible={calendarVisible}
           onMaskClick={() => setCalendarVisible(false)}
@@ -270,7 +265,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
         >
           <div className={styles.popupContent}>
             <h3 className={styles.popupTitle}>选择日期</h3>
-            <PeriodCalendar 
+            <PeriodCalendar
               startDate={startDate}
               endDate={endDate}
               onDateChange={handleDateChange}
@@ -278,7 +273,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
           </div>
         </Popup>
 
-        {/* 城市选择弹窗 */}
+        {/* ── 城市弹窗 ── */}
         <Popup
           visible={cityVisible}
           onMaskClick={() => setCityVisible(false)}
@@ -291,13 +286,13 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
             <div className={styles.sectionContainer}>
               <div className={styles.sectionTitle}>热门城市</div>
               <Space wrap className={styles.horizontalSpace}>
-                {['北京', '上海', '广州', '深圳', '杭州', '成都', '南京', '重庆'].map((cityItem) => (
-                  <Button 
+                {['北京', '上海', '广州', '深圳', '杭州', '成都', '南京', '重庆'].map(cityItem => (
+                  <Button
                     key={cityItem}
                     fill="outline"
                     onClick={() => {
-                      const truncatedCity = cityItem.length > 8 ? cityItem.substring(0, 8) + '...' : cityItem;
-                      setCity(truncatedCity);
+                      const truncated = cityItem.length > 8 ? cityItem.substring(0, 8) + '...' : cityItem;
+                      setCity(truncated);
                       setCityVisible(false);
                     }}
                   >
@@ -309,101 +304,90 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
           </div>
         </Popup>
 
-        {/* 筛选标签弹窗 */}
+        {/* ═══════════════════════════════════════
+            【核心修复】筛选弹窗
+            - 外层: filterPopup (flex column, overflow hidden)
+            - 中层: filterScrollArea (flex:1, overflow-y auto) ← 可滚动
+            - 底部: filterFooter (fixed)
+            - 标签: 自定义 Tag 组件 + wrap 布局
+            ═══════════════════════════════════════ */}
         <Popup
           visible={filterVisible}
           onMaskClick={() => setFilterVisible(false)}
           position="bottom"
           className={styles.filterPopup}
         >
-          <div className={styles.popupContent}>
+          {/* 可滚动区域 */}
+          <div className={styles.filterScrollArea}>
             <h3 className={styles.popupTitle}>筛选条件</h3>
-            
+
             {/* 热门地标 */}
             <div className={styles.sectionContainer}>
               <div className={styles.sectionTitle}>热门地标</div>
-              <div className={styles.tagContainer}>
-                <div className={styles.tagScroll}>
-                  {cityTags.map((tag) => (
-                    <Button
-                      key={tag}
-                      fill={selectedTags.includes(tag) ? 'solid' : 'outline'}
-                      color={selectedTags.includes(tag) ? 'primary' : 'default'}
-                      size="small"
-                      onClick={() => handleTagClick(tag)}
-                    >
-                      {tag}
-                    </Button>
-                  ))}
-                </div>
+              <div className={styles.popupTagWrap}>
+                {cityTags.map(tag => (
+                  <Tag
+                    key={tag}
+                    label={tag}
+                    active={selectedTags.includes(tag)}
+                    onClick={() => handleTagClick(tag)}
+                  />
+                ))}
               </div>
             </div>
-            
+
             {/* 酒店品牌 */}
             <div className={styles.sectionContainer}>
-              <div className={styles.sectionSubtitle}>酒店品牌</div>
-              <div className={styles.tagContainer}>
-                <div className={styles.tagScroll}>
-                  {HOTEL_BRANDS.map((brand) => (
-                    <Button
-                      key={brand}
-                      fill={selectedBrand === brand ? 'solid' : 'outline'}
-                      color={selectedBrand === brand ? 'primary' : 'default'}
-                      size="small"
-                      onClick={() => setSelectedBrand(brand)}
-                    >
-                      {brand}
-                    </Button>
-                  ))}
-                </div>
+              <div className={styles.sectionTitle}>酒店品牌</div>
+              <div className={styles.popupTagWrap}>
+                {HOTEL_BRANDS.map(brand => (
+                  <Tag
+                    key={brand}
+                    label={brand}
+                    active={selectedBrand === brand}
+                    onClick={() => setSelectedBrand(brand)}
+                  />
+                ))}
               </div>
             </div>
-            
+
             {/* 酒店星级 */}
             <div className={styles.sectionContainer}>
-              <div className={styles.sectionSubtitle}>酒店星级</div>
-              <div className={styles.tagContainer}>
-                <div className={styles.tagScroll}>
-                  {HOTEL_RATINGS.map((rating) => (
-                    <Button
-                      key={rating}
-                      fill={selectedRating === rating ? 'solid' : 'outline'}
-                      color={selectedRating === rating ? 'primary' : 'default'}
-                      size="small"
-                      onClick={() => setSelectedRating(rating)}
-                    >
-                      {rating}
-                    </Button>
-                  ))}
-                </div>
+              <div className={styles.sectionTitle}>酒店星级</div>
+              <div className={styles.popupTagWrap}>
+                {HOTEL_RATINGS.map(rating => (
+                  <Tag
+                    key={rating}
+                    label={rating}
+                    active={selectedRating === rating}
+                    onClick={() => setSelectedRating(rating)}
+                  />
+                ))}
               </div>
             </div>
-            
+
             {/* 价格区间 */}
             <div className={styles.sectionContainer}>
-              <div className={styles.sectionSubtitle}>价格区间</div>
-              <div className={styles.tagContainer}>
-                <div className={styles.tagScroll}>
-                  {['不限', '0-500', '500-1000', '1000-2000', '2000+'].map((priceRange) => (
-                    <Button
-                      key={priceRange}
-                      fill={selectedPrice === priceRange ? 'solid' : 'outline'}
-                      color={selectedPrice === priceRange ? 'primary' : 'default'}
-                      size="small"
-                      onClick={() => setSelectedPrice(priceRange)}
-                    >
-                      {priceRange}
-                    </Button>
-                  ))}
-                </div>
+              <div className={styles.sectionTitle}>价格区间</div>
+              <div className={styles.popupTagWrap}>
+                {PRICE_RANGES.map(price => (
+                  <Tag
+                    key={price}
+                    label={price}
+                    active={selectedPrice === price}
+                    onClick={() => setSelectedPrice(price)}
+                  />
+                ))}
               </div>
             </div>
-            
-            {/* 确定按钮 */}
-            <Button 
-              color="primary" 
-              block 
-              size="large" 
+          </div>
+
+          {/* 固定底部按钮 */}
+          <div className={styles.filterFooter}>
+            <Button
+              color="primary"
+              block
+              size="large"
               onClick={() => setFilterVisible(false)}
             >
               确定
@@ -411,7 +395,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
           </div>
         </Popup>
 
-        {/* 房间数/人数选择弹窗 */}
+        {/* ── 房间/人数弹窗 ── */}
         <Popup
           visible={roomGuestVisible}
           onMaskClick={() => setRoomGuestVisible(false)}
@@ -420,12 +404,10 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
         >
           <div className={styles.popupContent}>
             <h3 className={styles.popupTitle}>房间与人数</h3>
-            
-            {/* 房间数 */}
             <div className={styles.roomGuestSection}>
               <div className={styles.roomGuestTitle}>房间数</div>
               <div className={styles.numberStepper}>
-                <Button 
+                <Button
                   fill="none"
                   size="small"
                   onClick={() => setRoomCount(prev => Math.max(1, prev - 1))}
@@ -434,7 +416,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
                   -
                 </Button>
                 <span className={styles.numberValue}>{roomCount}</span>
-                <Button 
+                <Button
                   fill="none"
                   size="small"
                   onClick={() => setRoomCount(prev => Math.min(10, prev + 1))}
@@ -444,12 +426,10 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
                 </Button>
               </div>
             </div>
-            
-            {/* 人数 */}
             <div className={styles.roomGuestSection}>
               <div className={styles.roomGuestTitle}>出行人数</div>
               <div className={styles.numberStepper}>
-                <Button 
+                <Button
                   fill="none"
                   size="small"
                   onClick={() => setGuestCount(prev => Math.max(1, prev - 1))}
@@ -458,7 +438,7 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
                   -
                 </Button>
                 <span className={styles.numberValue}>{guestCount}</span>
-                <Button 
+                <Button
                   fill="none"
                   size="small"
                   onClick={() => setGuestCount(prev => Math.min(20, prev + 1))}
@@ -468,12 +448,10 @@ export default function DomesticSearch({ value, onChange, onSearch }: DomesticSe
                 </Button>
               </div>
             </div>
-            
-            {/* 确定按钮 */}
-            <Button 
-              color="primary" 
-              block 
-              size="large" 
+            <Button
+              color="primary"
+              block
+              size="large"
               onClick={() => setRoomGuestVisible(false)}
               style={{ marginTop: 24 }}
             >

@@ -1,9 +1,6 @@
 /* ══════════════════════════════════════════
    DomesticSearch.module.css
-   - 行高/字体加大
-   - 弹窗标签可横向滑动
-   - 选中标签无尺寸变化
-   - 无 !important
+   antd-mobile 5.42.3
    ══════════════════════════════════════════ */
 
 /* ── 表单根容器 ── */
@@ -25,8 +22,6 @@
   width: 100%;
 }
 
-/* 城市按钮
-   用 .container .cityButton 提高特异性，替代 !important */
 .container .cityButton {
   display: inline-flex;
   align-items: center;
@@ -52,14 +47,12 @@
   background: #EFE0BE;
 }
 
-/* antd-mobile Input 包裹层 */
 .searchInput {
   flex: 1;
   min-width: 0;
   height: 48px;
 }
 
-/* 覆盖 antd-mobile Input — 用后代选择器，无需 !important */
 .container .searchInput :global(.adm-input-wrapper) {
   height: 48px;
   background: #F8F6F2;
@@ -73,7 +66,6 @@
   color: #1A1A2E;
 }
 
-/* 定位按钮 */
 .container .locationBtn {
   display: inline-flex;
   align-items: center;
@@ -105,7 +97,6 @@
   width: 100%;
 }
 
-/* 日期选择块 */
 .dateselect {
   flex: 3;
   min-height: 70px;
@@ -177,7 +168,6 @@
   flex-shrink: 0;
 }
 
-/* 品牌/价格筛选 */
 .filterButton {
   flex: 1;
   max-width: 110px;
@@ -248,7 +238,7 @@
   margin: 0 8px;
 }
 
-/* ══ 第四行：地标标签横滑 ════════════════════ */
+/* ══ 首页标签横滑 ════════════════════════════ */
 .tagContainer {
   width: 100%;
   overflow-x: auto;
@@ -271,15 +261,13 @@
 }
 
 /* ══════════════════════════════════════════
-   【修复2】标签按钮选中样式
-   antd-mobile v5 的 fill="solid" 生成的类名是
-   .adm-button-fill-solid（不是 .adm-button-solid）
-   同时 color="primary" 生成 .adm-button-primary
-   需要同时覆盖这两组类名，确保选中态可见
+   自定义标签元素 — 彻底绕开 antd-mobile 
+   Button 的样式优先级问题
    ══════════════════════════════════════════ */
-
-/* 标签按钮基础样式（未选中） */
-.tagScroll :global(.adm-button) {
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 20px;
   padding: 0 16px;
   font-size: 14px;
@@ -291,45 +279,31 @@
   box-shadow: none;
   flex-shrink: 0;
   white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
   transition: color 0.15s, background 0.15s, border-color 0.15s;
-  min-width: unset;
-  /* 覆盖 antd-mobile 主题色，防止默认蓝色 */
-  --adm-color-primary: #C8963E;
-  --adm-color-text-light-solid: #9A6F28;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* 选中标签 — 兼容 antd-mobile v5 类名 .adm-button-fill-solid
-   使用三级选择器确保优先级高于 antd-mobile 内置样式 */
-.container .tagScroll :global(.adm-button-fill-solid) {
-  height: 34px;
-  line-height: 34px;
-  padding: 0 16px;
-  background: #F5ECD7;
-  border: 1px solid #C8963E;
-  color: #9A6F28;
-  font-weight: 600;
-  box-shadow: none;
-  transform: none;
+.tag:active {
+  opacity: 0.8;
 }
 
-/* 同时兼容可能的 .adm-button-solid 类名（antd-mobile 旧版本） */
-.container .tagScroll :global(.adm-button-solid) {
-  height: 34px;
-  line-height: 34px;
-  padding: 0 16px;
-  background: #F5ECD7;
-  border: 1px solid #C8963E;
-  color: #9A6F28;
-  font-weight: 600;
-  box-shadow: none;
-  transform: none;
-}
-
-/* 额外覆盖: fill-solid + primary 组合 */
-.container .tagScroll :global(.adm-button-fill-solid.adm-button-primary) {
+.tagActive {
   background: #F5ECD7;
   border-color: #C8963E;
   color: #9A6F28;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════
+   弹窗内标签：wrap 换行（不横滑）
+   ══════════════════════════════════════════ */
+.popupTagWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 2px 0;
 }
 
 /* ══ 搜索按钮 ════════════════════════════════ */
@@ -365,7 +339,6 @@
   color: #1A1A2E;
 }
 
-/* Popup 圆角 */
 .calendarPopup :global(.adm-popup-body),
 .cityPopup :global(.adm-popup-body),
 .roomGuestPopup :global(.adm-popup-body) {
@@ -373,35 +346,57 @@
   border-top-right-radius: 20px;
 }
 
-.cityPopup :global(.adm-popup-body)   { height: 70%; }
+.cityPopup :global(.adm-popup-body) { height: 70%; }
 
 /* ══════════════════════════════════════════
-   【修复1】filterPopup 弹窗可滚动
-   - popup-body 用 overflow: hidden + 圆角（防止内容溢出圆角）
-   - popupContent 内部用 overflow-y: auto 实现滚动
+   【核心修复】筛选弹窗
+   popup-body: flex 列布局 + overflow hidden
+   内部 scrollArea: flex:1 + overflow-y auto
+   底部按钮: 固定在底部
    ══════════════════════════════════════════ */
 .filterPopup :global(.adm-popup-body) {
-  height: 70%;                          /* 加大高度，容纳更多筛选项 */
+  height: 75vh;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  overflow: hidden;                     /* 配合圆角裁剪 */
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-/* 弹窗内容区可滚动 */
-.filterPopup .popupContent {
+.filterScrollArea {
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 80px;                 /* 为底部确定按钮留空间 */
+  padding: 22px 16px 16px;
+}
+
+.filterScrollArea::-webkit-scrollbar {
+  display: none;
+}
+
+.filterFooter {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: #FFFFFF;
+  border-top: 1px solid rgba(26,26,46,0.06);
+}
+
+.filterFooter :global(.adm-button) {
+  background: linear-gradient(135deg, #C8963E 0%, #9A6F28 100%);
+  border: none;
+  border-radius: 12px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(200,150,62,0.3);
+  --adm-color-primary: #C8963E;
 }
 
 /* 弹窗内分区 */
 .sectionContainer {
-  margin-bottom: 10px;
-  overflow: visible;
+  margin-bottom: 16px;
 }
 
 .sectionTitle {
@@ -411,7 +406,6 @@
   color: #1A1A2E;
   padding-left: 9px;
   border-left: 3px solid #C8963E;
-  overflow: visible;
 }
 
 .sectionSubtitle {
@@ -443,7 +437,6 @@
   margin-bottom: 16px;
 }
 
-/* 弹窗内确定按钮 */
 .popupContent :global(.adm-button.adm-button-primary.adm-button-large) {
   background: linear-gradient(135deg, #C8963E 0%, #9A6F28 100%);
   border: none;
@@ -509,7 +502,6 @@
   text-align: center;
 }
 
-/* 水平 Space */
 .horizontalSpace {
   --gap: 8px;
 }

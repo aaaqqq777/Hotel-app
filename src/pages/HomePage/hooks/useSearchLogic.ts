@@ -1,6 +1,6 @@
 // src/hooks/useSearchLogic.ts
 import { useNavigate } from 'react-router-dom'
-import { Toast } from 'antd-mobile'
+// import { Toast } from 'antd-mobile'
 import type { HotelSearchParams } from '../../../types/hotel'
 
 /**
@@ -81,7 +81,7 @@ export function useSearchLogic() {
       }
     })
 
-    Toast.show({ content: '正在查询...', icon: 'loading' })
+    // Toast.show({ content: '正在查询...', icon: 'loading' })
     navigate(`/hotellist?${searchParams.toString()}`)
   }
 

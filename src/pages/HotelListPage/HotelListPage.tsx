@@ -34,6 +34,8 @@ function HotelListPage() {
     allSelectedTags,
   } = useHotelListData()
 
+  
+
   // ── 筛选状态：从 URL 初始化，返回后自动恢复 ──────────────────
   const [sortType, setSortType] = useState<SortType>(() => {
     const sortBy    = searchParams.get('sortBy')
@@ -193,10 +195,20 @@ function HotelListPage() {
     navigate(`/hotellist?${sp.toString()}`, { replace: true })
   }
 
+  const handleLocationChange = (loc: { lat: number; lng: number; city: string; address: string }) => {
+    const sp = new URLSearchParams(window.location.search)
+    if (loc.city) {
+      sp.set('city', loc.city)
+    }
+    sp.set('lat', String(loc.lat))
+    sp.set('lng', String(loc.lng))
+    navigate(`/hotellist?${sp.toString()}`, { replace: true })
+  }
   return (
     <div className={styles.container}>
       {/* 固定头部 */}
       <div className={styles.stickyHeader}>
+        
         <Header
           location={location}
           checkInDate={formattedDateRange}
@@ -207,6 +219,7 @@ function HotelListPage() {
           onKeywordChange={handleKeywordChange}
           onDateChange={handleDateChange}
           onCityChange={handleCityChange}
+          onLocationChange={handleLocationChange}
         />
 
         <SortBar

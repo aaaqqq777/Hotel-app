@@ -27,7 +27,7 @@ const sortOptions = [
 const ratingOptions = ['全部', '5星', '4星', '3星及以下']
 const priceRangeOptions = ['全部', '300以下', '300-500', '500以上']
 const scoreOptions = ['全部', '4.8分以上', '4.5分以上', '4.0分以上']
-const distanceOptions = ['全部', '1公里内', '3公里内', '5公里内', '10公里内']
+const distanceOptions = ['全部', '1公里内', '3公里内', '5公里内']
 
 export default function SortBar({ 
   currentSort, 

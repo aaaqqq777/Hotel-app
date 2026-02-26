@@ -44,7 +44,7 @@ export default function SearchForm() {
         );
       case 'hourly':
         return (
-          <OverseasSearch
+          <DomesticSearchForm
             value={params}
             onChange={updateParams}
             onSearch={onSearch}
@@ -52,7 +52,7 @@ export default function SearchForm() {
         );
       case 'bnb':
         return (
-          <OverseasSearch
+          <DomesticSearchForm
             value={params}
             onChange={updateParams}
             onSearch={onSearch}

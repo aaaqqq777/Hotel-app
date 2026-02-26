@@ -1,0 +1,141 @@
+/* LocationPicker.module.css */
+
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+/* 顶部搜索栏 */
+.searchBar {
+  padding: 8px 12px;
+  background: #fff;
+  z-index: 10;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.searchBar :global(.adm-search-bar) {
+  --background: #f5f5f5;
+  --border-radius: 20px;
+  --height: 36px;
+}
+
+/* 搜索建议列表 */
+.suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 52px;
+  z-index: 20;
+  max-height: 300px;
+  overflow: auto;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  border-radius: 0 0 8px 8px;
+}
+
+.suggestions :global(.adm-list-item-content-main) {
+  font-size: 14px;
+}
+
+.suggestions :global(.adm-list-item-description) {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 地图外层容器 */
+.mapWrapper {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.mapContainer {
+  width: 100%;
+  height: 100%;
+}
+
+/* 加载 / 错误遮罩 */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f7f7f7;
+}
+
+.errorText {
+  color: #999;
+  font-size: 14px;
+}
+
+/* 底部面板 */
+.bottom {
+  padding: 10px 16px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+}
+
+.locating {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.address {
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 2px;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 10px;
+}
+
+/* 确认按钮 - 匹配首页金色主题 */
+.confirmBtn {
+  flex: 1;
+  height: 44px;
+  border: none;
+  border-radius: 22px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #d4a843, #b8860b);
+  box-shadow: 0 2px 8px rgba(184, 134, 11, 0.3);
+  letter-spacing: 2px;
+}
+
+.confirmBtn:active {
+  opacity: 0.85;
+}
+
+.confirmBtn:disabled {
+  background: #ccc;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 取消按钮 */
+.cancelBtn {
+  flex: 1;
+  height: 44px;
+  border: 1px solid #e0e0e0;
+  border-radius: 22px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  background: #fff;
+}
+
+.cancelBtn:active {
+  background: #f5f5f5;
+}

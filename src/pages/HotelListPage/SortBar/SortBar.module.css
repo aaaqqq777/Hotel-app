@@ -289,12 +289,12 @@
 /* 筛选面板底部确定按钮 */
 .filterPanelConfirmBtn {
   width: 100%;
-  padding: 12px;
+  padding: 8px;
   background: #feb200c0;
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
 }

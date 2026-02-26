@@ -13,10 +13,6 @@ export default function BottomBar({ minPrice, onViewRooms, onContactHotel, visib
   return (
     <div className={`${styles.container} ${visible ? styles.visible : styles.hidden}`}>
       <div className={styles.left}>
-        <Button className={styles.contactButton} onClick={onContactHotel}>
-          <MessageOutline />
-          <span>在线联系</span>
-        </Button>
         <Button className={styles.phoneButton} onClick={onContactHotel}>
           <PhonebookOutline />
           <span>电话</span>
