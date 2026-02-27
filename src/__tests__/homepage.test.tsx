@@ -10,7 +10,7 @@ vi.mock('../../pages/HomePage/components/SearchForm/SearchForm', () => ({
 }));
 
 import { render, screen, fireEvent, waitFor } from './test-utils';
-import HomePage from '../../pages/HomePage/HomePage';
+import HomePage from '../pages/HomePage/HomePage';
 
 describe('搜索页组件测试', () => {
   it('应正确渲染搜索页面', () => {

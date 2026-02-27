@@ -15,7 +15,6 @@ export default function BottomBar({
   minPrice,
   hotelPhone,
   onViewRooms,
-  onContactHotel,
   visible = true,
 }: BottomBarProps) {
   const [phoneVisible, setPhoneVisible] = useState(false);

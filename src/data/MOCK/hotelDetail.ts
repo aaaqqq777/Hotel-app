@@ -7,7 +7,7 @@ export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {
   "2": {
     id: "2",
     name: "上海浦东丽思卡尔顿酒店",
-    starLevel: 5,
+    star_rating: 5,
     brand: "丽思卡尔顿",
     images: [
       "https://images.unsplash.com/photo-1584218896971-bf6d30b3fmpl?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -27,13 +27,13 @@ export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {
     checkInTime: "15:00",
     checkOutTime: "12:00",
     facilities: [],
-    rating: 4.7,
+    score: 4.7,
     reviewCount: 987
   },
   "3": {
     id: "3",
     name: "上海静安香格里拉大酒店",
-    starLevel: 5,
+    star_rating: 5,
     brand: "香格里拉",
     images: [
       "https://images.unsplash.com/photo-1566073771259-6a8506099456?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -53,13 +53,13 @@ export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {
     checkInTime: "14:00",
     checkOutTime: "12:00",
     facilities: [],
-    rating: 4.6,
+    score: 4.6,
     reviewCount: 1562
   },
   "4": {
     id: "4",
     name: "上海新天地朗廷酒店",
-    starLevel: 5,
+    star_rating: 5,
     brand: "朗廷",
     images: [
       "https://images.unsplash.com/photo-1590846406698-4d8d6440ae76?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -79,13 +79,13 @@ export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {
     checkInTime: "15:00",
     checkOutTime: "12:00",
     facilities: [],
-    rating: 4.5,
+    score: 4.5,
     reviewCount: 876
   },
   "5": {
     id: "5",
     name: "上海素凯泰酒店",
-    starLevel: 5,
+    star_rating: 5,
     brand: "素凯泰",
     images: [
       "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -105,13 +105,13 @@ export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {
     checkInTime: "15:00",
     checkOutTime: "12:00",
     facilities: [],
-    rating: 4.7,
+    score: 4.7,
     reviewCount: 756
   },
   "6": {
     id: "6",
     name: "上海建业里嘉佩乐酒店",
-    starLevel: 5,
+    star_rating: 5,
     brand: "嘉佩乐",
     images: [
       "https://images.unsplash.com/photo-1590846406698-4d8d6440ae77?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -131,7 +131,7 @@ export const MOCK_HOTEL_DETAILS: Record<string, HotelDetail> = {
     checkInTime: "15:00",
     checkOutTime: "12:00",
     facilities: [],
-    rating: 4.9,
+    score: 4.9,
     reviewCount: 1423
   }
 };
@@ -229,10 +229,10 @@ export const MOCK_HOTEL_FACILITIES = [
 
 // 模拟酒店评价
 export const MOCK_HOTEL_REVIEWS = [
-  { id: "1", userId: "user1", userName: "张三", rating: 5, comment: "酒店环境优美，服务态度很好，下次还会再来！", date: "2023-10-15" },
-  { id: "2", userId: "user2", userName: "李四", rating: 4, comment: "位置很好，交通方便，房间干净整洁。", date: "2023-10-10" },
-  { id: "3", userId: "user3", userName: "王五", rating: 5, comment: "设施完善，员工专业热情，是一次愉快的住宿体验。", date: "2023-10-05" },
-  { id: "4", userId: "user4", userName: "赵六", rating: 4, comment: "早餐丰富多样，床铺舒适，值得推荐。", date: "2023-09-28" }
+  { id: "1", userId: "user1", userName: "张三", score: 5, comment: "酒店环境优美，服务态度很好，下次还会再来！", date: "2023-10-15" },
+  { id: "2", userId: "user2", userName: "李四", score: 4, comment: "位置很好，交通方便，房间干净整洁。", date: "2023-10-10" },
+  { id: "3", userId: "user3", userName: "王五", score: 5, comment: "设施完善，员工专业热情，是一次愉快的住宿体验。", date: "2023-10-05" },
+  { id: "4", userId: "user4", userName: "赵六", score: 4, comment: "早餐丰富多样，床铺舒适，值得推荐。", date: "2023-09-28" }
 ];
 
 // 模拟搜索建议

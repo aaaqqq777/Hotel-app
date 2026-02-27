@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, within } from './test-utils';
-import HotelListPage from '../../pages/HotelListPage/HotelListPage';
+import HotelListPage from '../pages/HotelListPage/HotelListPage';
 import { useSearchParams } from 'react-router-dom';
 
 // Mock hooks and API

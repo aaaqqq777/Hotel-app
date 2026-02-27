@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from './test-utils';
-import DetailPage from '../../pages/DetailPage/DetailPage';
+import DetailPage from '../pages/DetailPage/DetailPage';
 import { useSearchParams } from 'react-router-dom';
 
 // Mock hooks and API

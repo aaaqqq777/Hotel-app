@@ -56,7 +56,7 @@ export default function HotelDetails({
       </div>
 
       {/* 设施标签横滑 */}
-      {/* {tags && tags.length > 0 && (
+      {tags && tags.length > 0 && (
         <div className={styles.facilityScroll}>
           {tags.map((tag, index) => (
             <div key={index} className={styles.facilityItem}>
@@ -65,11 +65,11 @@ export default function HotelDetails({
             </div>
           ))}
           <div className={styles.facilityItem}>
-            <span className={styles.facilityIcon}>📋</span>
+            {/* // <span className={styles.facilityIcon}>📋</span> */}
             <span className={styles.facilityLink}>设施政策</span>
           </div>
         </div>
-      )} */}
+      )}
 
       {/* 评分 + 位置 */}
       <div className={styles.infoRow}>

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from './test-utils';
 import { resizeWindow } from './test-utils';
-import HomePage from '../../pages/HomePage/HomePage';
-import HotelListPage from '../../pages/HotelListPage/HotelListPage';
-import DetailPage from '../../pages/DetailPage/DetailPage';
+import HomePage from '../pages/HomePage/HomePage';
+import HotelListPage from '../pages/HotelListPage/HotelListPage';
+import DetailPage from '../pages/DetailPage/DetailPage';
 import { useSearchParams } from 'react-router-dom';
 
 // Mock all necessary modules

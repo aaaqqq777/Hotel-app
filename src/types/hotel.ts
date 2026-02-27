@@ -13,7 +13,7 @@ export interface HotelSearchParams {
   star_rating?: number;
   brand?: string;
   score?: number;
-  sortBy?: 'min_price' | 'distance' | 'rating' | 'star' | '';
+  sortBy?: 'min_price' | 'distance' | 'score' | 'star_rating' | '';
   sortOrder?: 'asc' | 'desc' | '';
 
   page: number;
@@ -31,7 +31,7 @@ export interface HotelListItem {
   coverImage: string;
   images?: string[];
   score?: number;
-  starLevel: number;
+  star_rating: number;
 
   reviewCount: number;
 
@@ -134,8 +134,6 @@ export interface RoomType {
   breakfast?: string;
   facilities?: string[];
 }
-
-
 export interface BannerData {
   id: string
   imageUrl: string

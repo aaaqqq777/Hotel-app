@@ -209,7 +209,7 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
           keyword,
           dates: startDate && endDate ? [startDate, endDate] : undefined,
           brand: selectedBrand !== '不限' ? selectedBrand : undefined,
-          starLevels: parseStarLevel(selectedRating),
+          star_rating: parseStarLevel(selectedRating),
           minPrice: priceRange.minPrice,
           maxPrice: priceRange.maxPrice,
           roomCount,

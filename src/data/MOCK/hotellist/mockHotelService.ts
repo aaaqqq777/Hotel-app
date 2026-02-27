@@ -1,6 +1,14 @@
 import type { HotelSearchParams } from '../../../types/hotel';
-import type { HotelListResponse } from '../../../api/hotel/hotelDetail';
+// import type { HotelListResponse } from '../../../api/hotel/hotelDetail';
 import { MOCK_HOTELS } from '../hotels';
+
+export interface HotelListResponse {
+  code: number;
+  data: {
+    total: number;
+    list:any[]; // 这里可以根据实际数据结构定义更具体的类型
+  };
+}
 
 export function getMockHotelList(params: HotelSearchParams): HotelListResponse {
   const page = params.page || 1;
@@ -20,7 +28,7 @@ export function getMockHotelList(params: HotelSearchParams): HotelListResponse {
   // 星级过滤
   if (params.star_rating) {
     filteredHotels = filteredHotels.filter(
-      hotel => hotel.starLevel === params.star_rating
+      hotel => hotel.star_rating === params.star_rating
     );
   }
 
@@ -66,12 +74,12 @@ export function getMockHotelList(params: HotelSearchParams): HotelListResponse {
         }
         break;
 
-      case 'rating':
-        filteredHotels.sort((a, b) => b.rating - a.rating);
+      case 'score':
+        filteredHotels.sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
         break;
 
-      case 'star':
-        filteredHotels.sort((a, b) => b.starLevel - a.starLevel);
+      case 'star_rating':
+        filteredHotels.sort((a, b) => b.star_rating - a.star_rating);
         break;
     }
   }
@@ -89,8 +97,8 @@ export function getMockHotelList(params: HotelSearchParams): HotelListResponse {
       list: pageData.map(hotel => ({
         _id: hotel.id,
         name_cn: hotel.name,
-        star_rating: hotel.starLevel,
-        score: hotel.rating,
+        star_rating: hotel.star_rating,
+        score: hotel.score,
         cover_image: hotel.coverImage,
         min_price: hotel.price.lowest,
         original_price: hotel.price.original,

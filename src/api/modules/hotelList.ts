@@ -49,9 +49,11 @@ export async function fetchHotelList(params: HotelListQueryParams): Promise<{ ho
     const response: HotelListResponse = await searchHotelList(apiParams);
     console.log('src/api/hotel/hotelSearch.ts fetchHotelList API响应:', response);
     // 数据转换：将API响应格式转换为前端组件期望的格式
-    const hotels: HotelListItem[] = response.data.list.map(item => ({
+    const hotels: HotelListItem[] = response.list.map((item:any) => ({
       id: item._id,
       name: item.name_cn,
+      star_rating: item.star_rating,
+      score: item.score,
       coverImage: item.cover_image,
       images: [item.cover_image], // 添加图片数组
       starLevel: item.star_rating,
@@ -78,11 +80,11 @@ export async function fetchHotelList(params: HotelListQueryParams): Promise<{ ho
 
     const currentPage = parseInt(params.page || '1');
     const currentLimit = parseInt(params.limit || '10');
-    const hasMore = (currentPage * currentLimit) < response.data.total;
+    const hasMore = (currentPage * currentLimit) < response.total;
 
     return {
       hotels,
-      total: response.data.total,
+      total: response.total,
       hasMore
     };
   } catch (error) {

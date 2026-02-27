@@ -173,7 +173,10 @@ export default function DateSelection({ checkInDate, checkOutDate, onDateChange,
               color="primary"
               block
               size="large"
-              onClick={() => setRoomGuestVisible(false)}
+              onClick={() => {
+                setRoomGuestVisible(false);
+                onRoomGuestChange?.(roomnum, guestnum);
+              }}
               style={{ marginTop: 24 }}
             >
               确定

@@ -27,7 +27,7 @@ function mapHotel(hotel: any, city: string): HotelListItem {
     name: hotel.name_cn,
     coverImage: hotel.cover_image,
     images: hotel.detail_images || [],
-    starLevel: hotel.star_rating || 0,
+    star_rating: hotel.star_rating || 0,
     score: hotel.score || 0,
     reviewCount: hotel.review_count || 0,
     price: {

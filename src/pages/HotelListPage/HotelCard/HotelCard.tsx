@@ -65,7 +65,7 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
         <div className={styles.content}>
           <div className={styles.nameContainer}>
             <h3 className={styles.name}>{hotel.name || '酒店名称'}</h3>
-            <span className={styles.hotelType}>{hotel.starLevel >= 4 ? '豪华型' : hotel.starLevel >= 3 ? '舒适型' : '经济型'}</span>
+            <span className={styles.hotelType}>{hotel.star_rating >= 4 ? '豪华型' : hotel.star_rating >= 3 ? '舒适型' : '经济型'}</span>
           </div>
           
           <div className={styles.ratingContainer}>
