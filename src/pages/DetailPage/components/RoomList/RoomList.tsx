@@ -1,5 +1,6 @@
 import styles from './RoomList.module.css';
 import type { RoomType } from '../../../../types/hotel';
+import { Button } from 'antd-mobile';
 
 interface RoomListProps {
   rooms: RoomType[];
@@ -84,16 +85,19 @@ export default function RoomList({ rooms, onRoomSelect }: RoomListProps) {
 
                   {/* 库存状态 */}
                   
-                  <div className={styles.stockArea}>
+                  <Button className={styles.orderButton}>
+                    
+                    <div className={styles.stockArea}>
                     
                     {isSoldOut ? (
                       <span className={styles.soldOutText}>已售罄</span>
                     ) : isTight ? (
                       <span className={styles.tightText}>房间紧张</span>
                     ) : (
-                      <span className={styles.stockText}>剩余{remaining}间</span>
+                      <span className={styles.stockText}>预定房间</span>
                     )}
                   </div>
+                  </Button>
                 </div>
               </div>
             </div>

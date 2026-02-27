@@ -21,7 +21,7 @@ export async function getHotelDetail(hotelId: string): Promise<HotelDetail> {
       id: hotel._id,
       name: hotel.name_cn,
       brand: hotel.brand,
-      starLevel: hotel.star_rating,
+      star_rating: hotel.star_rating,
       hotelType: hotel.hotel_type,          // 新增
 
       coverImage: hotel.cover_image,        // 新增：单独保留封面
@@ -53,7 +53,7 @@ export async function getHotelDetail(hotelId: string): Promise<HotelDetail> {
       minPrice: hotel.min_price,             // 新增
       discount: hotel.discount,              // 新增
 
-      rating: hotel.score ?? 0,
+      score: hotel.score ?? 0,
       reviewCount: hotel.review_count ?? 0,
     };
   } catch (error) {

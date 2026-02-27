@@ -6,7 +6,7 @@ import styles from './HotelDetails.module.css';
 interface HotelDetailsProps {
   hotelName: string;
   starRating: number;
-  rating: number | undefined;
+  score: number | undefined;
   reviewCount: number;
   address: string;
   distance: string;
@@ -16,23 +16,23 @@ interface HotelDetailsProps {
 export default function HotelDetails({
   hotelName,
   starRating,
-  rating,
+  score,
   reviewCount,
   address,
-  distance,
+  // distance,
   tags,
 }: HotelDetailsProps) {
   const hotelType = '舒适型';
   const openingDate = '2024年10月开业';
 
-  const getRatingLevel = (r: number | undefined) => {
+  const getScoreLevel = (r: number | undefined) => {
     if (!r || r === 0) return '暂无评分';
     if (r >= 4.5) return '超棒';
     if (r >= 4.0) return '很棒';
     if (r >= 3.5) return '不错';
     return '尚可';
   };
-  const ratingLevel = getRatingLevel(rating);
+  const scoreLevel = getScoreLevel(score);
   const [reviewPopupVisible, setReviewPopupVisible] = useState(false);
 
   const renderStars = (level: number) =>
@@ -56,7 +56,7 @@ export default function HotelDetails({
       </div>
 
       {/* 设施标签横滑 */}
-      {tags && tags.length > 0 && (
+      {/* {tags && tags.length > 0 && (
         <div className={styles.facilityScroll}>
           {tags.map((tag, index) => (
             <div key={index} className={styles.facilityItem}>
@@ -69,34 +69,31 @@ export default function HotelDetails({
             <span className={styles.facilityLink}>设施政策</span>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* 评分 + 位置 */}
       <div className={styles.infoRow}>
-        <div className={styles.ratingCard} onClick={() => setReviewPopupVisible(true)}>
-          <div className={styles.ratingTop}>
-            <span className={styles.ratingValue}>{rating || '0.0'}</span>
-            <span className={styles.ratingLevel}>{ratingLevel}</span>
+        <div className={styles.scoreCard} onClick={() => setReviewPopupVisible(true)}>
+          <div className={styles.scoreTop}>
+            <span className={styles.scoreValue}>{score || '4.8'}</span>
+            {/* <span className={styles.scoreLevel}>{scoreLevel}</span> */}
           </div>
-          <div className={styles.ratingMeta}>{reviewCount}条 &gt;</div>
-          <div className={styles.ratingDesc}>"干净卫生，安静舒适"</div>
+          <div className={styles.scoreMeta}>{reviewCount||672}条 &gt;</div>
+          <div className={styles.scoreDesc}>"干净卫生，安静舒适"</div>
         </div>
 
         <div className={styles.locationCard}>
           <div className={styles.locationRow}>
-            <span className={styles.locationLabel}>距上海新国际博览中心B</span>
-          </div>
-          <div className={styles.locationRow}>
-            <span className={styles.locationMeta}>驾车{distance || '—'}，约...</span>
-          </div>
-          <div className={styles.addressRow}>
-            <span className={styles.addressText}>{address}</span>
-            <span className={styles.copyBtn}>📋</span>
+            <span className={styles.locationLabel}></span>
           </div>
           <div className={styles.mapRow}>
             <EnvironmentOutline className={styles.mapIcon} />
-            <span className={styles.mapText}>地图</span>
+            {/* <span className={styles.mapText}>地图</span> */}
           </div>
+          <div className={styles.addressRow}>
+            <span className={styles.addressText}>{address}</span>
+          </div>
+          
         </div>
       </div>
 
@@ -114,7 +111,7 @@ export default function HotelDetails({
           <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
             <div style={{ marginBottom: '16px' }}>
               <h4>总体评分</h4>
-              <p>{rating} ({ratingLevel})</p>
+              <p>{score} ({scoreLevel})</p>
             </div>
             <div style={{ marginBottom: '16px' }}>
               <h4>评价数量</h4>

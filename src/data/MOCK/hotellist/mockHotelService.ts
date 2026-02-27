@@ -18,9 +18,9 @@ export function getMockHotelList(params: HotelSearchParams): HotelListResponse {
   // }
 
   // 星级过滤
-  if (params.starLevels) {
+  if (params.star_rating) {
     filteredHotels = filteredHotels.filter(
-      hotel => hotel.starLevel === params.starLevels
+      hotel => hotel.starLevel === params.star_rating
     );
   }
 
@@ -34,18 +34,16 @@ export function getMockHotelList(params: HotelSearchParams): HotelListResponse {
   }
 
   // 品牌过滤
-  if (params.brands?.length) {
-    filteredHotels = filteredHotels.filter(hotel =>
-      params.brands!.some(brand =>
-        hotel.name.toLowerCase().includes(brand.toLowerCase())
-      )
+  if (params.brand?.length) {
+    filteredHotels = filteredHotels.filter(
+      hotel => hotel.name.includes(params.brand!)
     );
   }
 
   // 排序
   if (params.sortBy) {
     switch (params.sortBy) {
-      case 'price':
+      case 'min_price':
         filteredHotels.sort((a, b) =>
           params.sortOrder === 'desc'
             ? b.price.lowest - a.price.lowest

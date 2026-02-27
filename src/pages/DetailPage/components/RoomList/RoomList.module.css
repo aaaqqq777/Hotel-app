@@ -6,9 +6,10 @@
 
 .title {
   margin: 0 0 12px 0;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #222;
+  margin-top: 6px;
 }
 
 .emptyState {
@@ -59,12 +60,11 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 5px;
 }
 
 .roomName {
   margin: 0;
-  font-size: 15px;
   font-weight: 600;
   color: #222;
   white-space: nowrap;
@@ -73,21 +73,14 @@
 }
 
 .roomDesc {
-  margin: 0;
-  font-size: 12px;
-  color: #999;
-  line-height: 1.4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.roomDesc {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0;
-  margin-top: 4px;
-  font-size: 12px;
+  font-size: 14px;
   color: #999;
   line-height: 1.6;
 }
@@ -114,23 +107,24 @@
 }
 
 .tag {
-  font-size: 10px;
+  font-size: 12px;
   color: #C8A265;
   background: #FAF4EB;
   padding: 1px 6px;
-  border-radius: 2px;
+  border-radius: 4px;
   line-height: 1.6;
   border: 1px solid #E8D9BF;
+  margin-top: 2px;
 }
 
 /* ── 底部价格 ──────────────────────────────── */
+
 .roomFooter {
   display: flex;
   align-items: flex-end;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-top: auto;
 }
-
 .priceArea {
   display: flex;
   align-items: baseline;
@@ -138,7 +132,7 @@
 }
 
 .originalPrice {
-  font-size: 11px;
+  font-size: 14px;
   color: #bbb;
   text-decoration: line-through;
 }
@@ -149,7 +143,7 @@
 }
 
 .priceSymbol {
-  font-size: 12px;
+  font-size: 14px;
   color: #C8A265;
   font-weight: 600;
 }
@@ -162,7 +156,7 @@
 }
 
 .priceUnit {
-  font-size: 11px;
+  font-size: 14px;
   color: #999;
   margin-left: 1px;
 }
@@ -170,9 +164,9 @@
 /* ── 响应式 ────────────────────────────────── */
 @media (max-width: 480px) {
   .container { padding: 12px; }
-  .title { font-size: 15px; }
+  .title { font-size: 20px; }
   .roomImage { width: 90px; height: 72px; }
-  .roomName { font-size: 14px; }
+  .roomName { font-size: 16px; }
   .priceValue { font-size: 20px; }
 }
 /* ── 图片容器 ── */
@@ -233,13 +227,6 @@
   flex-shrink: 0;
 }
 
-/* ── Footer 改为两端对齐 ── */
-.roomFooter {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-top: auto;
-}
 
 /* ── 库存状态 ── */
 .stockArea {
@@ -249,7 +236,7 @@
 
 .stockText {
   font-size: 11px;
-  color: #999;
+  color: #000000;
 }
 
 .tightText {
@@ -268,4 +255,15 @@
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+.orderButton {
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #090909;
+  background: #f9d288;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }

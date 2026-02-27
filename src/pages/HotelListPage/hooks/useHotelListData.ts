@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useMemo, useState, useCallback} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInfiniteHotelList } from '../../../hooks/useHotelQueries';
 import type { HotelListItem } from '../../../types/hotel';
@@ -18,13 +18,12 @@ export function useHotelListData() {
     isFetchingNextPage,
     isLoading: isInitialLoading,
   } = useInfiniteHotelList(urlParams);
-
-  // 把分页数据拍平成列表
+    // 把分页数据拍平成列表
   const hotels = useMemo<HotelListItem[]>(() => {
     if (!data) return [];
-    return data.pages.flatMap(page => page.data?.list ?? []);
+    return data.pages.flatMap(page => page.list ?? []);
   }, [data]);
-
+  // console.log('获取到的酒店列表数据:', hotels);
   const hasMore = hasNextPage ?? false;
   const isLoading = isFetching || isFetchingNextPage;
 

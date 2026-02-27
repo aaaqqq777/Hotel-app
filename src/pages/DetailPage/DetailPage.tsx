@@ -16,6 +16,9 @@ function DetailPage() {
     minPrice,
     checkInDate,
     checkOutDate,
+    roomCount,
+    guestCount,
+    handleroomCountChange,
     showBottomBar,
     roomListRef,
     handleRoomSelect,
@@ -41,12 +44,12 @@ function DetailPage() {
         {/* 酒店详情 */}
         <HotelDetails
           hotelName={currentHotelDetail.name}
-          starRating={currentHotelDetail.starLevel}
-          rating={currentHotelDetail.rating}
+          starRating={currentHotelDetail.star_rating}
+          score={currentHotelDetail.score}
           reviewCount={currentHotelDetail.reviewCount || 0}
           address={currentHotelDetail.location?.address || ''}
           distance={''}
-          tags={[]}
+          tags={currentHotelDetail.tags?.map(tag => ({ icon: '', text: tag })) || []}
         />
 
         {/* 日期选择 */}
@@ -54,6 +57,9 @@ function DetailPage() {
           checkInDate={checkInDate}
           checkOutDate={checkOutDate}
           onDateChange={handleDateChange}
+          roomCount={roomCount}
+          guestCount={guestCount}
+          onRoomGuestChange={handleroomCountChange}
         />
         {/* 服务标签 */}
         {/* <ServiceTags tags={serviceTags} onTagSelect={handleServiceTagSelect} /> */}
@@ -76,7 +82,7 @@ function DetailPage() {
         onViewRooms={handleViewRooms}
         onContactHotel={handleContactHotel}
         visible={showBottomBar}
-        hotelPhone={currentHotelDetail.contact?.phone || ''}
+        hotelPhone={currentHotelDetail.contact?.phone || '010-23182712'}
       />
     </div>
   );

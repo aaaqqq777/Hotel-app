@@ -47,7 +47,7 @@ export async function fetchHotelList(params: HotelListQueryParams): Promise<{ ho
     
     console.log('🔍 fetchHotelList 转换后的API参数:', apiParams);
     const response: HotelListResponse = await searchHotelList(apiParams);
-    
+    console.log('src/api/hotel/hotelSearch.ts fetchHotelList API响应:', response);
     // 数据转换：将API响应格式转换为前端组件期望的格式
     const hotels: HotelListItem[] = response.data.list.map(item => ({
       id: item._id,

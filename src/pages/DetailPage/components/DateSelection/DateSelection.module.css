@@ -3,8 +3,6 @@
   margin-top: 8px;
   border-radius: 8px;
   overflow: hidden;
-  height: 100px;
-  margin-bottom: 8px;
 }
 
 /* ── 三列日期 ──────────────────────────────── */
@@ -14,8 +12,7 @@
   justify-content: space-between;
   padding: 28px 20px;
   cursor: pointer;
-  margin-bottom: 18px;
-  margin-top: 18px;
+  /* border-bottom: #999 0.1px solid; */
 }
 
 .dateBlock {
@@ -25,7 +22,7 @@
 
 .dateHint {
   display: block;
-  font-size: 12px;
+  font-size: 10px;
   color: #999;
   margin-bottom: 4px;
 }
@@ -70,7 +67,7 @@
 .nightsBlock::after { right: 0; }
 
 .nightsText {
-  font-size: 15px;
+  font-size: 16px;
   color: #C8A265;
   font-weight: 600;
 }
@@ -95,11 +92,121 @@
   line-height: 1.4;
 }
 
+.roomGuestRow {
+  display: flex;
+  width: 100%;
+}
+
+.roomGuestButton {
+  width: 100%;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 14px 16px;
+  background: #ffffff;
+  /* border: 1px solid rgba(193, 193, 212, 0.08); */
+  border-radius: 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.roomGuestButton:active {
+  background: #ffffff;
+}
+
+.roomGuestLabel {
+  font-size: 15px;
+  color: #B8B8CC;
+  align-items: baseline;
+}
+
+.roomGuestValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A1A2E;
+  line-height: 1;
+}
+
+.roomGuestDivider {
+  font-size: 16px;
+  color: #D0D0D8;
+  margin: 0 8px;
+}
+.roomGuestPopup :global(.adm-popup-body) {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.popupContent {
+  padding: 22px 16px 36px;
+}
+
+.popupTitle {
+  text-align: center;
+  margin: 0 0 22px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1A2E;
+}
+.roomGuestSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(26,26,46,0.06);
+}
+
+.roomGuestSection:last-of-type {
+  border-bottom: none;
+}
+
+.roomGuestTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+
+.numberStepper {
+  display: flex;
+  align-items: center;
+  background: #F8F6F2;
+  border-radius: 24px;
+  border: 1px solid rgba(26,26,46,0.08);
+  overflow: hidden;
+}
+
+.numberStepper :global(.adm-button) {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  font-weight: 300;
+  color: #C8963E;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.numberStepper :global(.adm-button[disabled]) {
+  color: #D0D0D8;
+}
+
+.numberValue {
+  font-size: 19px;
+  font-weight: 700;
+  color: #1A1A2E;
+  min-width: 42px;
+  text-align: center;
+}
+
 /* ── 响应式 ────────────────────────────────── */
 @media (max-width: 480px) {
   .dateSelector { padding: 14px 16px; }
-  .dateDay { font-size: 20px; }
-  .dateLabel { font-size: 12px; }
+  .dateDay { font-size: 22px; }
+  .dateLabel { font-size: 14px; }
   .nightsBlock { padding: 0 14px; }
   .tipBar { padding: 6px 12px; }
   .tipText { font-size: 11px; }

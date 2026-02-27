@@ -23,17 +23,18 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
   // console.log('HotelCard 渲染，酒店信息:', hotel);
   
   // 安全地处理评分信息
-  const ratingLevel = !hotel.rating 
+  const ratingLevel = !hotel.score 
     ? '暂无评分' 
-    : typeof hotel.rating === 'number' && !isNaN(hotel.rating)
-      ? hotel.rating >= 4.5 ? '很棒' : hotel.rating >= 4.0 ? '不错' : '一般'
+    : typeof hotel.score === 'number' && !isNaN(hotel.score)
+      ? hotel.score >= 4.5 ? '很棒' : hotel.score >= 4.0 ? '不错' : '一般'
       : '暂无评分';
+
 
   // 安全地处理标签
   const displayTags = Array.isArray(hotel.tags) 
     ? hotel.tags.slice(0, 3).map(tag => tagLabels[tag] || tag)
     : [];
-
+  
   // 安全地处理数值字段
   const price = typeof hotel.price?.lowest === 'number' ? hotel.price.lowest : 0;
   const originalPrice = typeof hotel.price?.original === 'number' ? hotel.price.original : 0;
@@ -68,11 +69,15 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
           </div>
           
           <div className={styles.ratingContainer}>
-            <span className={styles.ratingScore}>
-              {typeof hotel.rating === 'number' && !isNaN(hotel.rating) 
-                ? hotel.rating.toFixed(1) 
-                : '暂无评分'}
-            </span>
+            
+            {ratingLevel !== '暂无评分' && (
+              <span className={styles.ratingScore}>
+              {/* {typeof hotel.score === 'number' && !isNaN(hotel.score) 
+                ? hotel.score.toFixed(1) 
+                : '暂无评分'} */}
+                {hotel.score}
+              </span>
+            )}
             <span className={styles.ratingLevel}>{ratingLevel}</span>
             <span className={styles.reviewCount}>{reviewCount}条评价</span>
           </div>
@@ -111,7 +116,7 @@ export default function HotelCard({ hotel, onViewDetail }: HotelCardProps) {
             </div>
             <div className={styles.discountInfo}>
               {discount > 0 ? (
-                <span className={styles.discountBadge}>{Math.round(discount * 100)}折</span>
+                <span className={styles.discountBadge}>{Math.round(discount * 10)}折</span>
               ) : (
                 <span className={styles.discountBadge}>{'优惠'}</span>
               )}

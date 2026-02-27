@@ -10,10 +10,10 @@ export interface HotelSearchParams {
   roomCount?: number;
   guestCount?: number;
   
-  starLevels?: number;
-  brands?: string[];
+  star_rating?: number;
+  brand?: string;
   score?: number;
-  sortBy?: 'price' | 'distance' | 'rating' | 'star' | '';
+  sortBy?: 'min_price' | 'distance' | 'rating' | 'star' | '';
   sortOrder?: 'asc' | 'desc' | '';
 
   page: number;
@@ -30,9 +30,9 @@ export interface HotelListItem {
 
   coverImage: string;
   images?: string[];
-
+  score?: number;
   starLevel: number;
-  rating: number;
+
   reviewCount: number;
 
   price: {
@@ -53,7 +53,7 @@ export interface HotelListItem {
     hasAvailableRoom: boolean;
     lowestRoomPrice?: number;
   };
-
+  services?: string[];
   tags?: string[]; // "近地铁 / 新开业 / 含早餐"
 }
 
@@ -64,13 +64,13 @@ export interface HotelFilterParams {
   tags?: string[];
 }
 
-export type SortType = 'price-asc' | 'price-desc' | 'rating' | 'default';
+export type SortType = 'price-asc' | 'price-desc' | 'star_rating' | 'default';
 
 
 export interface HotelDetail {
   id: string;
   name: string;
-  starLevel: number;
+  star_rating: number;
   brand?: string;
   hotelType?: string;
 
@@ -103,7 +103,7 @@ export interface HotelDetail {
   minPrice?: number;
   discount?: number;
 
-  rating?: number;
+  score?: number;
   reviewCount: number;
 }
 
@@ -134,27 +134,8 @@ export interface RoomType {
   breakfast?: string;
   facilities?: string[];
 }
-// export interface RoomType {
-//   id: string;
-//   name: string;
-//   area: number;
-//   image: string;
-//   maxOccupancy: number;
 
-//   price: {
-//     current: number;
-//     original?: number;
-//     discount?: number;
-//   };
 
-//   availability: {
-//     remaining: number;
-//     isSoldOut: boolean;
-//   };
-//   description?: string;
-//   tags?: string[];
-// }
-//advertisement
 export interface BannerData {
   id: string
   imageUrl: string

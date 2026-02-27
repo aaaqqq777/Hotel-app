@@ -208,7 +208,7 @@ export default function OverseasSearch({ value, onChange, onSearch }: OverseasSe
           city: city || '曼谷',
           keyword,
           dates: startDate && endDate ? [startDate, endDate] : undefined,
-          brands: selectedBrand !== '不限' ? [selectedBrand] : undefined,
+          brand: selectedBrand !== '不限' ? selectedBrand : undefined,
           starLevels: parseStarLevel(selectedRating),
           minPrice: priceRange.minPrice,
           maxPrice: priceRange.maxPrice,

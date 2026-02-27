@@ -8,36 +8,9 @@ import { getAdvertisements } from '../api/advertisement/advertisement';
 
 export type { HotelSearchParams as HotelListParams, HotelListResponse };
 
-// ─── 后端字段 → HotelListItem（唯一一份，不再重复） ───────────────────
-// function mapHotel(hotel: any, city: string): HotelListItem {
-//   return {
-//     id:          hotel._id || '',
-//     name:        hotel.name_cn || '未知酒店',
-//     coverImage:  hotel.cover_image || '',
-//     images:      [hotel.cover_image || ''],
-//     starLevel:   hotel.star_rating || 0,
-//     rating:      hotel.score || 0,
-//     reviewCount: hotel.review_count || 0,
-//     price: {
-//       lowest:   hotel.min_price || 0,
-//       original: hotel.original_price,
-//       discount: hotel.discount,
-//     },
-//     location: {
-//       city:     hotel.location?.city || city,
-//       address:  hotel.location?.address || hotel.location?.district || '未知位置',
-//       lat:      hotel.location?.lat || 0,
-//       lng:      hotel.location?.lng || 0,
-//       distance: hotel.location?.distance,
-//     },
-//     roomAvailability: {
-//       hasAvailableRoom: hotel.room_availability?.has_available_room ?? true,
-//       lowestRoomPrice:  hotel.room_availability?.lowest_room_price,
-//     },
-//     tags: hotel.tags || [],
-//   };
-// }
+// ─── mapHotel：返回类型是单个 HotelListItem ───────────────────
 function mapHotel(hotel: any, city: string): HotelListItem {
+  console.log('mapHotel', hotel);
   const rooms = Array.isArray(hotel.available_rooms)
     ? hotel.available_rooms.filter(
         (r: any) => r.status === 1 && r.is_published === true
@@ -52,44 +25,41 @@ function mapHotel(hotel: any, city: string): HotelListItem {
   return {
     id: hotel._id,
     name: hotel.name_cn,
-
     coverImage: hotel.cover_image,
     images: hotel.detail_images || [],
-
     starLevel: hotel.star_rating || 0,
-    rating: hotel.score || 0,
+    score: hotel.score || 0,
     reviewCount: hotel.review_count || 0,
-
     price: {
       lowest: hotel.min_price || lowestRoomPrice || 0,
       discount: hotel.discount,
       original: rooms[0]?.original_price,
     },
-
     location: {
       city: hotel.city || city,
       address: hotel.address,
       lat: hotel.location?.coordinates?.[1] ?? 0,
       lng: hotel.location?.coordinates?.[0] ?? 0,
     },
-
     roomAvailability: {
       hasAvailableRoom: rooms.length > 0,
       lowestRoomPrice,
     },
-
+    services: hotel.services || [],
     tags: hotel.tags || [],
   };
 }
-function mapResponse(response: HotelListResponse, city: string) {
+
+// ─── mapResponse：匹配后端 {total, page, limit, totalPages, list} ──
+
+function mapResponse(response: any, city: string) {
+  const list = Array.isArray(response.list) ? response.list : [];
   return {
-    ...response,
-    data: {
-      ...response.data,
-      list: (response.data?.list || [])
-        .filter((h: any) => h && h._id)
-        .map((h: any) => mapHotel(h, city)),
-    },
+    total:      response.total ?? 0,
+    totalPages: response.totalPages ?? 1,
+    list: list
+      .filter((h: any) => h && h._id)
+      .map((h: any) => mapHotel(h, city)),
   };
 }
 
@@ -102,13 +72,6 @@ export const queryKeys = {
 };
 
 // ─── Hooks ────────────────────────────────────────────────────────────
-// export function useHotelDetail(hotelId: string) {
-//   return useQuery({
-//     queryKey: queryKeys.hotelDetail(hotelId),
-
-//     queryFn:  () => getHotelDetail(hotelId),
-//   });
-// }
 export function useHotelDetail(hotelId: string) {
   return useQuery({
     queryKey: queryKeys.hotelDetail(hotelId),
@@ -161,9 +124,7 @@ export function useInfiniteHotelList(params: HotelSearchParams) {
       return mapResponse(response, params.city);
     },
     getNextPageParam: (lastPage: any, allPages) => {
-      const total     = lastPage.data?.total || 0;
-      const pageSize  = params.pageSize || 10;
-      const totalPages = Math.ceil(total / pageSize);
+      const totalPages = lastPage.totalPages || 1;
       return allPages.length < totalPages ? allPages.length + 1 : undefined;
     },
     staleTime: 2 * 60 * 1000,

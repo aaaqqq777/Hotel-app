@@ -80,11 +80,11 @@ export default function SortBar({
     setOpenMenu(null)
   }
 
-  const handleOptionSelect = (value: string, type: 'price' | 'rating' | 'score' | 'distance') => {
+  const handleOptionSelect = (value: string, type: 'price' | 'star_rating' | 'score' | 'distance') => {
     if (type === 'price') {
       onPriceChange?.(value)
     }
-    if (type === 'rating') onRatingChange?.(value)
+    if (type === 'star_rating') onRatingChange?.(value)
     if (type === 'score') onScoreChange?.(value)
     setOpenMenu(null)
   }

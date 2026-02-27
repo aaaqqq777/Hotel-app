@@ -23,7 +23,6 @@ function HotelListPage() {
     hasMore,
     loadMoreHotels,
     location,
-    keyword,
     formattedDateRange,
     roomCount,
     guestCount,
@@ -40,8 +39,8 @@ function HotelListPage() {
   const [sortType, setSortType] = useState<SortType>(() => {
     const sortBy    = searchParams.get('sortBy')
     const sortOrder = searchParams.get('sortOrder')
-    if (sortBy === 'price' && sortOrder === 'asc')  return 'price-asc'
-    if (sortBy === 'price' && sortOrder === 'desc') return 'price-desc'
+    if (sortBy === 'min_price' && sortOrder === 'asc')  return 'price-asc'
+    if (sortBy === 'min_price' && sortOrder === 'desc') return 'price-desc'
     if (sortBy === 'rating')                        return 'rating'
     return 'default'
   })
@@ -101,8 +100,8 @@ function HotelListPage() {
     setSortType(sort)
     const sortMap: Record<SortType, { sortBy: string; sortOrder: string }> = {
       'default':    { sortBy: '',       sortOrder: '' },
-      'price-asc':  { sortBy: 'price',  sortOrder: 'asc' },
-      'price-desc': { sortBy: 'price',  sortOrder: 'desc' },
+      'price-asc':  { sortBy: 'min_price',  sortOrder: 'asc' },
+      'price-desc': { sortBy: 'min_price',  sortOrder: 'desc' },
       'rating':     { sortBy: 'rating', sortOrder: 'desc' },
     }
     applyFilter(sortMap[sort])
@@ -172,7 +171,9 @@ function HotelListPage() {
     const sp = new URLSearchParams(window.location.search);
     const checkIn = sp.get('checkInDate') || '';
     const checkOut = sp.get('checkOutDate') || '';
-    navigate(`/detailpage?id=${hotelId}&checkInDate=${checkIn}&checkOutDate=${checkOut}`);
+    const roomCount = sp.get('roomCount') || '';
+    const guestCount = sp.get('guestCount') || '';
+    navigate(`/detailpage?id=${hotelId}&checkInDate=${checkIn}&checkOutDate=${checkOut}&roomCount=${roomCount}&guestCount=${guestCount}`);
   };
 
   const handleOpenFilter = () => {

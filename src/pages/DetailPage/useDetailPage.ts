@@ -11,7 +11,7 @@ import type { HotelDetail } from '../../types/hotel';
 const DEFAULT_HOTEL_DETAIL: HotelDetail = {
   id: '0',
   name: '加载中...',
-  starLevel: 0,
+  star_rating: 0,
   brand: '',
   hotelType: '',
   coverImage: '',
@@ -33,7 +33,7 @@ const DEFAULT_HOTEL_DETAIL: HotelDetail = {
   services: [],
   tags: [],
   reviewTags: [],
-  rating: 0,
+  score: 0,
   reviewCount: 0,
 };
 export function useDetailPage() {
@@ -52,7 +52,22 @@ export function useDetailPage() {
   const [checkOutDate, setCheckOutDate] = useState(
     searchParams.get('checkOutDate') || tomorrow.toISOString().split('T')[0]
   );
+  const [roomCount, setRoomCount] = useState(
+    parseInt(searchParams.get('roomCount') || '1', 10)
+  );
+  const [guestCount, setGuestCount] = useState(
+    parseInt(searchParams.get('guestCount') || '1', 10)
+  );
   const navigate = useNavigate(); // 需要导入
+  const handleroomCountChange = useCallback((roomCount: number, guestCount: number) => {
+    setRoomCount(roomCount);
+    setGuestCount(guestCount);
+    // 同步到 URL
+    const sp = new URLSearchParams(window.location.search);
+    sp.set('roomCount', roomCount.toString());
+    sp.set('guestCount', guestCount.toString());
+    navigate(`/detailpage?${sp.toString()}`, { replace: true });
+  }, [navigate]);
 
   const handleDateChange = useCallback((checkIn: string, checkOut: string) => {
     setCheckInDate(checkIn);
@@ -150,7 +165,8 @@ export function useDetailPage() {
     checkInDate,
     checkOutDate,
     showBottomBar,
-
+    roomCount,
+    guestCount,
     // Refs
     roomListRef,
 
@@ -160,5 +176,5 @@ export function useDetailPage() {
     handleViewRooms,
     handleContactHotel,
     handleDateChange,
-  };
+    handleroomCountChange};
 }
